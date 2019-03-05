@@ -201,7 +201,8 @@ rich set of boolean query operators.")
                   "1wbamvl6j87lgs3260rx2qr443dzzs6xi0h87rpi0k5pb7acy2j0"))))
       (build-system cmake-build-system)
       (arguments
-       '(#:configure-flags
+       '(#:tests? #f
+         #:configure-flags
          '("-GNinja")
          #:phases
          (modify-phases %standard-phases
@@ -230,8 +231,7 @@ rich set of boolean query operators.")
                (invoke "ninja" "check")))
            (replace 'install
              (lambda _
-               (invoke "ninja" "install")))
-           (delete 'check)))) ; no test suite
+               (invoke "ninja" "install"))))))
       (supported-systems '("x86_64-linux" "i686-linux"))
       (inputs
        `(("zlib" ,zlib)
