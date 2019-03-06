@@ -149,7 +149,8 @@ targeting C++11, C++14 and above.")
               ("libcxxabi" ,libcxxabi)))
     (native-inputs `(("clang" ,clang)))
     (arguments
-     `(#:phases
+     `(#:tests? #f
+       #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'setup-include-path
              (lambda* (#:key inputs outputs #:allow-other-keys)
