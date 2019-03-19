@@ -134,14 +134,14 @@ targeting C++11, C++14 and above.")
 (define-public xapian-llvm
   (package
     (name "xapian-llvm")
-    (version "1.4.9")
+    (version "1.4.11")
     ;; Note: When updating Xapian, remember to update xapian-bindings below.
     (source (origin
               (method url-fetch)
               (uri (string-append "https://oligarchy.co.uk/xapian/" version
                                   "/xapian-core-" version ".tar.xz"))
               (sha256
-               (base32 "1k7m7m9jld96k16ansfw2w3c354pvd8ibhnrb6dw012g06fw7sfd"))))
+               (base32 "01xwqljnp5afjf9097lyfbqc6x5bcqszfdkn9l1j86imwbrv45lz"))))
     (build-system gnu-build-system)
     (inputs `(("zlib" ,zlib)
               ("util-linux" ,util-linux)
@@ -189,7 +189,7 @@ rich set of boolean query operators.")
 (define-public xapiand
     (package
       (name "xapiand")
-      (version "0.10.2")
+      (version "0.14.0")
       (source (origin
                 (method url-fetch)
                 (uri (string-append
@@ -198,7 +198,7 @@ rich set of boolean query operators.")
                 (file-name (string-append name "-" version ".tar.gz"))
                 (sha256
                  (base32
-                  "1wbamvl6j87lgs3260rx2qr443dzzs6xi0h87rpi0k5pb7acy2j0"))))
+                  "1lj00c0gyjkvgk1r38s3xl7kkdn4d2dgjp3w8vs3gnchrmpbdlbk"))))
       (build-system cmake-build-system)
       (arguments
        '(#:tests? #f
