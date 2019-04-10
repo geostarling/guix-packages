@@ -190,7 +190,7 @@ rich set of boolean query operators.")
 (define-public xapiand
     (package
       (name "xapiand")
-      (version "0.14.0")
+      (version "0.19.2")
       (source (origin
                 (method url-fetch)
                 (uri (string-append
@@ -199,7 +199,7 @@ rich set of boolean query operators.")
                 (file-name (string-append name "-" version ".tar.gz"))
                 (sha256
                  (base32
-                  "1lj00c0gyjkvgk1r38s3xl7kkdn4d2dgjp3w8vs3gnchrmpbdlbk"))))
+                  "1v3qrpiqy0sh9f31yspf5nwjzzy25iqh6rzf28qlnsgb131bsdp3"))))
       (build-system cmake-build-system)
       (arguments
        '(#:tests? #f
