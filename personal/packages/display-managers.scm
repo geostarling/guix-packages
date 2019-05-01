@@ -33,6 +33,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages xfce)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages display-managers)
   #:use-module (gnu packages pkg-config)
