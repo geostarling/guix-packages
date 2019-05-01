@@ -1,4 +1,4 @@
-(define-module (gnu services lightdm)
+(define-module (personal services lightdm)
   #:use-module (guix gexp)
   #:use-module (guix records)
 
