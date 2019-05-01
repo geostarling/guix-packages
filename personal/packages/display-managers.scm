@@ -34,6 +34,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages display-managers)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages gdb)
   #:use-module (gnu packages dlang)
