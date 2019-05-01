@@ -14,7 +14,7 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with The Work.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (personal bar)
+(define-module (personal packages bar)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
