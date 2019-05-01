@@ -145,6 +145,8 @@
       ("atk", atk)
       ("librsvg" ,librsvg)
       ("libsecret", libsecret)
+      ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
+      ("dconf" ,dconf)
       ("vte" ,vte)))
    (home-page "")
    (synopsis "")

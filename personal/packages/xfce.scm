@@ -79,3 +79,32 @@
     ;; The main plugin code is covered by gpl2+, but the files containing code
     ;; to read the battery state via ACPI or APM are covered by lgpl2.0+.
     (license (list license:gpl2+ license:lgpl2.0+))))
+
+
+;; (define-public xfce4-screenshooter
+;;   (package
+;;     (name "xfce4-screenshooter")
+;;     (version "1.8.99")
+;;     (source (origin
+;;               (method url-fetch)
+;;               (uri (string-append "https://archive.xfce.org/src/apps/"
+;;                                   name "/" (version-major+minor version) "/"
+;;                                   name "-" version ".tar.bz2"))
+;;               (sha256
+;;                (base32
+;;                 "1injwvjzyl7jfp586xmhwpzhhmzfnb6r6pi3i3llsvp8daazsy1s"))))
+;;     (build-system gnu-build-system)
+;;     (native-inputs `(("pkg-config" ,pkg-config)
+;;                      ("intltool" ,intltool)))
+;;     (inputs `(("gtk+" ,gtk+)
+;;               ("libxfce4ui" ,libxfce4ui)
+;;               ("libxfce4util" ,libxfce4util)
+;;               ("xfce4-panel" ,xfce4-panel)))
+;;     (home-page
+;;      "https://goodies.xfce.org/projects/panel-plugins/xfce4-sensors-plugin")
+;;     (synopsis "Hardware sensors plugin for Xfce4")
+;;     (description
+;;      "A battery monitor panel plugin for Xfce4, compatible with APM and ACPI.")
+;;     ;; The main plugin code is covered by gpl2+, but the files containing code
+;;     ;; to read the battery state via ACPI or APM are covered by lgpl2.0+.
+;;     (license (list license:gpl2+ license:lgpl2.0+))))
