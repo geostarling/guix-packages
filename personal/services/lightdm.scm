@@ -28,7 +28,7 @@
   lightdm-configuration?
 
   (lightdm lightdm-configuration-lightdm
-           (default lightdm))
+           (default my-lightdm))
   (user lightdm-configuration-user
         (default "lightdm"))
   (greeters-directory lightdm-configuration-greeters-directory
@@ -203,7 +203,7 @@ background = "        (lightdm-configuration-gtk-greeter-background config)))
         (lightdm-autologin-pam-service)))
 
 (define (lightdm-profile-service config)
-  (append (list my-lightdm-gtk-greeter lightdm)
+  (append (list my-lightdm-gtk-greeter my-lightdm)
           (lightdm-configuration-gtk-greeter-assets config)))
 
 (define (lightdm-activation-service config)

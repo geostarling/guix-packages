@@ -18,41 +18,104 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
-  #:use-module (guix build-system dub)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
-  #:use-module (gnu packages)
-  #:use-module (gnu packages base)
-  #:use-module (gnu packages bash)
-  #:use-module (gnu packages admin)
-  #:use-module (gnu packages file)
-  #:use-module (gnu packages c)
+  #:use-module (guix packages)
   #:use-module (guix utils)
-
-  #:use-module (gnu packages check)
-  #:use-module (gnu packages gcc)
-  #:use-module (gnu packages autotools)
-  #:use-module (gnu packages compression)
-  #:use-module (gnu packages curl)
-  #:use-module (gnu packages xfce)
-  #:use-module (gnu packages gettext)
-  #:use-module (gnu packages display-managers)
-  #:use-module (gnu packages pkg-config)
-  #:use-module (gnu packages gdb)
-  #:use-module (gnu packages dlang)
-  #:use-module (gnu packages gnome)      ;; for vte and libpeas
-  #:use-module (gnu packages gtk)
+  #:use-module (gnu packages)
+  #:use-module (gnu packages admin)
+  #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
-  #:use-module (gnu packages gstreamer)
-  #:use-module (gnu packages llvm)
-  #:use-module (gnu packages xorg)
-
-  #:use-module (gnu packages perl)
-  #:use-module (gnu packages tcl)
+  #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages gtk)
+  #:use-module (gnu packages image)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages linux)
-  #:use-module (gnu packages ninja)
   #:use-module (gnu packages pkg-config)
-  #:use-module (gnu packages search)
-  #:use-module (gnu packages textutils))
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages qt)
+  #:use-module (gnu packages xdisorg)
+  #:use-module (gnu packages xfce)
+  #:use-module (gnu packages xorg))
+
+(define-public my-lightdm
+  (package
+    (name "lightdm")
+    (version "1.24.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://launchpad.net/lightdm/"
+                                  (version-major+minor version) "/"
+                                  version "/+download/lightdm-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "18j33bm54i8k7ncxcs69zqi4105s62n58jrydqn3ikrb71s9nl6d"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:tests? #f
+       #:parallel-tests? #f ; fails when run in parallel
+       #:configure-flags
+       (list "--localstatedir=/var")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-paths
+           (lambda _
+             (substitute* "src/shared-data-manager.c"
+               (("/bin/rm") (which "rm")))
+             (substitute* '("data/users.conf"
+                            "common/user-list.c")
+               (("/bin/false") (which "false"))
+               (("/usr/sbin/nologin") (which "nologin")))
+             (substitute* "src/seat.c"
+               (("/bin/sh") (which "sh")))
+             #t))
+         (add-after 'unpack 'disable-broken-tests
+           (lambda _
+             (substitute* "tests/Makefile.in"
+               (("test-sessions-gobject ") "")
+               ((" test-sessions-python ") " "))
+             #t))
+         (add-before 'check 'pre-check
+           ;; Run test-suite under a dbus session.
+           (lambda* (#:key inputs #:allow-other-keys)
+             (wrap-program "tests/src/test-python-greeter"
+               `("PYTHONPATH"      ":" prefix (,(getenv "PYTHONPATH")))
+               `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH"))))
+
+             ;; Avoid printing locale warnings, which trip up the text
+             ;; matching tests.
+             (unsetenv "LC_ALL")
+             #t)))))
+    (inputs
+     `(("audit" ,audit)
+       ("linux-pam" ,linux-pam)
+       ("shadow" ,shadow)                         ;for sbin/nologin
+       ("libgcrypt" ,libgcrypt)
+       ("libxcb" ,libxcb)))
+    (native-inputs
+     `(("gobject-introspection" ,gobject-introspection)
+       ("pkg-config" ,pkg-config)
+       ("itstool" ,itstool)
+       ("intltool" ,intltool)
+       ;; For tests
+       ("dbus" ,dbus)
+       ("python" ,python-2)
+       ("python-pygobject" ,python2-pygobject)))
+    ;; Required by liblightdm-gobject-1.pc.
+    (propagated-inputs
+     `(("glib" ,glib)
+       ("libx11" ,libx11)
+       ("libxklavier" ,libxklavier)))
+    (home-page "https://www.freedesktop.org/wiki/Software/LightDM/")
+    (synopsis "Lightweight display manager")
+    (description "The Light Display Manager (LightDM) is a cross-desktop
+display manager which supports different greeters.")
+    (license license:gpl3+)))
+
 
 (define-public my-lightdm-gtk-greeter
   (package
@@ -68,14 +131,12 @@
                (base32
                 "1436sdm83xqhxyr1rzqxhsl8if2xmidlvb341xcv6dv83lyxkrlf"))))
     (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f))
     (native-inputs
      `(("exo" ,exo)
        ("intltool" ,intltool)
        ("pkg-config" ,pkg-config)))
     (inputs
-     `(("lightdm" ,lightdm)
+     `(("lightdm" ,my-lightdm)
        ("gtk+" ,gtk+)))
     (synopsis "GTK+ greeter for LightDM")
     (home-page "https://launchpad.net/lightdm-gtk-greeter")
