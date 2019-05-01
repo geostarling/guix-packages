@@ -17,6 +17,8 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages xorg)
 
+  #:use-module (personal packages display-managers)
+
   #:export (lightdm-configuration
             lightdm-configuration?
             lightdm-service-type))
@@ -201,7 +203,7 @@ background = "        (lightdm-configuration-gtk-greeter-background config)))
         (lightdm-autologin-pam-service)))
 
 (define (lightdm-profile-service config)
-  (append (list lightdm-gtk-greeter lightdm)
+  (append (list my-lightdm-gtk-greeter lightdm)
           (lightdm-configuration-gtk-greeter-assets config)))
 
 (define (lightdm-activation-service config)
