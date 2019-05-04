@@ -20,6 +20,7 @@
   #:use-module (guix download)
   #:use-module (guix build-system dub)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system glib-or-gtk)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -121,7 +122,7 @@
      (sha256
       (base32
        "1w5k99sdxi07lj886xb2yw4ikp4492swd93377z8k3hfddvqcaqr"))))
-   (build-system gnu-build-system)
+   (build-system glib-or-gtk-build-system)
    (arguments
     `(#:phases (modify-phases %standard-phases
                               (add-before 'configure 'setup-env-vars
