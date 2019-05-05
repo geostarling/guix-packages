@@ -140,15 +140,16 @@
       ("glib" ,glib "bin")        ; for glib-compile-resources
       ("gdk-pixbuf" ,gdk-pixbuf)
       ("po4a" ,po4a)))
-   (inputs
+  (inputs
     `(("gtkd" ,gtkd)
       ("libx11", libx11)
       ("atk", atk)
       ("librsvg" ,librsvg)
       ("libsecret", libsecret)
       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-      ("dconf" ,dconf)
       ("vte" ,vte)))
+   (propagated-inputs
+    `(("dconf" ,dconf)))
    (home-page "")
    (synopsis "")
    (description
