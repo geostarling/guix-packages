@@ -254,7 +254,8 @@
         ("ghc-optparse-applicative" ,ghc-optparse-applicative)))
     (propagated-inputs
      `(("linux-libre-headers" ,linux-libre-headers) ; FIXME required for errno.h
-       ("gcc-toolchain" ,gcc-toolchain)))     ; FIXME: required for crt1.o
+       ("gcc-toolchain" ,gcc-toolchain)     ; FIXME: required for crt1.o
+       ("ghc" ,ghc))) ; required for config compilation
     (home-page
       "http://hackage.haskell.org/package/monky")
     (synopsis
