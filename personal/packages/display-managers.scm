@@ -26,6 +26,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
+;  #:use-module (guix build utils)
   #:use-module (gnu packages base)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
@@ -43,6 +44,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
+  #:use-module (ice-9 match)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xfce)
   #:use-module (gnu packages xorg))
@@ -68,6 +70,10 @@
     (inputs
      (cons `("vala" ,vala) (package-inputs lightdm)))))
 
+
+
+
+
 (define-public slick-greeter
   (package
     (name "slick-greeter")
@@ -90,7 +96,16 @@
                          ;; by default, which is problematic because source shebangs
                          ;; have not yet been patched.
                          (setenv "NOCONFIGURE" "t")
-                         (zero? (system* "sh" "autogen.sh")))))))
+                         (zero? (system* "sh" "autogen.sh"))))
+              (add-after 'install 'split
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+	             ;; Distribute the binaries to the various outputs.
+        	     (let* ((out (assoc-ref outputs "out")))
+		       (rename-file (string-append out "/sbin") (string-append out "/bin"))))))))
+	      
+	     			       
+			       
+			       
     (native-inputs
      `(("which" ,which)
        ("pkg-config" ,pkg-config)
