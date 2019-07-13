@@ -62,6 +62,8 @@
   #:use-module (gnu packages freedesktop))
 
 
+;; NOTE: I don't really get it. It should not be neccessary to specify many of dependencies (deps of wlroots for example) because they should be transitively resolved (eg. libinput is definitely dep of wlroots so why we have to specify it again?) is it meson-related?
+
 (define-public wayfire
   (package
     (name "wayfire")
@@ -95,6 +97,92 @@
               ("libevdev" ,libevdev)
               ("libinput" ,libinput)
               ("libxkbcommon" ,libxkbcommon)))
+
+    (home-page
+     "https://goodies.xfce.org/projects/panel-plugins/xfce4-sensors-plugin")
+    (synopsis "3D wayland compositor")
+    (description
+     "")
+    (license (list license:gpl2+ license:lgpl2.0+))))
+
+
+(define-public wf-config
+  (package
+    (name "wf-config")
+    (version "0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/WayfireWM/wf-config/releases/download/v" version "/wf-config-" version  ".tar.xz"))
+              (sha256
+               (base32
+                "1ma0b4gl0hing3g00kyckjpfl3g3qi4fm2mgfm6kflqs2xrwwknn"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+                      (add-before 'configure 'fixgcc7
+                                  (lambda _
+                                    (unsetenv "C_INCLUDE_PATH")
+                                    (unsetenv "CPLUS_INCLUDE_PATH"))))))
+    (native-inputs `(("pkg-config" ,pkg-config)
+                     ("cmake" ,cmake)
+                     ("gcc" ,gcc-7)))
+    (inputs `(("wlroots" ,wlroots)
+              ("wayland" ,wayland)
+              ("wayland-protocols" ,wayland-protocols)
+              ("mesa" ,mesa)
+              ("libcap" ,libcap) ;; dep of wlroots
+              ("elogind" ,elogind) ;; dep of wlroots
+              ("libevdev" ,libevdev)
+              ("cairo" ,cairo)
+              ("libdrm" ,libdrm)
+              ("libinput" ,libinput)
+              ("libxkbcommon" ,libxkbcommon)
+              ("glm" ,glm)))
+
+    (home-page
+     "https://goodies.xfce.org/projects/panel-plugins/xfce4-sensors-plugin")
+    (synopsis "3D wayland compositor")
+    (description
+     "")
+    (license (list license:gpl2+ license:lgpl2.0+))))
+
+
+(define-public wf-shell
+  (package
+    (name "wf-shell")
+    (version "0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/WayfireWM/wf-shell/releases/download/" version "/wf-shell-" version  ".tar.xz"))
+              (sha256
+               (base32
+                "1jgmjclxjnfrxb9l06nm3slxrfsickrkycyvfz38aa5mq6nkqq82"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+                      (add-before 'configure 'fixgcc7
+                                  (lambda _
+                                    (unsetenv "C_INCLUDE_PATH")
+                                    (unsetenv "CPLUS_INCLUDE_PATH"))))))
+    (native-inputs `(("pkg-config" ,pkg-config)
+                     ("cmake" ,cmake)
+                     ("gcc" ,gcc-7)))
+    (inputs `(("wayland" ,wayland)
+              ("wayland-protocols" ,wayland-protocols)
+              ("wf-config" ,wf-config)
+              ("gtkmm" ,gtkmm)
+              ("mesa" ,mesa)
+              ("libcap" ,libcap) ;; dep of wlroots
+              ("elogind" ,elogind) ;; dep of wlroots
+              ("libevdev" ,libevdev)
+              ("cairo" ,cairo)
+              ("libdrm" ,libdrm)
+              ("libinput" ,libinput)
+              ("libxkbcommon" ,libxkbcommon)
+              ("glm" ,glm)
+              ("wlroots" ,wlroots)))
 
     (home-page
      "https://goodies.xfce.org/projects/panel-plugins/xfce4-sensors-plugin")
