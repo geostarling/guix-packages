@@ -18,8 +18,10 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system cmake)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -38,6 +40,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages documentation)
   #:use-module (gnu packages gdb)
   #:use-module (gnu packages dlang)
   #:use-module (gnu packages gnome)      ;; for vte and libpeas
@@ -47,6 +50,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages wm)
 
   #:use-module (gnu packages perl)
@@ -184,6 +188,36 @@
               ("glm" ,glm)
               ("wlroots" ,wlroots)))
 
+    (home-page
+     "https://goodies.xfce.org/projects/panel-plugins/xfce4-sensors-plugin")
+    (synopsis "3D wayland compositor")
+    (description
+     "")
+    (license (list license:gpl2+ license:lgpl2.0+))))
+
+(define-public bemenu
+  (package
+    (name "bemenu")
+    (version "0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Cloudef/bemenu")
+              (commit "442d2833f48590122e5ce54a2bca3a327ffa0311")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "00km3caxq8lzd4fv6xn504abms292d739pi021img20ip4rxyzxf"))))
+    (build-system cmake-build-system)
+    (native-inputs `(("pkg-config" ,pkg-config)
+                     ("cmake" ,cmake)))
+    (inputs `(("wayland" ,wayland)
+              ("ncurses" ,ncurses)
+              ("libx11" ,libx11)
+              ("libxinerama" ,libxinerama)
+              ("cairo" ,cairo)
+              ("pango" ,pango)))
     (home-page
      "https://goodies.xfce.org/projects/panel-plugins/xfce4-sensors-plugin")
     (synopsis "3D wayland compositor")
