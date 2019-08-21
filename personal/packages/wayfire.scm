@@ -38,20 +38,24 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages gdb)
   #:use-module (gnu packages dlang)
   #:use-module (gnu packages gnome)      ;; for vte and libpeas
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages wm)
+  #:use-module (guix build utils)
 
   #:use-module (gnu packages perl)
   #:use-module (gnu packages tcl)
@@ -224,3 +228,64 @@
     (description
      "")
     (license (list license:gpl2+ license:lgpl2.0+))))
+
+
+
+(define-public albert
+  (package
+   (name "albert")
+   (version "0.16.1")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://github.com/albertlauncher/albert")
+           (commit (string-append "v" version))
+           (recursive? #t)))
+     (file-name (git-file-name name version))
+     (sha256
+      (base32
+       "04sr35fqz66i24lv7r2p9qfqxs55i8xpj7aam0v9yakcr33lf55a"))))
+   (build-system cmake-build-system)
+   (arguments
+    `(#:tests? #f
+      #:phases
+      (modify-phases %standard-phases
+                     (add-before 'configure 'fix-x11extras
+                                 (lambda* (#:key outputs #:allow-other-keys)
+                                   (substitute* "plugins/widgetboxmodel/CMakeLists.txt"
+                                                (("^.*find_package.*$")
+                                                 "find_package(Qt5 5.5.0 REQUIRED COMPONENTS Widgets Svg X11Extras)")
+                                                (("^.*target_include_directories.*$")
+                                                 "target_include_directories(${PROJECT_NAME} PRIVATE src/)\nfind_package(Qt5 5.5.0 REQUIRED X11Extras)")
+                                                (("^.*Qt5::Svg.*$")
+                                                 "Qt5::Svg\nQt5::X11Extras"))
+                                   (substitute* "plugins/qmlboxmodel/CMakeLists.txt"
+                                                (("^.*find_package.*$")
+                                                 "find_package(Qt5 5.5.0 REQUIRED COMPONENTS Widgets Qml Quick X11Extras)")
+                                                (("^.*target_include_directories.*$")
+                                                 "target_include_directories(${PROJECT_NAME} PRIVATE src/)\nfind_package(Qt5 5.5.0 REQUIRED X11Extras)")
+                                                (("^.*Qt5::Qml.*$")
+                                                 "Qt5::Qml\nQt5::X11Extras"))
+
+;                                   (substitute* "plugins/widgetboxmodel/src/frontend.ui"
+;                                                (("^.*<header location=\"global\">actionlist.h</header>.*$")
+;                                                 "<header>actionlist.h</header>"))
+                                        ;"find_package(Qt5 5.5.0 REQUIRED X11Extras)\nfind_package(Qt5 5.5.0 REQUIRED COMPONENTS Widgets Svg)"))
+                                   #t)))))
+   (native-inputs `(("pkg-config" ,pkg-config)
+                    ("cmake" ,cmake)))
+   (inputs `(("qtbase" ,qtbase)
+             ("qtx11extras" ,qtx11extras)
+             ("qtcharts" ,qtcharts)
+             ("qtsvg" ,qtsvg)
+             ("qtdeclarative" ,qtdeclarative)
+             ("muparser" ,muparser)
+             ("python" ,python)))
+
+   (home-page
+    "https://goodies.xfce.org/projects/panel-plugins/xfce4-sensors-plugin")
+   (synopsis "3D wayland compositor")
+   (description
+    "")
+   (license (list license:gpl2+ license:lgpl2.0+))))
