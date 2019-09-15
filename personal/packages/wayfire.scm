@@ -69,9 +69,52 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages freedesktop))
 
+(define-public my-wlroots
+  (package
+    (name "wlroots")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/swaywm/wlroots.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rdcmll5b8w242n6yfjpsaprq280ck2jmbz46dxndhignxgda7k4"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:configure-flags '("-Dlogind-provider=elogind")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'hardcode-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "xwayland/xwayland.c"
+               (("Xwayland") (string-append (assoc-ref inputs
+                                                       "xorg-server-xwayland")
+                                            "/bin/Xwayland")))
+             #t)))))
+    (inputs `(("elogind" ,elogind)
+              ("eudev" ,eudev)
+              ("libinput" ,libinput)
+              ("libxkbcommon" ,libxkbcommon)
+              ("mesa" ,mesa)
+              ("pixman" ,pixman)
+              ("wayland" ,wayland)
+              ("xorg-server-xwayland" ,xorg-server-xwayland)))
+    (native-inputs `(("ffmpeg" ,ffmpeg)
+                     ("libcap" ,libcap)
+                     ("libpng" ,libpng)
+                     ("pkg-config" ,pkg-config)
+                     ("wayland-protocols" ,wayland-protocols)))
+    (home-page "https://github.com/swaywm/wlroots")
+    (synopsis "Pluggable, composable, unopinionated modules for building a
+Wayland compositor")
+    (description "wlroots is a set of pluggable, composable, unopinionated
+modules for building a Wayland compositor.")
+    (license license:expat)))  ; MIT license
 
 ;; NOTE: I don't really get it. It should not be neccessary to specify many of dependencies (deps of wlroots for example) because they should be transitively resolved (eg. libinput is definitely dep of wlroots so why we have to specify it again?) is it meson-related?
-
 (define-public wayfire
   (package
     (name "wayfire")
@@ -93,7 +136,7 @@
     (native-inputs `(("pkg-config" ,pkg-config)
                      ("cmake" ,cmake)
                      ("gcc" ,gcc-7)))
-    (inputs `(("wlroots" ,wlroots)
+    (inputs `(("wlroots" ,my-wlroots)
               ("glm" ,glm)
               ("libcap" ,libcap) ;; dep of wlroots
               ("elogind" ,elogind) ;; dep of wlroots
@@ -135,7 +178,7 @@
     (native-inputs `(("pkg-config" ,pkg-config)
                      ("cmake" ,cmake)
                      ("gcc" ,gcc-7)))
-    (inputs `(("wlroots" ,wlroots)
+    (inputs `(("wlroots" ,my-wlroots)
               ("wayland" ,wayland)
               ("wayland-protocols" ,wayland-protocols)
               ("mesa" ,mesa)
@@ -190,7 +233,7 @@
               ("libinput" ,libinput)
               ("libxkbcommon" ,libxkbcommon)
               ("glm" ,glm)
-              ("wlroots" ,wlroots)))
+              ("wlroots" ,my-wlroots)))
 
     (home-page
      "https://goodies.xfce.org/projects/panel-plugins/xfce4-sensors-plugin")
