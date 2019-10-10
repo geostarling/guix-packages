@@ -73,7 +73,7 @@
 (define-public my-wlroots
   (package
     (name "wlroots")
-    (version "0.6.0")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
@@ -82,7 +82,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rdcmll5b8w242n6yfjpsaprq280ck2jmbz46dxndhignxgda7k4"))))
+        (base32 "0w3lfzczry5zk7x2kxdb8anb4bymsby6h1i2gc0w2f8hgx4m2b9x"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dlogind-provider=elogind")
@@ -119,13 +119,13 @@ modules for building a Wayland compositor.")
 (define-public wayfire
   (package
     (name "wayfire")
-    (version "0.2")
+    (version "0.3.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://github.com/WayfireWM/wayfire/releases/download/v" version "/wayfire-" version  ".tar.xz"))
+              (uri (string-append "https://github.com/WayfireWM/wayfire/releases/download/" version "/wayfire-0.3.tar.xz"))
               (sha256
                (base32
-                "0kdkzmw8gwaw8k9ci5fx29i11bf7b2br73fi3rqsl67064xv9l7l"))))
+                "11py8f8vknqw1kmlj4g9p6b0zbrjyd30bsr4ssyxxnih23c4xi89"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
@@ -161,7 +161,7 @@ modules for building a Wayland compositor.")
 (define-public wf-config
   (package
     (name "wf-config")
-    (version "0.1")
+    (version "0.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/WayfireWM/wf-config/releases/download/v" version "/wf-config-" version  ".tar.xz"))
@@ -179,7 +179,7 @@ modules for building a Wayland compositor.")
     (native-inputs `(("pkg-config" ,pkg-config)
                      ("cmake" ,cmake)
                      ("gcc" ,gcc-7)))
-    (inputs `(("wlroots" ,my-wlroots)
+    (inputs `(("wlroots" ,wlroots)
               ("wayland" ,wayland)
               ("wayland-protocols" ,wayland-protocols)
               ("mesa" ,mesa)
@@ -203,7 +203,7 @@ modules for building a Wayland compositor.")
 (define-public wf-shell
   (package
     (name "wf-shell")
-    (version "0.1")
+    (version "0.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/WayfireWM/wf-shell/releases/download/" version "/wf-shell-" version  ".tar.xz"))
@@ -243,35 +243,35 @@ modules for building a Wayland compositor.")
      "")
     (license (list license:gpl2+ license:lgpl2.0+))))
 
-(define-public bemenu
-  (package
-    (name "bemenu")
-    (version "0.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/Cloudef/bemenu")
-              (commit "442d2833f48590122e5ce54a2bca3a327ffa0311")))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "00km3caxq8lzd4fv6xn504abms292d739pi021img20ip4rxyzxf"))))
-    (build-system cmake-build-system)
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ("cmake" ,cmake)))
-    (inputs `(("wayland" ,wayland)
-              ("ncurses" ,ncurses)
-              ("libx11" ,libx11)
-              ("libxinerama" ,libxinerama)
-              ("cairo" ,cairo)
-              ("pango" ,pango)))
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-sensors-plugin")
-    (synopsis "3D wayland compositor")
-    (description
-     "")
-    (license (list license:gpl2+ license:lgpl2.0+))))
+;; (define-public bemenu
+;;   (package
+;;     (name "bemenu")
+;;     (version "0.2")
+;;     (source
+;;      (origin
+;;        (method git-fetch)
+;;        (uri (git-reference
+;;               (url "https://github.com/Cloudef/bemenu")
+;;               (commit "442d2833f48590122e5ce54a2bca3a327ffa0311")))
+;;        (file-name (git-file-name name version))
+;;        (sha256
+;;         (base32
+;;          "00km3caxq8lzd4fv6xn504abms292d739pi021img20ip4rxyzxf"))))
+;;     (build-system cmake-build-system)
+;;     (native-inputs `(("pkg-config" ,pkg-config)
+;;                      ("cmake" ,cmake)))
+;;     (inputs `(("wayland" ,wayland)
+;;               ("ncurses" ,ncurses)
+;;               ("libx11" ,libx11)
+;;               ("libxinerama" ,libxinerama)
+;;               ("cairo" ,cairo)
+;;               ("pango" ,pango)))
+;;     (home-page
+;;      "https://goodies.xfce.org/projects/panel-plugins/xfce4-sensors-plugin")
+;;     (synopsis "3D wayland compositor")
+;;     (description
+;;      "")
+;;     (license (list license:gpl2+ license:lgpl2.0+))))
 
 
 
