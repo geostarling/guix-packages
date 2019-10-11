@@ -81,7 +81,7 @@
 (define-public firefox
   (package
    (name "firefox")
-   (version "60.6.1esr")
+   (version "60.9.0esr")
    (source (origin
             (method url-fetch)
             (uri (string-append
@@ -90,7 +90,7 @@
                   "firefox-" version ".source.tar.xz"))
             (sha256
              (base32
-              "1x8419a1yg6igsq5ij3ymf1zmnb2wpm9dqcdfkv5wy43xgf7y0wl"))))
+              "0gy5x2rnnbkqmjd9sq93s3q5na9nkba68xwpizild7k6qn63qicz"))))
    (build-system gnu-build-system)
    (inputs
     `(("alsa-lib" ,alsa-lib)
@@ -365,8 +365,7 @@
                                    (let ((gcc (assoc-ref inputs "gcc")))
                                      (setenv "CPLUS_INCLUDE_PATH"
                                              (string-append gcc "/include/c++" ":"
-                                                            gcc "/include/c++/" build ":"
-                                                            (getenv "CPLUS_INCLUDE_PATH"))))
+                                                            gcc "/include/c++/" build ":")))
                                    #t))
                      (replace 'configure
                               ;; configure does not work followed by both "SHELL=..." and
