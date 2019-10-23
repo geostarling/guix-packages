@@ -58,7 +58,7 @@
 
 (define-public linux-5.3-source
   (let ((version linux-libre-5.3-version)
-        (hash (base32 "0vi4bgcr921z5l6fbcrcgmhaji5gl2avpmp7njna6v0f7sxism0r")))
+        (hash (base32 "1gq55ny6lb2nh6rr1w55bslzysyj0bwdl6rbpv882hhyjrnsma0n")))
     ((@@ (gnu packages linux) %upstream-linux-source) version hash)))
 
 
