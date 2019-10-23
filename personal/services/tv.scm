@@ -160,8 +160,8 @@
            (requirement '(networking))
            (start #~(make-forkexec-constructor
                      (list (string-append #$tvheadend "/bin/tvheadend")
-                           "--config" #$(tvheadend-config-file config)
-                           "--pid" #$(tvheadend-pid-file config))
+                           "--config" #$(tvheadend-configuration-config-file config)
+                           "--pid" #$(tvheadend-configuration-pid-file config))
                            ;; TODO:"--adapters" #$@(tvheadend-adapters config)
                            ;; TODO: every other config opt/
                      #:pid-file #$pid-file
