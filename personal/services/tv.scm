@@ -82,13 +82,13 @@
    (number 9982)
    "HTSP port.")
   (htsp-extra-port
-   (number)
+   (number -1)
    "HTSP port.")
   (htsp-extra-port
-   (number)
+   (number -1)
    "HTSP port.")
   (user-agent-header
-   (string)
+   (string "")
    "Specify User-Agent header for the http client".)
   (use-xspf-playlist?
    (boolean #f)
