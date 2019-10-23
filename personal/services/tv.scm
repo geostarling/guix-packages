@@ -78,8 +78,19 @@
    "HTTP port.")
   (http-webroot
    (string "")
-   "HTTP webroot path."))
-
+   "HTTP webroot path.")
+  (htsp-port
+   (number 9982)
+   "HTSP port.")
+  (htsp-extra-port
+   (number -1)
+   "HTSP port.")
+  (user-agent-header
+   (string "")
+   "Specify User-Agent header for the http client.")
+  (use-xspf-playlist?
+   (boolean #f)
+   "Use XSPF playlist instead of M3U."))
 
 (define (tvheadend-account config)
   "Return the user accounts and user groups for CONFIG."
