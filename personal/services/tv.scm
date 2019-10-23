@@ -131,7 +131,6 @@
     (list (shepherd-service
            (provision '(tvheadend))
            (documentation "Run tvheadend daemon.")
-           (provision '(tvheadend))
            (requirement '(networking))
            (start #~(make-forkexec-constructor
                      (list (string-append #$tvheadend "/bin/tvheadend")
