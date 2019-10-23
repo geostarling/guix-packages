@@ -40,6 +40,17 @@
 ;;;
 ;;;; Code:
 
+(define (serialize-field field-name val)
+  (format #t "~a=~a~%" (uglify-field-name field-name) val))
+
+(define (serialize-number field-name val)
+  (serialize-field field-name (number->string val)))
+
+(define (serialize-string field-name val)
+  (if (and (string? val) (string=? val ""))
+      ""
+      (serialize-field field-name val)))
+
 (define-configuration tvheadend-configuration
   (tvheadend
    (package tvheadend)
@@ -51,7 +62,7 @@
    (string "tvheadend")
    "User who will run the Tvheadend daemon.")
   (group
-   (group "tvheadend")
+   (string "tvheadend")
    "Group who will run the Tvheadend daemon.")
   (pid-file
    (string  "/var/run/tvheadend/tvheadend.pid")
