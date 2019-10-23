@@ -42,58 +42,7 @@
 (define-configuration tvheadend-configuration
   (tvheadend
    (package tvheadend)
-   "The tvheadend package.")
-  (config-path
-   (string "/etc/tvheadend")
-   "Path to configuration directory.")
-  (user
-   (string "tvheadend")
-   "User who will run the Tvheadend daemon.")
-  (group
-   (group "tvheadend")
-   "Group who will run the Tvheadend daemon.")
-  (pid-file
-   (string  "/var/run/tvheadend/tvheadend.pid")
-   "Name of PID file.")
-  (satip-bind-address
-   (string "")
-   "Bind address for SAT>IP server")
-  (satip-rtsp-port
-   (number -1)
-   "Database name.")
-  (satip-enable?
-   (boolean #f)
-   "Enable SAT>IP client.")
-  (satip-url
-   (string "")
-   "URL with the SAT>IP server XML location.")
-  (ipv6-listen?
-   (boolean #f)
-   "Listen on IPv6")
-  (bind-address
-   (string "127.0.0.1")
-   "Bind address.")
-  (http-port
-   (number 9981)
-   "HTTP port.")
-  (http-webroot
-   (string "")
-   "HTTP webroot path.")
-  (htsp-port
-   (number 9982)
-   "HTSP port.")
-  (htsp-extra-port
-   (number -1)
-   "HTSP port.")
-  (htsp-extra-port
-   (number -1)
-   "HTSP port.")
-  (user-agent-header
-   (string "")
-   "Specify User-Agent header for the http client.")
-  (use-xspf-playlist?
-   (boolean #f)
-   "Use XSPF playlist instead of M3U."))
+   "The tvheadend package."))
 
 (define (tvheadend-account config)
   "Return the user accounts and user groups for CONFIG."
