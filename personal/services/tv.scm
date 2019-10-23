@@ -25,6 +25,7 @@
   #:use-module (personal packages tv)
   #:use-module (gnu packages admin)
   #:use-module (guix records)
+  #:use-module (guix packages)
   #:use-module (guix gexp)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
