@@ -66,7 +66,7 @@
   (serialize-field field-name (if val "1" "0")))
 
 (define-configuration tvheadend-configuration
-  (tvheadend
+  (package
    (package tvheadend)
    "The tvheadend package.")
   (config-path
@@ -151,7 +151,6 @@
   "Return a <shepherd-service> for tvheadend with CONFIG."
   (let* ((tvheadend   (tvheadend-configuration-package config))
          (pid-file    (tvheadend-configuration-pid-file config))
-         (port-number (tvheadend-configuration-port-number config))
          (user        (tvheadend-configuration-user config))
          (group       (tvheadend-configuration-group config)))
     (list (shepherd-service
@@ -160,7 +159,7 @@
            (requirement '(networking))
            (start #~(make-forkexec-constructor
                      (list (string-append #$tvheadend "/bin/tvheadend")
-                           "--config" #$(tvheadend-configuration-config-file config)
+                           "--config" #$(tvheadend-configuration-config-path config)
                            "--pid" #$(tvheadend-configuration-pid-file config))
                            ;; TODO:"--adapters" #$@(tvheadend-adapters config)
                            ;; TODO: every other config opt/
