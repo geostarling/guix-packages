@@ -72,7 +72,13 @@
    "Listen on IPv6")
   (bind-address
    (string "127.0.0.1")
-   "Bind address."))
+   "Bind address.")
+  (http-port
+   (number 9981)
+   "HTTP port.")
+  (http-webroot
+   (string "")
+   "HTTP webroot path."))
 
 
 (define (tvheadend-account config)
