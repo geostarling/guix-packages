@@ -157,7 +157,8 @@
            (requirement '(networking))
            (start #~(make-forkexec-constructor
                      (list (string-append #$tvheadend "/bin/tvheadend")
-                           "--config" #$(tvheadend-configuration-config-path config))
+                           "--config" #$(tvheadend-configuration-config-path config)
+                           "--noacl")
                            ;; TODO:"--adapters" #$@(tvheadend-adapters config)
                            ;; TODO: every other config opt/
                      #:user #$user
