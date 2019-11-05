@@ -116,7 +116,11 @@
    "Specify User-Agent header for the http client.")
   (use-xspf-playlist?
    (boolean #f)
-   "Use XSPF playlist instead of M3U."))
+   "Use XSPF playlist instead of M3U.")
+  (acl-disable?
+   (boolean #f)
+   "Disable all access control checks."))
+
 
 (define (tvheadend-account config)
   "Return the user accounts and user groups for CONFIG."
@@ -159,7 +163,8 @@
            (start #~(make-forkexec-constructor
                      (list (string-append #$tvheadend "/bin/tvheadend")
                            "--config" #$(tvheadend-configuration-config-path config)
-                           "--pid" #$(tvheadend-configuration-pid-file config))
+                           "--pid" #$(tvheadend-configuration-pid-file config)
+                           "--noacl")
                            ;; TODO:"--adapters" #$@(tvheadend-adapters config)
                            ;; TODO: every other config opt/
                      #:pid-file #$pid-file
