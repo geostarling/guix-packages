@@ -78,9 +78,6 @@
   (group
    (string "tvheadend")
    "Group who will run the Tvheadend daemon.")
-  (pid-file
-   (string  "/var/run/tvheadend/tvheadend.pid")
-   "Name of PID file.")
   (satip-bind-address
    (string "")
    "Bind address for SAT>IP server")
@@ -147,13 +144,11 @@
                         (mkdir-p directory)
                         (chown directory (passwd:uid user) (passwd:gid user))
                         (chmod directory #o750))
-                    (list (dirname #$(tvheadend-configuration-pid-file config))
-                          #$(tvheadend-configuration-config-path config)))))))
+                    (list #$(tvheadend-configuration-config-path config)))))))
 
 (define (tvheadend-shepherd-service config)
   "Return a <shepherd-service> for tvheadend with CONFIG."
   (let* ((tvheadend   (tvheadend-configuration-package config))
-         (pid-file    (tvheadend-configuration-pid-file config))
          (user        (tvheadend-configuration-user config))
          (group       (tvheadend-configuration-group config)))
     (list (shepherd-service
@@ -163,11 +158,9 @@
            (start #~(make-forkexec-constructor
                      (list (string-append #$tvheadend "/bin/tvheadend")
                            "--config" #$(tvheadend-configuration-config-path config)
-                           "--pid" #$(tvheadend-configuration-pid-file config)
                            "--noacl")
                            ;; TODO:"--adapters" #$@(tvheadend-adapters config)
                            ;; TODO: every other config opt/
-                     #:pid-file #$pid-file
                      #:user #$user
                      #:group #$group))
            (stop #~(make-kill-destructor))))))
