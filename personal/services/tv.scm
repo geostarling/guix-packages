@@ -34,7 +34,10 @@
   #:use-module (ice-9 match)
   #:export (tvheadend-configuration
             tvheadend-configuration?
-            tvheadend-service-type))
+            tvheadend-service-type
+            kodi-configuration
+            kodi-configuration?
+            kodi-service-type))
 
 ;;;; Commentary:
 ;;;
