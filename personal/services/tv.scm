@@ -224,7 +224,7 @@
                         (mkdir-p directory)
                         (chown directory (passwd:uid user) (passwd:gid user))
                         (chmod directory #o750))
-                    (list #$(kodi-configuration-config-path config)))))))
+                    (list #$(kodi-configuration-home-dir config)))))))
 
 (define (kodi-shepherd-service config)
   "Return a <shepherd-service> for kodi with CONFIG."
