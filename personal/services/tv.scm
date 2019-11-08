@@ -24,6 +24,8 @@
   #:use-module (gnu system shadow)
   #:use-module (personal packages tv)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages xorg)
+  #:use-module (gnu packages kodi)
   #:use-module (guix records)
   #:use-module (guix packages)
   #:use-module (guix gexp)
@@ -173,3 +175,76 @@
           (service-extension account-service-type tvheadend-account)
           (service-extension activation-service-type tvheadend-activation)))
    (default-value (tvheadend-configuration))))
+
+
+
+(define-configuration kodi-configuration
+  (package
+   (package kodi)
+   "The kodi package.")
+  (xinit-package
+   (package xinit)
+   "The xinit package.")
+  (home-dir
+   (string "/var/lib/kodi")
+   "Path to home directory.")
+  (user
+   (string "kodi")
+   "User who will run the Kodi daemon.")
+  (group
+   (string "kodi")
+   "Group who will run the Kodi daemon."))
+
+
+(define (kodi-account config)
+  "Return the user accounts and user groups for CONFIG."
+  (let ((kodi-user (kodi-configuration-user config))
+        (kodi-group (kodi-configuration-group config)))
+    (list (user-group (name kodi-group) (system? #t))
+          (user-account
+           (name kodi-user)
+           (system? #t)
+           (group kodi-group)
+           (comment "kodi privilege separation user")
+           (home-directory (kodi-configuration-home-dir config))
+           (shell (file-append shadow "/sbin/nologin"))))))
+
+(define (kodi-activation config)
+  "Return the activation GEXP for CONFIG."
+  (with-imported-modules '((guix build utils)
+                           (ice-9 rdelim))
+    #~(begin
+        (use-modules (guix build utils)
+                     (ice-9 rdelim))
+        (let ((user (getpw #$(kodi-configuration-user config))))
+          (for-each (lambda (directory)
+                        (mkdir-p directory)
+                        (chown directory (passwd:uid user) (passwd:gid user))
+                        (chmod directory #o750))
+                    (list #$(kodi-configuration-config-path config)))))))
+
+(define (kodi-shepherd-service config)
+  "Return a <shepherd-service> for kodi with CONFIG."
+  (let* ((kodi        (kodi-configuration-package config))
+         (xinit       (kodi-configuration-xinit-package config))
+         (user        (kodi-configuration-user config))
+         (group       (kodi-configuration-group config)))
+    (list (shepherd-service
+           (provision '(kodi))
+           (documentation "Run kodi as a daemon.")
+           (requirement '(networking))
+           (start #~(make-forkexec-constructor
+                     (list (string-append #$xinit "--" #$kodi "/bin/kodi-stadalone"))
+                     #:pid-file "/var/run/kodi.pid"
+                     #:user #$user
+                     #:group #$group))
+           (stop #~(make-kill-destructor))))))
+
+(define kodi-service-type
+  (service-type
+   (name 'kodi)
+   (extensions
+    (list (service-extension shepherd-root-service-type kodi-shepherd-service)
+          (service-extension account-service-type kodi-account)
+          (service-extension activation-service-type kodi-activation)))
+   (default-value (kodi-configuration))))
