@@ -55,9 +55,10 @@
   #:use-module (gnu packages search)
   #:use-module (gnu packages textutils))
 
+(define-public linux-5.3-version "5.3.8")
 
 (define-public linux-5.3-source
-  (let ((version linux-libre-5.3-version)
+  (let ((version linux-5.3-version)
         (hash (base32 "12p98z12hnrgvfssmi1003l7fgx5d0zc9pwsfwjhxp9fffm7j9fp")))
     ((@@ (gnu packages linux) %upstream-linux-source) version hash)))
 
