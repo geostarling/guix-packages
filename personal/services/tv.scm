@@ -237,7 +237,7 @@
            (documentation "Run kodi as a daemon.")
            (requirement '(networking))
            (start #~(make-forkexec-constructor
-                     (list (string-append #$xinit "--" #$kodi "/bin/kodi-stadalone"))
+                     (list (string-append #$xinit "--" #$kodi "/bin/kodi-standalone"))
                      #:pid-file "/var/run/kodi.pid"
                      #:user #$user
                      #:group #$group))
