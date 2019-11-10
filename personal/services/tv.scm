@@ -133,6 +133,7 @@
            (name tvheadend-user)
            (system? #t)
            (group tvheadend-group)
+           (supplementary-groups '("audio" "video"))
            (comment "tvheadend privilege separation user")
            (home-directory (string-append "/var/run/" tvheadend-user))
            (shell (file-append shadow "/sbin/nologin"))))))
