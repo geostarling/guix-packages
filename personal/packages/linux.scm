@@ -74,13 +74,13 @@
 
 (define-public linux-headers-5.3
   ((@@ (gnu packages linux) make-linux-libre-headers*)
-   linux-libre-5.3-version
+   linux-5.3-version
    linux-5.3-source))
 
 
 (define-public linux-5.3-vanilla
   ((@@ (gnu packages linux) make-linux-libre*)
-   linux-libre-5.3-version
+   linux-5.3-version
    linux-5.3-source
    '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux")
    #:configuration-file (@@ (gnu packages linux) kernel-config)
