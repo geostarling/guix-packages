@@ -197,32 +197,24 @@ plug-in system.")
 (define-public arduino-lirc-plugin
   (package
    (name "arduino-lirc-plugin")
-   (version "20181223")
+   (version "20191114")
    (source (origin
             (method git-fetch)
             (uri (git-reference
                   (url "https://github.com/geostarling/arduino-lirc-plugin.git")
-                  (commit "68b807c6aeaa48f8112353939081b04a56c82259")))
+                  (commit "0c3f83aa54225c35db58e5830da29cbbd7a4aba9")))
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "0myq83bcrwy2r6820f64xmd73pbk0apcd6h55ag73z5wsvjwi8dz"))))
+              "18pd3srhwqpvppasj27imydc369fa5d4ssik16zvlf67qgfxmw10"))))
    (build-system gnu-build-system)
    (native-inputs `(("pkg-config" ,pkg-config)))
    (inputs `(("lirc" ,lirc)))
-
-
    (arguments
-    `(
-     ;;#:make-flags (let ((out (assoc-ref %outputs "out")))))
-     ;;                  (list "CC=gcc"
-     ;;                        "INSTALL=install"
-     ;;                        "CHECK_RUN_DIR=0"
-     ;;                        ;; TODO: tell it where to find 'sendmail'
-     ;;                        ;; (string-append "MAILCMD=" <???> "/sbin/sendmail")
-     ;;                        (string-append "BINDIR=" out "/sbin")
-     ;;                        (string-append "MANDIR=" out "/share/man")
-     ;;                        (string-append "UDEVDIR=" out "/lib/udev")))
+    `(#:make-flags (let ((out (assoc-ref %outputs "out")))
+                     (list (string-append "PLUGINDIR=" out "/lib/lirc/plugins")
+                           (string-append "CONFIGDIR=" out "/share/lirc/configs")
+                           (string-append "PLUGINDOCS=" out "/share/doc/lirc/plugindocs")))
       #:phases
       (modify-phases %standard-phases
                      (delete 'configure))
