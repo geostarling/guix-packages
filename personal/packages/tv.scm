@@ -60,6 +60,26 @@
   #:use-module (gnu packages wget))
 
 
+(define-public wscan
+  (package
+    (name "wscan")
+    (version "20170107")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://www.gen2vdr.de/wirbel/w_scan/w_scan-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1zkgnj2sfvckix360wwk1v5s43g69snm45m0drnzyv7hgf5g7q1q"))))
+    (build-system gnu-build-system)
+    (home-page
+     "https://goodies.xfce.org/projects/panel-plugins/xfce4-sensors-plugin")
+    (synopsis "Hardware sensors plugin for Xfce4")
+    (description
+     "A battery monitor panel plugin for Xfce4, compatible with APM and ACPI.")
+    ;; The main plugin code is covered by gpl2+, but the files containing code
+    ;; to read the battery state via ACPI or APM are covered by lgpl2.0+.
+    (license (list license:gpl2+ license:lgpl2.0+))))
+
 (define-public dtv-scan-tables
   (package
     (name "dtv-scan-tables")
@@ -91,6 +111,7 @@
     ;; The main plugin code is covered by gpl2+, but the files containing code
     ;; to read the battery state via ACPI or APM are covered by lgpl2.0+.
     (license (list license:gpl2+ license:lgpl2.0+))))
+
 
 (define-public tvheadend
   (package
