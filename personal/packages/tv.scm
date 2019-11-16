@@ -29,6 +29,7 @@
   #:use-module (guix git-download)
   #:use-module (gnu packages check)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system trivial)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages autotools)
@@ -58,6 +59,38 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages wget))
 
+
+(define-public dtv-scan-tables
+  (package
+    (name "dtv-scan-tables")
+    (version "20191116")
+    (source (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/crazycat69/dtv-scan-tables.git")
+                   (commit "8767d01455e9d74eb954683fcde24009e15fd609")))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32
+               "1rla37s45ckwc9x4ybii5kavprfln2i4mqizbfll0zh5j2y7l60q"))))
+    (build-system trivial-build-system)
+    (arguments
+     `(#:modules ((guix build utils))
+       #:builder
+       (begin
+         (use-modules (guix build utils))
+         (copy-recursively (assoc-ref %build-inputs "source")
+                           (string-append (assoc-ref %outputs "out") "/share"))
+         #t)))
+
+    (home-page
+     "https://goodies.xfce.org/projects/panel-plugins/xfce4-sensors-plugin")
+    (synopsis "Hardware sensors plugin for Xfce4")
+    (description
+     "A battery monitor panel plugin for Xfce4, compatible with APM and ACPI.")
+    ;; The main plugin code is covered by gpl2+, but the files containing code
+    ;; to read the battery state via ACPI or APM are covered by lgpl2.0+.
+    (license (list license:gpl2+ license:lgpl2.0+))))
 
 (define-public tvheadend
   (package
@@ -90,8 +123,15 @@
                                (add-before 'configure 'set-build-environment
                                            (lambda _
                                              (setenv "CC" "gcc")
-                                             #t)))))
-
+                                             #t))
+                               (add-after 'install 'link-dtv-scan-tables
+                                          (lambda* (#:key inputs outputs #:allow-other-keys)
+                                            (let ((dvb-directory (string-append %output "/share/tvheadend/data/dvb")))
+                                              (display (string-append (assoc-ref %build-inputs "dtv-scan-tables") "/share"))
+                                              (display dvb-directory)
+                                              (symlink (string-append (assoc-ref %build-inputs "dtv-scan-tables") "/share")
+                                                       (string-append dvb-directory))
+                                              #t))))))
     (native-inputs `(("pkg-config" ,pkg-config)
                      ("intltool" ,intltool)
                      ("python" ,python)
@@ -99,7 +139,8 @@
                      ("wget" ,wget)
                      ("git" ,git)))
     (inputs `(("ffmpeg" ,ffmpeg)
-              ("openssl" ,openssl)))
+              ("openssl" ,openssl)
+              ("dtv-scan-tables" ,dtv-scan-tables)))
 
     (home-page
      "https://goodies.xfce.org/projects/panel-plugins/xfce4-sensors-plugin")
