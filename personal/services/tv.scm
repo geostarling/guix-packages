@@ -163,6 +163,8 @@
            (start #~(make-forkexec-constructor
                      (list (string-append #$tvheadend "/bin/tvheadend")
                            "--config" #$(tvheadend-configuration-config-path config)
+                           "--trace"
+                           "--syslog"
                            "--noacl")
                            ;; TODO:"--adapters" #$@(tvheadend-adapters config)
                            ;; TODO: every other config opt/
