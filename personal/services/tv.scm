@@ -165,6 +165,8 @@
                            "--config" #$(tvheadend-configuration-config-path config)
                            "--trace"
                            "--syslog"
+                           "--logfile" "/tmp/tvheadend.log"
+                           "--debug"
                            "--noacl")
                            ;; TODO:"--adapters" #$@(tvheadend-adapters config)
                            ;; TODO: every other config opt/
