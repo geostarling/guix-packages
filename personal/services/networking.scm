@@ -73,39 +73,45 @@
 
 ;;
 ;; bridge service
-;;
 
-(define-record-type* <bridge-configuration>
-  bridge-configuration
-  make-bridge-configuration
-  bridge-configuration?
 
-  (iproute            bridge-configuration-iproute
-                      (default iproute))
-  (bridge-interface   bridge-configuration-bridge-interface) ; a string
-  (interfaces         bridge-configuration-interfaces) ; list of interfaces
-  (requirement        bridge-configuration-requirement
-                      (default '()))
-  (provision          bridge-configuration-provision))
+(define (serialize-field field-name val)
+  (format #t "~a=~a~%" (uglify-field-name field-name) val))
+
+(define (serialize-number field-name val)
+  (serialize-field field-name (number->string val)))
+
+(define (serialize-string field-name val)
+  (if (and (string? val) (string=? val ""))
+      ""
+      (serialize-field field-name val)))
+
+(define serialize-list serialize-field)
+
+(define-configuration bridge-configuration
+  (iproute
+   (package iproute)
+   "Iproute package used to configure the bridge.")
+  (bridge-interface
+   (string 'unset)
+   "Bridge interface name.")
+  (interfaces
+   (list 'unset)
+   "List of interfaces")
+  (interfaces
+   (list 'unset)
+   "List of interfaces"))
 
 (define bridge-shepherd-service
   (match-lambda
    (($ <bridge-configuration>
        iproute
        bridge-interfaces
-       interfaces
-       requirement
-       provision)
+       interfaces)
     (shepherd-service
-
      (documentation "Create an L2 bridge for selected NICs.")
-
-     (requirement requirement)
-
-     (provision (or provision
-                    (list (symbol-append 'bridge-
-                                         (string->symbol bridge-interface)))))
-
+     (provision (list (symbol-append 'bridge-
+                                     (string->symbol bridge-interface))))
      (start #~(lambda _
                 (let* ((ip (string-append #$iproute "/sbin/ip"))
                        (attach-interface (lambda (interface)
@@ -118,24 +124,12 @@
                   (set-network-interface-up #$bridge-interface)
                   (for-each set-network-interface-up #$@interfaces)
                   (for-each attach-interface #$@interfaces))))
-
      (stop #~(lambda _
                (let ((ip (string-append #$iproute "/sbin/ip")))
                  (system* ip "link" "del"
                           #$bridge-interface))))
      (respawn? #f)))))
 
-(define (bridge-shepherd-services bridges)
-  "Return a list of Shepherd services to bring up BRIDGES, a list of
-<bridge> objects."
-  (let ((services (map bridge-shepherd-service bridges)))
-    (cons (shepherd-service
-           (provision '(all-bridges))
-           (requirement (append-map shepherd-service-provision services))
-           (start #~(const #t))
-           (stop #~(const #f))
-           (documentation "Bringing up all bridges."))
-          services)))
 
 (define bridge-service-type
   (service-type (name 'bridge)
@@ -143,28 +137,10 @@
                  (list
                   (service-extension shepherd-root-service-type
                                      bridge-shepherd-services)))
-                (compose concatenate)
-                (extend append)
-                (default-value '())
+                (default-value  (bridge-configuration))
                 (description "Add a physical or virtual interface to a bridge. The
 value for services of this type is a list of @code{bridge} objects, one
 per bridge.")))
-
-(define* (bridge-service bridge-interface
-                         interfaces
-                         #:key
-                         (requirement '(udev))
-                         (iproute iproute)
-                         provision)
-  "Create a bridge."
-  (simple-service 'bridge-service
-                  bridge-service-type
-                  (list
-                   (bridge-configuration (iproute iproute)
-                                         (bridge-interface bridge-interface)
-                                         (interfaces interfaces)
-                                         (requirement requirement)
-                                         (provision provision)))))
 
 
 ;;; networking.scm ends here
