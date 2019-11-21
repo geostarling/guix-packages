@@ -68,6 +68,9 @@
 (define (serialize-boolean field-name val)
   (serialize-field field-name (if val "1" "0")))
 
+(define (serialize-list field-name val)
+  (if (null? val) "" (serialize-field field-name (string-join val))))
+
 
 (define-configuration bridge-configuration
   (iproute
