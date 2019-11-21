@@ -1,16 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2018 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016 John Darrington <jmd@gnu.org>
-;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
-;;; Copyright © 2017, 2018 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
-;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2019 Florian Pelz <pelzflorian@pelzflorian.de>
-;;; Copyright © 2019 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2017 Oleg Pykhalov <go.wigust@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,49 +20,39 @@
   #:use-module (gnu services)
   #:use-module (gnu services base)
   #:use-module (gnu services shepherd)
-  #:use-module (gnu services dbus)
+  #:use-module (gnu services configuration)
   #:use-module (gnu system shadow)
-  #:use-module (gnu system pam)
+  #:use-module (personal packages tv)
   #:use-module (gnu packages admin)
-  #:use-module (gnu packages base)
-  #:use-module (gnu packages bash)
-  #:use-module (gnu packages connman)
-  #:use-module (gnu packages freedesktop)
-  #:use-module (gnu packages linux)
-  #:use-module (gnu packages tor)
-  #:use-module (gnu packages usb-modeswitch)
-  #:use-module (gnu packages messaging)
-  #:use-module (gnu packages networking)
-  #:use-module (gnu packages ntp)
-  #:use-module (gnu packages wicd)
-  #:use-module (gnu packages gnome)
-  #:use-module (guix gexp)
+  #:use-module (gnu packages xorg)
+  #:use-module (gnu packages kodi)
   #:use-module (guix records)
-  #:use-module (guix modules)
-  #:use-module (guix deprecation)
+  #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)
-  #:re-export (static-networking-service
-               static-networking-service-type)
-  #:export (bridge
-
-            bridge?
-            bridge-bridge-interface
-            bridge-interfaces
-            bridge-requirement
-            bridge-provision
-            bridge-iproute
-
-            bridge-service
+  #:export (bridge-configuration
+            bridge-configuration?
             bridge-service-type))
 
 
+;;;; Commentary:
+;;;
+;;; This module implements a service that to run instance of bridge.
+;;;
+;;;; Code:
 
-;;
-;; bridge service
 
+(define (uglify-field-name field-name)
+  (apply string-append
+         (map (lambda (str)
+                (if (member (string->symbol str) '(ca db ssl))
+                    (string-upcase str)
+                    (string-capitalize str)))
+              (string-split (string-delete #\?
+                                           (symbol->string field-name))
+                            #\-))))
 
 (define (serialize-field field-name val)
   (format #t "~a=~a~%" (uglify-field-name field-name) val))
@@ -86,7 +65,9 @@
       ""
       (serialize-field field-name val)))
 
-(define serialize-list serialize-field)
+(define (serialize-boolean field-name val)
+  (serialize-field field-name (if val "1" "0")))
+
 
 (define-configuration bridge-configuration
   (iproute
@@ -97,50 +78,40 @@
    "Bridge interface name.")
   (interfaces
    (list 'unset)
-   "List of interfaces")
-  (interfaces
-   (list 'unset)
    "List of interfaces"))
 
-(define bridge-shepherd-service
-  (match-lambda
-   (($ <bridge-configuration>
-       iproute
-       bridge-interfaces
-       interfaces)
-    (shepherd-service
-     (documentation "Create an L2 bridge for selected NICs.")
-     (provision (list (symbol-append 'bridge-
-                                     (string->symbol bridge-interface))))
-     (start #~(lambda _
-                (let* ((ip (string-append #$iproute "/sbin/ip"))
-                       (attach-interface (lambda (interface)
-                                           (system* ip "link"
-                                                    "set" interface
-                                                    "master" "br0"))))
-                  (system* ip "link" "add"
-                           "name" #$bridge-interface
-                           "type" "bridge")
-                  (set-network-interface-up #$bridge-interface)
-                  (for-each set-network-interface-up #$@interfaces)
-                  (for-each attach-interface #$@interfaces))))
-     (stop #~(lambda _
-               (let ((ip (string-append #$iproute "/sbin/ip")))
-                 (system* ip "link" "del"
-                          #$bridge-interface))))
-     (respawn? #f)))))
 
+
+(define (bridge-shepherd-service config)
+  "Return a <shepherd-service> for bridge with CONFIG."
+  (let* ((iproute                 (bridge-configuration-iproute config))
+         (bridge-interface        (bridge-configuration-bridge-interface config))
+         (interfaces              (bridge-configuration-interfaces config)))
+    (list (shepherd-service
+           (provision '(bridge))
+           (documentation "Run bridge daemon.")
+           ;;           (requirement '(networking))
+           (start #~(lambda _
+                      (let* ((ip (string-append #$iproute "/sbin/ip"))
+                             (attach-interface (lambda (interface)
+                                                 (system* ip "link"
+                                                          "set" interface
+                                                          "master" "br0"))))
+                        (system* ip "link" "add"
+                                 "name" #$bridge-interface
+                                 "type" "bridge")
+                        (set-network-interface-up #$bridge-interface)
+                        (for-each set-network-interface-up #$@interfaces)
+                        (for-each attach-interface #$@interfaces))))
+           (stop #~(lambda _
+                     (let ((ip (string-append #$iproute "/sbin/ip")))
+                       (system* ip "link" "del"
+                                #$bridge-interface))))
+           (respawn? #f)))))
 
 (define bridge-service-type
-  (service-type (name 'bridge)
-                (extensions
-                 (list
-                  (service-extension shepherd-root-service-type
-                                     bridge-shepherd-services)))
-                (default-value  (bridge-configuration))
-                (description "Add a physical or virtual interface to a bridge. The
-value for services of this type is a list of @code{bridge} objects, one
-per bridge.")))
-
-
-;;; networking.scm ends here
+  (service-type
+   (name 'bridge)
+   (extensions
+    (list (service-extension shepherd-root-service-type bridge-shepherd-service)))
+   (default-value (bridge-configuration))))
