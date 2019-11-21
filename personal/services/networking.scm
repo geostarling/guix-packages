@@ -111,7 +111,7 @@
                        (attach-interface (lambda (interface)
                                            (system* ip "link"
                                                     "set" interface
-                                                    "master" #bridge-interface))))
+                                                    "master" "br0"))))
                   (system* ip "link" "add"
                            "name" #$bridge-interface
                            "type" "bridge")
