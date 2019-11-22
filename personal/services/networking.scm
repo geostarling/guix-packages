@@ -30,6 +30,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 pretty-print)
   #:export (bridge-configuration
             bridge-configuration?
             bridge-service-type))
@@ -103,9 +104,10 @@
                                  "type" "bridge")
                         (set-network-interface-up #$bridge-interface)
                         (display "set ")
-                        (for-each set-network-interface-up interfaces)
+                        (pretty-print #$interfaces)
+                        (for-each set-network-interface-up #$interfaces)
                         (display "attach ")
-                        (for-each attach-interface interfaces))))
+                        (for-each attach-interface #$interfaces))))
            (stop #~(lambda _
                      (let ((ip (string-append #$iproute "/sbin/ip")))
                        (system* ip "link" "del"
