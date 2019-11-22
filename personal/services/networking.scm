@@ -103,11 +103,11 @@
                                  "name" #$bridge-interface
                                  "type" "bridge")
                         (set-network-interface-up #$bridge-interface)
-                        (display "setx ")
+                        (display "setxex ")
                                         ;(use-modules (ice-9 pretty-print))
 
                         ;();display (string-join #$interfaces ","))
-                        (for-each set-network-interface-up '("eth0" "eth1"))
+                        (for-each set-network-interface-up '#$interfaces)
                         (display "attach ")
                         (for-each attach-interface '("eth0" "eth1")))))
            (stop #~(lambda _
