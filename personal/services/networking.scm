@@ -91,7 +91,7 @@
     (list (shepherd-service
            (provision '(bridge))
            (documentation "Run bridge daemon.")
-           ;;           (requirement '(networking))
+           (requirement '(networking))
            (start #~(lambda _
                       (let* ((ip (string-append #$iproute "/sbin/ip"))
                              (attach-interface (lambda (interface)
