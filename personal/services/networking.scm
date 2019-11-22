@@ -104,6 +104,7 @@
                                  "type" "bridge")
                         (set-network-interface-up #$bridge-interface)
                         (display "set ")
+                        (use-modules (ice-9 pretty-print))
                         (pretty-print #$interfaces)
                         (for-each set-network-interface-up #$interfaces)
                         (display "attach ")
