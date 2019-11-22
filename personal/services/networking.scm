@@ -103,9 +103,9 @@
                                  "type" "bridge")
                         (set-network-interface-up #$bridge-interface)
                         (display "set ")
-                        (for-each set-network-interface-up #$interfaces)
+                        (for-each set-network-interface-up interfaces)
                         (display "attach ")
-                        (for-each attach-interface #$interfaces))))
+                        (for-each attach-interface interfaces))))
            (stop #~(lambda _
                      (let ((ip (string-append #$iproute "/sbin/ip")))
                        (system* ip "link" "del"
