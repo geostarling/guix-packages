@@ -107,10 +107,9 @@
                                         ;(use-modules (ice-9 pretty-print))
 
                         (display (string-join #$interfaces ","))
-                        (display #$interfaces )
-                        (for-each set-network-interface-up #$interfaces)
+                        (for-each set-network-interface-up '("eth0" "eth1"))
                         (display "attach ")
-                        (for-each attach-interface #$interfaces))))
+                        (for-each attach-interface '("eth0" "eth1")))))
            (stop #~(lambda _
                      (let ((ip (string-append #$iproute "/sbin/ip")))
                        (system* ip "link" "del"
