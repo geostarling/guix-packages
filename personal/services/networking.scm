@@ -109,7 +109,7 @@
                         ;();display (string-join #$interfaces ","))
                         (for-each set-network-interface-up '#$interfaces)
                         (display "attach ")
-                        (for-each attach-interface '("eth0" "eth1")))))
+                        (for-each attach-interface '#$interfaces))))
            (stop #~(lambda _
                      (let ((ip (string-append #$iproute "/sbin/ip")))
                        (system* ip "link" "del"
