@@ -75,10 +75,10 @@
    (package iproute)
    "Iproute package used to configure the bridge.")
   (bridge-interface
-   (string 'unset)
+   (string "")
    "Bridge interface name.")
   (interfaces
-   (list 'unset)
+   (list '())
    "List of interfaces"))
 
 
