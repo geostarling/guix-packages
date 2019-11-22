@@ -106,8 +106,8 @@
                         (display "setx ")
                                         ;(use-modules (ice-9 pretty-print))
 
-                        (display (string-join #$interfaces ","))
-                        ;(for-each set-network-interface-up '("eth0" "eth1"))
+                        ;();display (string-join #$interfaces ","))
+                        (for-each set-network-interface-up '("eth0" "eth1"))
                         (display "attach ")
                         (for-each attach-interface '("eth0" "eth1")))))
            (stop #~(lambda _
