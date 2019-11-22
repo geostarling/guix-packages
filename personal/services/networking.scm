@@ -103,12 +103,7 @@
                                  "name" #$bridge-interface
                                  "type" "bridge")
                         (set-network-interface-up #$bridge-interface)
-                        (display "setxex ")
-                                        ;(use-modules (ice-9 pretty-print))
-
-                        ;();display (string-join #$interfaces ","))
                         (for-each set-network-interface-up '#$interfaces)
-                        (display "attach ")
                         (for-each attach-interface '#$interfaces))))
            (stop #~(lambda _
                      (let ((ip (string-append #$iproute "/sbin/ip")))
