@@ -55,39 +55,38 @@
   #:use-module (gnu packages search)
   #:use-module (gnu packages textutils))
 
-(define-public linux-5.3-version "5.3.9")
+(define-public linux-5.4-version "5.4.5")
 
-(define-public linux-5.3-source
-  (let ((version linux-5.3-version)
-        (hash (base32 "12p98z12hnrgvfssmi1003l7fgx5d0zc9pwsfwjhxp9fffm7j9fp")))
+(define-public linux-5.4-source
+  (let ((version linux-5.4-version)
+        (hash (base32 "1h1ynb51gd4kiakqlkcc7vny45j2snbg4j985qf171mszckrz3jn")))
     ((@@ (gnu packages linux) %upstream-linux-source) version hash)))
 
 
-(define-public linux-5.3-source
+(define-public linux-5.4-source
   ((@@ (gnu packages linux)
        source-with-patches)
-   linux-5.3-source
-   (list (search-patch "linux-libre-active-entropy.patch")
-         (@@ (gnu packages linux) %boot-logo-patch)
+   linux-5.4-source
+   (list (@@ (gnu packages linux) %boot-logo-patch)
          (@@ (gnu packages linux) %linux-libre-arm-export-__sync_icache_dcache-patch))))
 
 
-(define-public linux-headers-5.3
+(define-public linux-headers-5.4
   ((@@ (gnu packages linux) make-linux-libre-headers*)
-   linux-5.3-version
-   linux-5.3-source))
+   linux-5.4-version
+   linux-5.4-source))
 
 
-(define-public linux-5.3-vanilla
+(define-public linux-5.4-vanilla
   ((@@ (gnu packages linux) make-linux-libre*)
-   linux-5.3-version
-   linux-5.3-source
+   linux-5.4-version
+   linux-5.4-source
    '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux")
    #:configuration-file (@@ (gnu packages linux) kernel-config)
    #:extra-version "vanilla"))
 
 
-(define-public linux-vanilla linux-5.3-vanilla)
+(define-public linux-vanilla linux-5.4-vanilla)
 
 
 (define (linux-firmware-version) "20190923")
