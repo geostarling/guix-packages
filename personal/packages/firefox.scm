@@ -453,17 +453,17 @@ features built-in privacy-protecting features.")
 (define-public firefox-next
   (package
     (name "firefox-next")
-    (version "68.3.0")
+    (version "72.0.1")
     (source
      (origin
       (method url-fetch)
       (uri (string-append
             "https://ftp.mozilla.org/pub/firefox/releases/"
-            version "esr/source/"
-            "firefox-" version "esr.source.tar.xz"))
+            version "/source/"
+            "firefox-" version ".source.tar.xz"))
       (sha256
        (base32
-        "0sfwp9vyjizj1lkvj6z51r85dl41q3l8380fkdyqdbp7f2d18cg1"))))
+        "0vwmjjv0k8sanyzxxvkrfrppg4rgvsvrli0jzdpkx726r3nrm98z"))))
     (build-system gnu-build-system)
     (inputs
      `(("alsa-lib" ,alsa-lib)
