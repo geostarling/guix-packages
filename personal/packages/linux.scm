@@ -55,11 +55,11 @@
   #:use-module (gnu packages search)
   #:use-module (gnu packages textutils))
 
-(define-public linux-5.4-version "5.4.5")
+(define-public linux-5.4-version "5.4.8")
 
 (define-public linux-5.4-source
   (let ((version linux-5.4-version)
-        (hash (base32 "1h1ynb51gd4kiakqlkcc7vny45j2snbg4j985qf171mszckrz3jn")))
+        (hash (base32 "0llss8hbzkwqxx92y419vj2jvq0d8k52iivh3f59wgqr0b4i9i22")))
     ((@@ (gnu packages linux) %upstream-linux-source) version hash)))
 
 
