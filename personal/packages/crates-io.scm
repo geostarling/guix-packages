@@ -227,7 +227,7 @@
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
-        (("rust-byteorder" ,rust-byteorder))))
+        (("rust-byteorder" ,rust-byteorder-1.3))))
     (home-page
       "https://github.com/rust-lang-nursery/rustc-hash")
     (synopsis
