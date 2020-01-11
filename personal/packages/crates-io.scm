@@ -122,7 +122,7 @@
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
-        (("rust-proc-macro2" ,rust-proc-macro2)
+        (("rust-proc-macro2" ,rust-proc-macro2-1.0)
          ("rust-quote" ,rust-quote)
          ("rust-syn" ,rust-syn))
         #:cargo-development-inputs
