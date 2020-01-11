@@ -124,7 +124,7 @@
       `(#:cargo-inputs
         (("rust-proc-macro2" ,rust-proc-macro2-1.0)
          ("rust-quote" ,rust-quote)
-         ("rust-syn" ,rust-syn))
+         ("rust-syn" ,rust-syn-1.0))
         #:cargo-development-inputs
         (("rust-tempfile" ,rust-tempfile))))
     (home-page "https://github.com/dtolnay/no-panic")
