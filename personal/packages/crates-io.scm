@@ -284,16 +284,16 @@ shorthands for guards with one of the implemented strategies.
     (arguments
       `(#:cargo-inputs
         (("rust-cloudabi" ,rust-cloudabi-0.0)
-         ("rust-fuchsia-zircon" ,rust-fuchsia-zircon)
+         ("rust-fuchsia-zircon" ,rust-fuchsia-zircon-0.3)
          ("rust-libc" ,rust-libc)
-         ("rust-log" ,rust-log)
-         ("rust-rand-core" ,rust-rand-core)
-         ("rust-serde" ,rust-serde)
-         ("rust-serde-derive" ,rust-serde-derive)
-         ("rust-stdweb" ,rust-stdweb)
+         ("rust-log" ,rust-log-0.4)
+         ("rust-rand-core" ,rust-rand-core-0.5)
+         ("rust-serde" ,rust-serde-1.0)
+         ("rust-serde-derive" ,rust-serde-derive-1.0)
+         ("rust-stdweb" ,rust-stdweb-0.4)
          ("rust-winapi" ,rust-winapi-0.3))
         #:cargo-development-inputs
-        (("rust-bincode" ,rust-bincode))))
+        (("rust-bincode" ,rust-bincode-1.1))))
     (home-page "https://crates.io/crates/rand")
     (synopsis
       "Random number generators and other randomness functionality.
