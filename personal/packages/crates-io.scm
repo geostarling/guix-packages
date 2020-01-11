@@ -357,7 +357,7 @@ shorthands for guards with one of the implemented strategies.
       `(#:cargo-inputs
         (("rust-winapi" ,rust-winapi-0.3))
         #:cargo-development-inputs
-        (("rust-doc-comment" ,rust-doc-comment))))
+        (("rust-doc-comment" ,rust-doc-comment-0.3))))
     (home-page
       "https://github.com/XAMPPRocky/remove_dir_all.git")
     (synopsis
