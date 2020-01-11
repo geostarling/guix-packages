@@ -283,7 +283,7 @@ shorthands for guards with one of the implemented strategies.
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
-        (("rust-cloudabi" ,rust-cloudabi)
+        (("rust-cloudabi" ,rust-cloudabi-0.0)
          ("rust-fuchsia-zircon" ,rust-fuchsia-zircon)
          ("rust-libc" ,rust-libc)
          ("rust-log" ,rust-log)
