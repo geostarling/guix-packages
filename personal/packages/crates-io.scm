@@ -382,7 +382,7 @@ shorthands for guards with one of the implemented strategies.
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
-        (("rust-rand" ,rust-rand)
+        (("rust-rand" ,rust-rand-0.5)
          ("rust-remove-dir-all" ,rust-remove-dir-all))))
     (home-page
       "https://github.com/rust-lang/tempdir")
