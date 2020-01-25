@@ -31,7 +31,7 @@
   #:use-module (gnu services xorg)
 
   #:use-module (gnu packages admin)
-  #:use-module (personal packages display-managers)
+  #:use-module (gnu packages display-managers)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages xorg)
