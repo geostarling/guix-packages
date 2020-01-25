@@ -66,67 +66,10 @@
      (substitute-keyword-arguments (package-arguments lightdm)
       ((#:configure-flags flags ''())
        `(cons* "--enable-vala"
-               ,flags))))
+               ,flags))
+      ((#:phases phases)
+       `(modify-phases ,phases
+                       (delete 'check)))))
     (inputs
-     (cons `("vala" ,vala) (package-inputs lightdm)))))
-
-
-
-
-
-(define-public slick-greeter
-  (package
-    (name "slick-greeter")
-    (version "1.2.4")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/linuxmint/slick-greeter/archive/" version ".tar.gz"))
-              (sha256
-               (base32
-                "1wislxdld8z94ym9vk6a35manwipiccgk6n9dsp6wrgn34r8f3z0"))))
-    (build-system glib-or-gtk-build-system)
-    (arguments
-     '(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-                      (replace 'bootstrap
-                       (lambda _
-                         ;; The autogen.sh script in gnome-common will run ./configure
-                         ;; by default, which is problematic because source shebangs
-                         ;; have not yet been patched.
-                         (setenv "NOCONFIGURE" "t")
-                         (zero? (system* "sh" "autogen.sh"))))
-              (add-after 'install 'split
-                 (lambda* (#:key inputs outputs #:allow-other-keys)
-	             ;; Distribute the binaries to the various outputs.
-        	     (let* ((out (assoc-ref outputs "out")))
-		       (rename-file (string-append out "/sbin") (string-append out "/bin"))))))))
-	      
-	     			       
-			       
-			       
-    (native-inputs
-     `(("which" ,which)
-       ("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)
-       ("vala" ,vala)
-       ("gobject-introspection" ,gobject-introspection)
-       ("gnome-common" ,gnome-common)
-       ("automake" ,automake)
-       ("autoconf" ,autoconf)))
-    (inputs
-     `(("glib" ,glib)
-       ("gtk+" ,gtk+)
-       ("lightdm" ,lightdm-with-vala)
-       ("freetype" ,freetype)
-       ("cairo" ,cairo)
-       ("libcanberra" ,libcanberra)
-       ("pixman" ,pixman)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)))
-    (synopsis "Slick greeter for LightDM")
-    (home-page "https://launchpad.net/lightdm-gtk-greeter")
-    (description "This package provides a LightDM greeter implementation using
-GTK+, lets you select a desktop session and log in to it.")
-    (license license:gpl3+)))
+     (cons `("vala" ,vala)
+           (package-inputs lightdm)))))
