@@ -73,3 +73,21 @@
     (inputs
      (cons `("vala" ,vala)
            (package-inputs lightdm)))))
+
+(define-public lightdm-gtk-greeter-with-vala
+ (package
+   (inherit lightdm-gtk-greeter)
+   (name "lightdm-gtk-greeter-with-vala")
+   (version "2.0.7")
+   (source (origin
+             (method url-fetch)
+             (uri (string-append
+                   "https://launchpad.net/lightdm-gtk-greeter/"
+                   (version-major+minor version) "/" version
+                   "/+download/lightdm-gtk-greeter-" version ".tar.gz"))
+             (sha256
+              (base32
+               "1g7wc3d3vqfa7mrdhx1w9ywydgjbffla6rbrxq9k3sc62br97qms"))))
+   (inputs
+    `(("lightdm" ,lightdm-with-vala)
+      ("gtk+" ,gtk+)))))
