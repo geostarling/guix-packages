@@ -74,7 +74,7 @@ background = "        (lightdm-gtk-greeter-configuration-background config)))
   lightdm-configuration?
 
   (lightdm lightdm-configuration-lightdm
-           (default lightdm-with-vala))
+           (default lightdm))
   (sessions-directory lightdm-configuration-sessions-directory
                       (default (string-append
                                 "/run/current-system/profile/share/xsessions"
@@ -98,7 +98,7 @@ background = "        (lightdm-gtk-greeter-configuration-background config)))
   (greeter-name lightdm-configuration-greeter-name
                 (default "lightdm-gtk-greeter"))
   (greeter-package lightdm-configuration-greeter-package
-                   (default lightdm-gtk-greeter-with-vala))
+                   (default lightdm-gtk-greeter))
   (greeter-assets lightdm-configuration-greeter-assets
                   (default (list adwaita-icon-theme
                                  gnome-themes-standard)))
@@ -235,7 +235,7 @@ session-wrapper = " (lightdm-configuration-session-wrapper config)))
         (lightdm-autologin-pam-service)))
 
 (define (lightdm-profile-service config)
-  (append (list lightdm
+  (append (list (lightdm-configuration-lightdm config)
                 (lightdm-configuration-greeter-package config))
           (lightdm-configuration-greeter-assets config)))
 
