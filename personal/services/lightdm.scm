@@ -31,7 +31,7 @@
   #:use-module (gnu services xorg)
 
   #:use-module (gnu packages admin)
-  #:use-module (gnu packages display-managers)
+  #:use-module (personal packages display-managers)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages xorg)
@@ -74,7 +74,7 @@ background = "        (lightdm-gtk-greeter-configuration-background config)))
   lightdm-configuration?
 
   (lightdm lightdm-configuration-lightdm
-           (default lightdm))
+           (default lightdm-with-vala))
   (sessions-directory lightdm-configuration-sessions-directory
                       (default (string-append
                                 "/run/current-system/profile/share/xsessions"
@@ -98,7 +98,7 @@ background = "        (lightdm-gtk-greeter-configuration-background config)))
   (greeter-name lightdm-configuration-greeter-name
                 (default "lightdm-gtk-greeter"))
   (greeter-package lightdm-configuration-greeter-package
-                   (default lightdm-gtk-greeter))
+                   (default lightdm-gtk-greeter-with-vala))
   (greeter-assets lightdm-configuration-greeter-assets
                   (default (list adwaita-icon-theme
                                  gnome-themes-standard)))
