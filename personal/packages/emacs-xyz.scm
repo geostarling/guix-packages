@@ -44,6 +44,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages emacs-xyz)
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages search)
@@ -87,3 +88,47 @@
        "")
       (home-page "https://github.com/zevlg/telega.el")
       (license license:gpl3+)))
+
+(define-public emacs-selected
+  (package
+    (name "emacs-selected")
+    (version "0.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Kungsgeten/selected.el.git")
+             (commit "03edaeac90bc6000d263f03be3d889b4685e1bf7")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d72vw1dcxnyir7vymr3cfxal5dndm1pmm192aa9bcyrcg7aq39g"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/emacscollective/no-littering")
+    (synopsis "Help keep ~/.emacs.d/ clean")
+    (description "The default paths used to store configuration files and
+persistent data are not consistent across Emacs packages, be them built-in or
+third-party ones.  @code{no-littering} sets out to help clean
+@file{~/.emacs.d/} by putting configuration files and persistent data files in
+two user-defined directories, as well as using more descriptive names for
+files and subdirectories when appropriate.")
+    (license license:gpl3+)))
+
+
+(define-public emacs-parinfer-mode-smart
+  (package
+    (inherit emacs-parinfer-mode)
+    (name "emacs-parinfer-mode-smart")
+    (version "0.4.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DogLooksGood/parinfer-mode.git")
+             (commit "smart")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z1nv5mkmv8ml69rr9mavzn3vwwqcp7584idgisalf7xj3qrcfj8"))))
+    (inputs
+     (cons* `("emacs-selected" ,emacs-selected)
+            `("emacs-paredit" ,emacs-paredit)
+            (package-inputs emacs-parinfer-mode)))))
