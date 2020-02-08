@@ -128,7 +128,7 @@ files and subdirectories when appropriate.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0z1nv5mkmv8ml69rr9mavzn3vwwqcp7584idgisalf7xj3qrcfj8"))))
-    (inputs
+    (propagated-inputs
      (cons* `("emacs-selected" ,emacs-selected)
             `("emacs-paredit" ,emacs-paredit)
-            (package-inputs emacs-parinfer-mode)))))
+            (package-propagated-inputs emacs-parinfer-mode)))))
