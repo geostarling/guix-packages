@@ -114,21 +114,17 @@ files and subdirectories when appropriate.")
     (license license:gpl3+)))
 
 
-(define-public emacs-parinfer-mode-smart
+(define-public emacs-parinfer-mode-fork
   (package
     (inherit emacs-parinfer-mode)
-    (name "emacs-parinfer-mode-smart")
-    (version "0.4.10")
+    (name "emacs-parinfer-mode-fork")
+    (version "0.4.11")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/DogLooksGood/parinfer-mode.git")
-             (commit "smart")))
+             (url "https://github.com/geostarling/parinfer-mode.git")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0z1nv5mkmv8ml69rr9mavzn3vwwqcp7584idgisalf7xj3qrcfj8"))))
-    (propagated-inputs
-     (cons* `("emacs-selected" ,emacs-selected)
-            `("emacs-paredit" ,emacs-paredit)
-            (package-propagated-inputs emacs-parinfer-mode)))))
+        (base32 "1yjq2ddqmsl9jfy4qggwk5f8602ybvsx5qd544whm2b5xm0c5z9y"))))))
