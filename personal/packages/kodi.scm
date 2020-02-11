@@ -40,6 +40,7 @@
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
+  #:use-module (personal packages tv)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages documentation)
@@ -480,7 +481,21 @@ audio/video codec library.")
              #t))
          (add-before 'check 'build-kodi-test
            (lambda _
-             (invoke "make" "kodi-test"))))))
+             (invoke "make" "kodi-test")))
+        (add-after 'install 'symlink-addons
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let ((lib-addons (string-append %output "/lib/kodi/addons"))
+                     (share-addons (string-append %output "/share/kodi/addons/"))
+                     (pvr-hts-addon (assoc-ref inputs "kodi-pvr-hts")))
+                 (mkdir-p lib-addons)
+                 (mkdir-p share-addons)
+
+                 (symlink (string-append pvr-hts-addon "/lib/addons/pvr.hts")
+                          (string-append lib-addons "/pvr.hts"))
+
+                 (symlink (string-append pvr-hts-addon "/share/kodi/addons/pvr.hts")
+                          (string-append share-addons "/pvr.hts")))
+               #t)))))
     ;; TODO: Add dependencies for:
     ;; - nfs
     ;; - cec
@@ -519,6 +534,7 @@ audio/video codec library.")
        ("giflib" ,giflib)
        ("glew" ,glew)
        ("gnutls" ,gnutls)
+       ("kodi-pvr-hts" ,kodi-pvr-hts)
        ("lame" ,lame)
        ("lcms" ,lcms)
        ("libass" ,libass)
