@@ -501,7 +501,7 @@ audio/video codec library.")
     ;; - cec
     ;; - plist
     ;; - shairplay
-      #tests? #f)
+      #:tests? #f)
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
