@@ -495,12 +495,13 @@ audio/video codec library.")
 
                  (symlink (string-append pvr-hts-addon "/share/kodi/addons/pvr.hts")
                           (string-append share-addons "/pvr.hts")))
-               #t)))))
+               #t))))
     ;; TODO: Add dependencies for:
     ;; - nfs
     ;; - cec
     ;; - plist
     ;; - shairplay
+      #tests? #f)
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
