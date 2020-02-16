@@ -159,3 +159,36 @@
    (description "Non-free iwlwifi firmware")
    (license (license:non-copyleft
              "https://git.kernel.org/cgit/linux/kernel/git/firmware/linux-firmware.git/tree/LICENCE.iwlwifi_firmware?id=HEAD"))))
+
+(define-public linux-firmware-demod-usb-it9135
+  (package
+   (name "linux-firmware-demod-usb-it9135")
+   (version "20200216")
+   (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/OpenELEC/dvb-firmware.git")
+             (commit "3fef04a4a4bfeba88ae3b20aff9d3a1fabf1c159")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04lv3hv22r65ficrlq637jfyp8rbz9cjazvrsnv7z2q4cgz7gvbd"))))
+   (build-system trivial-build-system)
+   (arguments
+    `(#:modules ((guix build utils))
+      #:builder (begin
+                  (use-modules (guix build utils))
+                  (let ((source (assoc-ref %build-inputs "source"))
+                        (fw-dir (string-append %output "/lib/firmware/")))
+                    (mkdir-p fw-dir)
+                    (for-each (lambda (file)
+                                (copy-file file
+                                           (string-append fw-dir (basename file))))
+                              (find-files source
+                                          "dvb-usb-it9135.+\\.fw$")))
+                  #t)))
+   (home-page "https://wireless.wiki.kernel.org/en/users/drivers/iwlwifi")
+   (synopsis "Non-free firmware for Intel wifi chips")
+   (description "Non-free iwlwifi firmware")
+   (license (license:non-copyleft
+             "https://git.kernel.org/cgit/linux/kernel/git/firmware/linux-firmware.git/tree/LICENCE.iwlwifi_firmware?id=HEAD"))))
