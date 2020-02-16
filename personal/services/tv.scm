@@ -226,24 +226,26 @@
 (define lirc-shepherd-service
   (match-lambda
     (($ <lirc-configuration> lirc device driver config-file options extra-plugins)
-     (list (shepherd-service
-            (provision '(lircd))
-            (documentation "Run the LIRC daemon.")
-            (requirement '(user-processes))
-            (start #~(make-forkexec-constructor
-                      (list (string-append #$(final-lirc lirc extra-plugins) "/sbin/lircd")
-                            "--nodaemon"
-                            #$@(if device
-                                   #~("--device" #$device)
-                                   #~())
-                            #$@(if driver
-                                   #~("--driver" #$driver)
-                                   #~())
-                            #$@options
-                            #$@(if config-file
-                                   #~(#$config-file)
-                                   #~()))))
-            (stop #~(make-kill-destructor)))))))
+     (let ((final-package (final-lirc lirc extra-plugins)))
+       (list (shepherd-service
+              (provision '(lircd))
+              (documentation "Run the LIRC daemon.")
+              (requirement '(user-processes))
+              (start #~(make-forkexec-constructor
+                        (list (string-append #$final-package "/sbin/lircd")
+                              "--nodaemon"
+                              "--plugindir" (string-append #$final-package "/lib/lirc/plugins")
+                              #$@(if device
+                                     #~("--device" #$device)
+                                     #~())
+                              #$@(if driver
+                                     #~("--driver" #$driver)
+                                     #~())
+                              #$@options
+                              #$@(if config-file
+                                     #~(#$config-file)
+                                     #~()))))
+              (stop #~(make-kill-destructor))))))))
 
 (define lirc-service-type
   (service-type (name 'lirc)
