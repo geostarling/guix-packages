@@ -27,6 +27,8 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages kodi)
   #:use-module (gnu packages lirc)
+  #:use-module (guix build-system trivial)
+  #:use-module (guix build union)
   #:use-module (guix records)
   #:use-module (guix packages)
   #:use-module (guix gexp)
@@ -193,7 +195,28 @@
   (driver        lirc-configuration-driver)       ;string
   (config-file   lirc-configuration-file)         ;string | file-like object
   (extra-options lirc-configuration-options       ;list of strings
+                 (default '()))
+  (extra-plugins lirc-configuration-extra-plugins ;list of <package>
                  (default '())))
+
+(define (final-lirc lirc plugin-packages)
+  (if (null? plugin-packages)
+    lirc
+    (package
+      (inherit lirc)
+      (source #f)
+      (build-system trivial-build-system)
+      (arguments
+       `(#:modules ((guix build utils) (guix build union))
+         #:builder
+         (begin
+           (use-modules (guix build utils) (guix build union) (srfi srfi-26))
+           (union-build (assoc-ref %outputs "out") (map (lambda (input) (cdr input)) %build-inputs))
+           #t)))
+      (inputs
+       `(("lirc" ,lirc)
+         ,@(map (lambda (extension) (list "extension" extension))
+                plugin-packages))))))
 
 (define %lirc-activation
   #~(begin
@@ -202,13 +225,13 @@
 
 (define lirc-shepherd-service
   (match-lambda
-    (($ <lirc-configuration> lirc device driver config-file options)
+    (($ <lirc-configuration> lirc device driver config-file options extra-plugins)
      (list (shepherd-service
             (provision '(lircd))
             (documentation "Run the LIRC daemon.")
             (requirement '(user-processes))
             (start #~(make-forkexec-constructor
-                      (list (string-append #$lirc "/sbin/lircd")
+                      (list (string-append #$(final-lirc lirc extra-plugins) "/sbin/lircd")
                             "--nodaemon"
                             #$@(if device
                                    #~("--device" #$device)
