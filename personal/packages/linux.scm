@@ -55,11 +55,11 @@
   #:use-module (gnu packages search)
   #:use-module (gnu packages textutils))
 
-(define-public linux-5.4-version "5.4.20")
+(define-public linux-5.4-version "5.4.8")
 
 (define-public linux-5.4-source
   (let ((version linux-5.4-version)
-        (hash (base32 "1fv7bknwjyzh176rwn11dxvpymp97h5v94mhpdhxqx3hkb6nsgvr")))
+        (hash (base32 "0llss8hbzkwqxx92y419vj2jvq0d8k52iivh3f59wgqr0b4i9i22")))
     ((@@ (gnu packages linux) %upstream-linux-source) version hash)))
 
 
@@ -89,7 +89,7 @@
 (define-public linux-vanilla linux-5.4-vanilla)
 
 
-(define (linux-firmware-version) "20200122")
+(define (linux-firmware-version) "20190923")
 (define (linux-firmware-source version)
   (origin
     (method git-fetch)
@@ -100,7 +100,7 @@
     (file-name (string-append "linux-firmware-" version "-checkout"))
     (sha256
      (base32
-      "0256p99bqwf1d1s6gqnzpjcdmg6skcp1jzz64sd1p29xxrf0pzfa"))))
+      "1gq55ny6lb2nh6rr1w55bslzysyj0bwdl6rbpv882hhyjrnsma0n"))))
 
 (define-public linux-firmware-iwlwifi
   (package
