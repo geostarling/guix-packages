@@ -375,10 +375,11 @@ audio/video codec library.")
     (license license:gpl2+)))
 
 
+
 (define-public kodi-with-vaapi
   (package
     (name "kodi-with-vaapi")
-    (version "18.5")
+    (version "18.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -387,7 +388,7 @@ audio/video codec library.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pcrraj1ddzrd296br10yjnaxgb3iym74xzixcakaqhhp00f5hf6"))
+                "0rwymipn5hljy5xrslzmrljmj6f9wb191wi7gjw20wl6sv44d0bk"))
               (patches (search-patches "kodi-skip-test-449.patch"
                                        "kodi-increase-test-timeout.patch"
                                        "kodi-set-libcurl-ssl-parameters.patch"))
