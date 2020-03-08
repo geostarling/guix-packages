@@ -221,7 +221,7 @@
 ;; ;    (properties `((cl-source-variant . ,(delay cl-stumpwm))))))
 
 (define-public sbcl-swm-lirc
-  (let ((commit "a265f01ff6970f190cf55134e54059e3bc6ec66b")
+  (let ((commit "38edd4503210a19b07be73f70896717f7e9b722e")
         (revision "1"))
     (package
       (name "sbcl-swm-lirc")
@@ -235,7 +235,7 @@
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0q74ffzcafri6rqa28v8dlwa9xzn2a2y9xyr9348jmqfjwr45axq"))))
+           "00p87n0zivw6lrc4hkdkrnffjajsb9m3y2gj4dy1sjyvl57b6yr1"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        `(("stumpwm" ,stumpwm)
