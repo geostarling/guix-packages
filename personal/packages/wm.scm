@@ -254,12 +254,40 @@ continuations of the @code{cl-cont} library.")
       (license license:llgpl))))
 
 
-
 (define-public stumpwm+slynk+modules
   (package
-    (inherit stumpwm+slynk)
+    (inherit stumpwm)
     (name "stumpwm-with-slynk-and-modules")
     (outputs '("out"))
     (inputs
-     `(("sbcl-swm-lirc" ,sbcl-swm-lirc)
-       ,@(package-inputs stumpwm+slynk)))))
+     `(("stumpwm" ,stumpwm "lib")
+       ("slynk" ,sbcl-slynk)
+       ("swm-lirc" ,sbcl-swm-lirc)
+       ("trivial-features" ,sbcl-trivial-features)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments stumpwm)
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (replace 'build-program
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (program (string-append out "/bin/stumpwm")))
+                 (build-program program outputs
+                                #:entry-program '((stumpwm:stumpwm) 0)
+                                #:dependencies '("stumpwm"
+                                                 ,@(@@ (gnu packages lisp-xyz) slynk-systems)
+                                                 "swm-lirc"
+                                                 "trivial-features")
+
+                                #:dependency-prefixes
+                                (map (lambda (input) (assoc-ref inputs input))
+                                     '("stumpwm" "slynk" "swm-lirc" "trivial-features")))
+                 ;; Remove unneeded file.
+                 (delete-file (string-append out "/bin/stumpwm-exec.fasl"))
+                 #t)))
+           (delete 'copy-source)
+           (delete 'build)
+           (delete 'check)
+           (delete 'create-asd-file)
+           (delete 'cleanup)
+           (delete 'create-symlinks)))))))
