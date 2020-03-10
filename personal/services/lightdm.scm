@@ -75,6 +75,7 @@ background = "        (lightdm-gtk-greeter-configuration-background config)))
 
   (lightdm lightdm-configuration-lightdm
            (default lightdm))
+  (requirement lightdm-configuration-requirement (default '(dbus-system user-processes host-name)))
   (sessions-directory lightdm-configuration-sessions-directory
                       (default (string-append
                                 "/run/current-system/profile/share/xsessions"
@@ -206,7 +207,7 @@ session-wrapper = " (lightdm-configuration-session-wrapper config)))
 
   (list (shepherd-service
          (documentation "LightDM display manager.")
-         (requirement '(dbus-system user-processes host-name))
+         (requirement (lightdm-configuration-requirement config))
          (provision '(display-manager))
          (respawn? #f)
          (start #~(lambda ()
