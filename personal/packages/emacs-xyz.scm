@@ -115,16 +115,18 @@ files and subdirectories when appropriate.")
 
 
 (define-public emacs-parinfer-mode-fork
-  (package
-    (inherit emacs-parinfer-mode)
-    (name "emacs-parinfer-mode-fork")
-    (version "0.4.11")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/geostarling/parinfer-mode.git")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1yjq2ddqmsl9jfy4qggwk5f8602ybvsx5qd544whm2b5xm0c5z9y"))))))
+  (let ((commit "8c67e3e42707f5c79b02502be086cc21bb7649da")
+        (revision "1"))
+    (package
+     (inherit emacs-parinfer-mode)
+     (name "emacs-parinfer-mode-fork")
+     (version "0.4.11")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/jvshahid/parinfer-mode.git")
+              (commit commit)))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1yjq2ddqmsl9jfy4qggwk5f8602ybvsx5qd544whm2b5xm0c5z9y")))))))
