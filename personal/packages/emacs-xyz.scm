@@ -120,7 +120,7 @@ files and subdirectories when appropriate.")
     (package
      (inherit emacs-parinfer-mode)
      (name "emacs-parinfer-mode-fork")
-     (version "0.4.11")
+     (version (git-version "0.4.10" revision commit))
      (source
       (origin
         (method git-fetch)
