@@ -115,7 +115,7 @@ files and subdirectories when appropriate.")
 
 
 (define-public emacs-parinfer-mode-fork
-  (let ((commit "9bc62befc5659a8991d65e0260eba538266423d2")
+  (let ((commit "7e610f178c2a30a335ef189fcc6499c51adf619a")
         (revision "1"))
     (package
      (name "emacs-parinfer-mode-fork")
@@ -128,7 +128,7 @@ files and subdirectories when appropriate.")
               (commit commit)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1ydjxmdxb1cx0aa74wcqaiv5rv20ymjsscl715inzmpa74950z1q"))))
+         (base32 "0ylxf1s1si12qqcmd1mmd2lgmv9i0j47y15vb9rd87a5r5lnfiad"))))
 
      (propagated-inputs
       `(("emacs-dash" ,emacs-dash)
