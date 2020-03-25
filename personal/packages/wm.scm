@@ -20,9 +20,9 @@
   #:use-module (guix download)
   #:use-module (guix build-system dub)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix git-download)
   #:use-module (guix build-system asdf)
+  #:use-module (guix build-system trivial)
 
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages)
@@ -237,6 +237,8 @@
           (base32
            "0i90nf1limn2n50r62a3fsw6jbvm1g45a5fdjc8rm3ixdwmr3lks"))))
       (build-system asdf-build-system/sbcl)
+      (arguments
+       `(#:tests? #f))
       (inputs
        `(("stumpwm" ,stumpwm)
          ("iolib" ,sbcl-iolib)
@@ -244,8 +246,6 @@
       (native-inputs
        `(("trivial-features" ,sbcl-trivial-features)
          ("stumpwm" ,cl-stumpwm)))
-      (arguments
-       `(#:tests? #f))
       (synopsis "Coroutine library for Common Lisp")
       (description
        "This is a coroutine library for Common Lisp implemented using the
@@ -253,6 +253,84 @@ continuations of the @code{cl-cont} library.")
       (home-page "https://github.com/takagi/cl-coroutine")
       (license license:llgpl))))
 
+
+(define stumpwm-contrib-source
+  (let ((commit "47c6f63964510855cd7614a7df34dd0b2ce5eca8")
+        (revision "1"))
+    (package
+      (name "stumpwm-contrib")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/geostarling/stumpwm-contrib.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1wbs58zs1ynm544r4xchwzmgc7j166bnng1if70sgqslm3kbrl87"))))
+      (build-system trivial-build-system)
+      (synopsis "Coroutine library for Common Lisp")
+      (description
+       "This is a coroutine library for Common Lisp implemented using the
+continuations of the @code{cl-cont} library.")
+      (home-page "https://github.com/takagi/cl-coroutine")
+      (license license:llgpl))))
+
+
+(define-public sbcl-kbd-layouts
+  (let ((commit "420a47ebba1f54f3e9c618164dbdb73d54ebb404")
+        (revision "1"))
+    (package
+      (name "sbcl-kbd-layouts")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/geostarling/swm-kbd-layouts.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "085i9i3wras1sj9ik5znlvia6ac97sxdp1ajlrj3y6x0p2zagm9a"))))
+      (build-system asdf-build-system/sbcl)
+      (propagated-inputs
+       `(("setxkbmap" ,setxkbmap)
+         ("bash" ,bash)))
+      (native-inputs
+       `(("stumpwm" ,cl-stumpwm)))
+      (synopsis "Coroutine library for Common Lisp")
+      (description
+       "This is a coroutine library for Common Lisp implemented using the
+continuations of the @code{cl-cont} library.")
+      (home-page "https://github.com/takagi/cl-coroutine")
+      (license license:llgpl))))
+
+
+(define-public sbcl-clipboard-history
+  (package
+   (name "sbcl-clipboard-history")
+   (version (package-version stumpwm-contrib-source))
+   (source (package-source stumpwm-contrib-source))
+   (build-system asdf-build-system/sbcl)
+   (arguments
+    `(#:tests? #f
+      #:phases
+      (modify-phases %standard-phases
+                     (add-after 'unpack 'enter-subdirectory
+                                (lambda _ (chdir "util/clipboard-history") #t)))))
+   (inputs
+    `(("stumpwm" ,stumpwm)))
+   (native-inputs
+    `(("stumpwm" ,cl-stumpwm)))
+   (synopsis "Coroutine library for Common Lisp")
+   (description
+    "This is a coroutine library for Common Lisp implemented using the
+continuations of the @code{cl-cont} library.")
+   (home-page "https://github.com/takagi/cl-coroutine")
+   (license license:llgpl)))
 
 (define-public stumpwm+slynk+modules
   (package
@@ -263,6 +341,8 @@ continuations of the @code{cl-cont} library.")
      `(("stumpwm" ,stumpwm "lib")
        ("slynk" ,sbcl-slynk)
        ("swm-lirc" ,sbcl-swm-lirc)
+       ("kbd-layouts" ,sbcl-kbd-layouts)
+       ("clipboard-history" ,sbcl-clipboard-history)
        ("trivial-features" ,sbcl-trivial-features)))
     (arguments
      (substitute-keyword-arguments (package-arguments stumpwm)
@@ -277,11 +357,13 @@ continuations of the @code{cl-cont} library.")
                                 #:dependencies '("stumpwm"
                                                  ,@(@@ (gnu packages lisp-xyz) slynk-systems)
                                                  "swm-lirc"
+                                                 "kbd-layouts"
+                                                 "clipboard-history"
                                                  "trivial-features")
 
                                 #:dependency-prefixes
                                 (map (lambda (input) (assoc-ref inputs input))
-                                     '("stumpwm" "slynk" "swm-lirc" "trivial-features")))
+                                     '("stumpwm" "slynk" "swm-lirc" "kbd-layouts" "clipboard-history" "trivial-features")))
                  ;; Remove unneeded file.
                  (delete-file (string-append out "/bin/stumpwm-exec.fasl"))
                  #t)))
