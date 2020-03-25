@@ -115,7 +115,7 @@ files and subdirectories when appropriate.")
 
 
 (define-public emacs-parinfer-mode-fork
-  (let ((commit "4fc18d41f27c81b94b6c1bbf7b4d54f294f89900")
+  (let ((commit "9bc62befc5659a8991d65e0260eba538266423d2")
         (revision "1"))
     (package
      (name "emacs-parinfer-mode-fork")
@@ -124,11 +124,11 @@ files and subdirectories when appropriate.")
       (origin
         (method git-fetch)
         (uri (git-reference
-              (url "https://github.com/jvshahid/parinfer-mode.git")
+              (url "https://github.com/geostarling/parinfer-mode.git")
               (commit commit)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "12k2nzikz4gbfac7kcq5fc3mgf1snr5gvdkbc766lgwy9lhyy8d2"))))
+         (base32 "1ydjxmdxb1cx0aa74wcqaiv5rv20ymjsscl715inzmpa74950z1q"))))
 
      (propagated-inputs
       `(("emacs-dash" ,emacs-dash)
