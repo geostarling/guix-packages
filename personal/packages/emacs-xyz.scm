@@ -115,10 +115,9 @@ files and subdirectories when appropriate.")
 
 
 (define-public emacs-parinfer-mode-fork
-  (let ((commit "8c67e3e42707f5c79b02502be086cc21bb7649da")
+  (let ((commit "4fc18d41f27c81b94b6c1bbf7b4d54f294f89900")
         (revision "1"))
     (package
-     (inherit emacs-parinfer-mode)
      (name "emacs-parinfer-mode-fork")
      (version (git-version "0.4.10" revision commit))
      (source
@@ -129,4 +128,18 @@ files and subdirectories when appropriate.")
               (commit commit)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1yjq2ddqmsl9jfy4qggwk5f8602ybvsx5qd544whm2b5xm0c5z9y")))))))
+         (base32 "12k2nzikz4gbfac7kcq5fc3mgf1snr5gvdkbc766lgwy9lhyy8d2"))))
+
+     (propagated-inputs
+      `(("emacs-dash" ,emacs-dash)
+        ("emacs-rainbow-delimiters" ,emacs-rainbow-delimiters)
+        ("emacs-company" ,emacs-company)
+        ("emacs-selected" ,emacs-selected)
+        ("emacs-paredit" ,emacs-paredit)))
+     (build-system emacs-build-system)
+     (home-page "https://github.com/DogLooksGood/parinfer-mode/")
+     (synopsis "Lisp structure editing mode")
+     (description "@code{parinfer-mode} is a proof-of-concept editor
+ mode for Lisp programming languages.  It will infer some changes to
+ keep Parens and Indentation inline with one another.")
+     (license license:gpl3+))))
