@@ -255,7 +255,7 @@ continuations of the @code{cl-cont} library.")
 
 
 (define stumpwm-contrib-source
-  (let ((commit "47c6f63964510855cd7614a7df34dd0b2ce5eca8")
+  (let ((commit "dd5b037923ec7d3cc27c55806bcec5a1b8cf4e91")
         (revision "1"))
     (package
       (name "stumpwm-contrib")
@@ -264,12 +264,12 @@ continuations of the @code{cl-cont} library.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/geostarling/stumpwm-contrib.git")
+               (url "https://github.com/stumpwm/stumpwm-contrib.git")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1wbs58zs1ynm544r4xchwzmgc7j166bnng1if70sgqslm3kbrl87"))))
+           "0ahxdj9f884afpzxczx6mx7l4nwg4kw6afqaq7lwhf7lxcwylldn"))))
       (build-system trivial-build-system)
       (synopsis "Coroutine library for Common Lisp")
       (description
