@@ -23,6 +23,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system asdf)
   #:use-module (guix build-system trivial)
+  #:use-module (guix build-system meson)
 
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages)
@@ -37,6 +38,10 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages video)
+  #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages cmake)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages pkg-config)
@@ -373,3 +378,36 @@ continuations of the @code{cl-cont} library.")
            (delete 'create-asd-file)
            (delete 'cleanup)
            (delete 'create-symlinks)))))))
+
+
+
+(define-public peek
+  (package
+   (name "peek")
+   (version "1.5.1")
+   (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/phw/peek/archive/"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0dw28y7ghdm0jhamzbz6zv02hrv0snk01pfl1bqv47clsfbj5dfj"))))
+   (build-system meson-build-system)
+   (native-inputs `(("pkg-config" ,pkg-config)
+                    ("cmake" ,cmake)
+                    ("vala" ,vala)
+                    ("glib" ,glib "bin")             ; for glib-compile-resources
+                    ("gtk+-bin" ,gtk+ "bin")         ; For gtk-update-icon-cache
+                    ("desktop-file-utils" ,desktop-file-utils) ; for update-desktop-database
+                    ("gettext" ,gettext-minimal)
+                    ("txt2man" ,txt2man)))
+   (inputs `(("gtk+" ,gtk+)
+             ("glib" ,glib)
+             ("keybinder-3.0" ,keybinder-3.0)
+             ("ffmpeg" ,ffmpeg)))
+   (synopsis "Coroutine library for Common Lisp")
+   (description
+    "This is a coroutine library for Common Lisp implemented using the
+continuations of the @code{cl-cont} library.")
+   (home-page "https://github.com/takagi/cl-coroutine")
+   (license license:llgpl)))
