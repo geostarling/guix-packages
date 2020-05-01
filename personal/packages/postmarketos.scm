@@ -36,6 +36,8 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cups)
+  #:use-module (gnu packages tls)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages base)
@@ -59,6 +61,9 @@
     `(#:tests? #f))
    (native-inputs
     `(("python-pytest" ,python-pytest)))
+   (propagated-inputs
+    `(("openssl" ,openssl)
+      ("git" ,git)))
    (home-page "https://github.com/attwad/python-osc")
    (synopsis "Open Sound Control server and client implementations")
    (description
