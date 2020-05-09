@@ -45,29 +45,31 @@
 
 
 (define-public pmbootstrap
-  (package
-   (name "pmbootstrap")
-   (version "1.18.1")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "https://gitlab.com/postmarketOS/pmbootstrap/-/archive/"
-                                version
-                                "/pmbootstrap-" version ".tar.gz"))
-            (sha256
-             (base32
-              "18j0dkrhaqphbzlc0gh4vgpnal4rmlnf2whlds6nydkmk4vr4q57"))))
-   (build-system python-build-system)
-   (arguments
-    `(#:tests? #f))
-   (native-inputs
-    `(("python-pytest" ,python-pytest)))
-   (propagated-inputs
-    `(("openssl" ,openssl)
-      ("git" ,git)))
-   (home-page "https://github.com/attwad/python-osc")
-   (synopsis "Open Sound Control server and client implementations")
-   (description
-    "@code{python-osc} is a pure Python library with no external
-dependencies.  It implements the @uref{http://opensoundcontrol.org/spec-1_0,
-Open Sound Control 1.0} specification.")
-   (license license:unlicense)))
+  (let ((commit "44ab2f8c40faa5fad50af5860b04a7d5ccb04e28"))
+    (package
+     (name "pmbootstrap")
+     (version  (git-version "1.8.1" "1" commit))
+     (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/postmarketOS/pmbootstrap.git")
+                    (commit commit)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0x80yijmy7zsxkpb78lzj7vs7pwjjrirpfs142vv8whhmnanb6rl"))))
+     (build-system python-build-system)
+     (arguments
+      `(#:tests? #f))
+     (native-inputs
+      `(("python-pytest" ,python-pytest)))
+     (propagated-inputs
+      `(("openssl" ,openssl)
+        ("git" ,git)))
+     (home-page "https://github.com/attwad/python-osc")
+     (synopsis "Open Sound Control server and client implementations")
+     (description
+      "@code{python-osc} is a pure Python library with no external
+  dependencies.  It implements the @uref{http://opensoundcontrol.org/spec-1_0,
+  Open Sound Control 1.0} specification.")
+     (license license:unlicense))))
