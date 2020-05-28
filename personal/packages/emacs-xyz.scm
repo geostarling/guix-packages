@@ -57,7 +57,7 @@
 (define-public emacs-parinfer-rust-mode
     (package
       (name "emacs-parinfer-rust-mode")
-      (version "0.5.1")
+      (version "0.5.2")
       (source (origin
                (method git-fetch)
                (uri (git-reference

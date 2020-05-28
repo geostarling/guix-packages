@@ -53,16 +53,16 @@
 (define-public parinfer-rust
   (package
     (name "parinfer-rust")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
-       (uri "https://github.com/eraserhd/parinfer-rust/archive/v0.4.2.tar.gz")
+       (uri "https://github.com/eraserhd/parinfer-rust/archive/v0.4.3.tar.gz")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0kqk8yahndmr449fm2xr30qcq6xkfyrad1s1nzddnvskqsjmxfjy"))))
+         "00fjyapvyi95g65iml0skppza0s1pigl3qvbkg319hy0m3mdhbvm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
