@@ -66,7 +66,7 @@
                (file-name (git-file-name name version))
                (sha256
                 (base32
-                 "0bxi2141vx0067fcj743n55bv83wqzwvp35hg018w2nmnac3rqg8"))))
+                 "10sv5mk0swykrzkig7yyxnib75yammxq8mxdwqinwxwwahm2dnxp"))))
       (build-system emacs-build-system)
       (arguments
        `(#:phases
