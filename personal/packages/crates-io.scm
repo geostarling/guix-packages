@@ -321,13 +321,13 @@ shorthands for guards with one of the implemented strategies.
     (arguments
       `(#:cargo-inputs
         (("rust-byteorder" ,rust-byteorder-1.3)
-         ("rust-rayon" ,rust-rayon-1.1)
+         ("rust-rayon" ,rust-rayon-1)
          ("rust-scopeguard" ,rust-scopeguard)
          ("rust-serde" ,rust-serde-1.0))
         #:cargo-development-inputs
         (("rust-lazy-static" ,rust-lazy-static-1.3)
          ("rust-rand" ,rust-rand-0.5)
-         ("rust-rayon" ,rust-rayon-1.1)
+         ("rust-rayon" ,rust-rayon-1)
          ("rust-rustc-hash" ,rust-rustc-hash)
          ("rust-serde-test" ,rust-serde-test-1.0))))
     (home-page
