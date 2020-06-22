@@ -126,7 +126,7 @@
          ("rust-quote" ,rust-quote)
          ("rust-syn" ,rust-syn-1.0))
         #:cargo-development-inputs
-        (("rust-tempfile" ,rust-tempfile))))
+        (("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/dtolnay/no-panic")
     (synopsis
       "Attribute macro to require that the compiler prove a function can't ever panic.")
