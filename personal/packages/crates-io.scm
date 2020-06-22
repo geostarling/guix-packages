@@ -481,7 +481,7 @@ dropped.
         ("rust-peeking-take-while" ,rust-peeking-take-while-0.1)
         ("rust-proc-macro2" ,rust-proc-macro2-0.4)
         ("rust-quote" ,rust-quote)
-        ("rust-regex" ,rust-regex-1.1)
+        ("rust-regex" ,rust-regex-1)
         ("rust-shlex" ,rust-shlex-0.1)
         ("rust-which" ,rust-which-2.0))
        #:cargo-development-inputs
@@ -536,7 +536,7 @@ dropped.
        (("rust-lazy-static" ,rust-lazy-static-1.3)
         ("rust-lexical-core" ,rust-lexical-core-0.4)
         ("rust-memchr" ,rust-memchr-2.2)
-        ("rust-regex" ,rust-regex-1.1)
+        ("rust-regex" ,rust-regex-1)
         ("rust-version-check" ,rust-version-check-0.1))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.2)
