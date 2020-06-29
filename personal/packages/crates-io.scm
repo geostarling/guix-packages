@@ -293,7 +293,7 @@ shorthands for guards with one of the implemented strategies.
          ("rust-stdweb" ,rust-stdweb-0.4)
          ("rust-winapi" ,rust-winapi-0.3))
         #:cargo-development-inputs
-        (("rust-bincode" ,rust-bincode-1.1))))
+        (("rust-bincode" ,rust-bincode-1))))
     (home-page "https://crates.io/crates/rand")
     (synopsis
       "Random number generators and other randomness functionality.
