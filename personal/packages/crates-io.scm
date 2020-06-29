@@ -535,7 +535,7 @@ dropped.
        #:cargo-inputs
        (("rust-lazy-static" ,rust-lazy-static-1.3)
         ("rust-lexical-core" ,rust-lexical-core-0.4)
-        ("rust-memchr" ,rust-memchr-2.2)
+        ("rust-memchr" ,rust-memchr-2)
         ("rust-regex" ,rust-regex-1)
         ("rust-version-check" ,rust-version-check-0.1))
        #:cargo-development-inputs
