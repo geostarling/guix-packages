@@ -322,7 +322,7 @@ shorthands for guards with one of the implemented strategies.
       `(#:cargo-inputs
         (("rust-byteorder" ,rust-byteorder-1.3)
          ("rust-rayon" ,rust-rayon-1)
-         ("rust-scopeguard" ,rust-scopeguard)
+         ("rust-scopeguard" ,rust-scopeguard-0.3)
          ("rust-serde" ,rust-serde-1.0))
         #:cargo-development-inputs
         (("rust-lazy-static" ,rust-lazy-static-1.3)
