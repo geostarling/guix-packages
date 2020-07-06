@@ -65,166 +65,6 @@
   #:use-module (gnu packages search)
   #:use-module (gnu packages guile-wm))
 
-;; (define-public sbcl-osicat
-;;   (let ((commit "9a4e0414110981778e9b92fb50c547c573c9bbf7")
-;;         (revision "1"))
-;;     (package
-;;       (name "sbcl-osicat")
-;;       (version (git-version "0.7.0" revision commit))
-;;       (source
-;;        (origin
-;;          (method git-fetch)
-;;          (uri (git-reference
-;;                (url "https://github.com/osicat/osicat.git")
-;;                (commit commit)))
-;;          (file-name (git-file-name name version))
-;;          (sha256
-;;           (base32
-;;            "0l8l608x2mjbbpzy83l9da2h02c2yka15irzs44qi2x9wyn0hdqb"))))
-;;       (build-system asdf-build-system/sbcl)
-;;       (arguments
-;;        '(#:tests? #f))
-;;       (inputs
-;;        `(("cffi-grovel" ,sbcl-cffi-grovel)
-;;          ("trivial-features" ,sbcl-trivial-features)))
-;;       (synopsis "Common Lisp bindings to libuv")
-;;       (description
-;;        "This library provides low-level libuv bindings for Common Lisp.")
-;;       (home-page "https://github.com/orthecreedence/cl-libuv")
-;;       (license license:expat))))
-
-
-;; (define-public sbcl-cepl
-;;   (let ((commit "c868bb3da3ce5a44ff6a90abfa475b2d908f4fcc")
-;;         (revision "1"))
-;;     (package
-;;       (name "sbcl-cepl")
-;;       (version (git-version "0.1.0" revision commit))
-;;       (source
-;;        (origin
-;;          (method git-fetch)
-;;          (uri (git-reference
-;;                (url "https://github.com/cbaggers/cepl.git")
-;;                (commit commit)))
-;;          (file-name (git-file-name name version))
-;;          (sha256
-;;           (base32
-;;            "0g7dihjx7jfdh66lfdl58yb4adi09zb47076k86n7b20gdsjwbzj"))))
-;;       (build-system asdf-build-system/sbcl)
-;;       (arguments
-;;        '(#:tests? #f))
-;;       (inputs
-;;        `(("cffi" ,sbcl-cffi)))
-;;       (synopsis "Common Lisp bindings to libuv")
-;;       (description
-;;        "This library provides low-level libuv bindings for Common Lisp.")
-;;       (home-page "https://github.com/orthecreedence/cl-libuv")
-;;       (license license:expat))))
-
-
-;; (define-public sbcl-opengl
-;;   (let ((commit "4aacad022ed099458c00b55cdab68a6a")
-;;         (revision "1"))
-;;     (package
-;;       (name "sbcl-opengl")
-;;       (version (git-version "0.0.0" revision commit))
-;;       (source
-;;        (origin
-;;          (method git-fetch)
-;;          (uri
-;;           (git-reference
-;;            (url (string-append "https://gitlab.common-lisp.net/"
-;;                                "cl-opengl/cl-opengl.git"))
-;;            (commit commit)))
-;;          (file-name (git-file-name name version))
-;;          (sha256
-;;           (base32
-;;            "1jz27gz8gvqdmvp3k9bxschs6d5b3qgk94qp2bj6nv1d0jc3m1l1"))))
-;;       (arguments
-;;        ;; Guix incorrectly assumes the "8" is part of the version
-;;        ;; number and lobs it off.
-;;        `(#:asd-file "cl-opengl.asd"
-;;          #:asd-system-name "cl-opengl"))
-;;       (build-system asdf-build-system/sbcl)
-;;       (synopsis "UTF-8 input/output library")
-;;       (description
-;;        "The Babel library solves a similar problem while understanding more
-;; encodings.  Trivial UTF-8 was written before Babel existed, but for new
-;; projects you might be better off going with Babel.  The one plus that Trivial
-;; UTF-8 has is that it doesn't depend on any other libraries.")
-;;       (home-page "https://common-lisp.net/project/trivial-utf-8/")
-;;       (license license:bsd-3))))
-
-
-
-;; (define-public ulubis
-;;   (package
-;;     (name "ulubis")
-;;     (version "0.3")
-;;     (source
-;;      (origin
-;;        (method git-fetch)
-;;        (uri (git-reference
-;;              (url "https://github.com/malcolmstill/ulubis.git")
-;;              (commit "master")))
-;;        (file-name (git-file-name "ulubis" version))
-;;        (sha256
-;;         (base32 "17spxb5ajhfsxx4zpmhkr7n2y000jnm3dgcb7q0r44rf4g89yv1i"))))
-;;     (build-system asdf-build-system/sbcl)
-;;     (native-inputs `());("fiasco" ,sbcl-fiasco)
-;;                        ;("texinfo" ,texinfo)))
-;;     (inputs `(;("cffi-toolchain", sbcl-cffi-toolchain)
-;;               ("cffi" ,sbcl-cffi)
-;;               ("osicat" ,sbcl-osicat)
-;;               ("slime-swank" ,cl-slime-swank)))
-;;     (outputs '("out" "lib"))
-;;     (arguments
-;;      '(#:asd-system-name "ulubis"))
-;;        ;; #:phases
-;;        ;; (modify-phases %standard-phases
-;;        ;;   (add-after 'create-symlinks 'build-program
-;;        ;;     (lambda* (#:key outputs #:allow-other-keys)
-;;        ;;       (build-program
-;;        ;;        (string-append (assoc-ref outputs "out") "/bin/stumpwm")
-;;        ;;        outputs
-;;        ;;        #:entry-program '((stumpwm:stumpwm) 0))))
-;;        ;;   (add-after 'build-program 'create-desktop-file
-;;        ;;     (lambda* (#:key outputs #:allow-other-keys)
-;;        ;;       (let* ((out (assoc-ref outputs "out"))
-;;        ;;              (xsessions (string-append out "/share/xsessions")))
-;;        ;;         (mkdir-p xsessions)
-;;        ;;         (call-with-output-file
-;;        ;;             (string-append xsessions "/stumpwm.desktop")
-;;        ;;           (lambda (file)
-;;        ;;             (format file
-;;        ;;              "[Desktop Entry]~@
-;;        ;;               Name=stumpwm~@
-;;        ;;               Comment=The Stump Window Manager~@
-;;        ;;               Exec=~a/bin/stumpwm~@
-;;        ;;               TryExec=~@*~a/bin/stumpwm~@
-;;        ;;               Icon=~@
-;;        ;;               Type=Application~%"
-;;        ;;              out)))
-;;        ;;         #t)))
-;;        ;;   (add-after 'install 'install-manual
-;;        ;;     (lambda* (#:key outputs #:allow-other-keys)
-;;        ;;       ;; The proper way to the manual is bootstrapping a full autotools
-;;        ;;       ;; build system and running ‘./configure && make stumpwm.info’ to
-;;        ;;       ;; do some macro substitution.  We can get away with much less.
-;;        ;;       (let* ((out  (assoc-ref outputs "out"))
-;;        ;;              (info (string-append out "/share/info")))
-;;        ;;         (invoke "makeinfo" "stumpwm.texi.in")
-;;        ;;         (install-file "stumpwm.info" info)
-;;        ;;         #t))))))
-;;     (synopsis "Window manager written in Common Lisp")
-;;     (description "Stumpwm is a window manager written entirely in Common Lisp.
-;; It attempts to be highly customizable while relying entirely on the keyboard
-;; for input.  These design decisions reflect the growing popularity of
-;; productive, customizable lisp based systems.")
-;;     (home-page "https://github.com/stumpwm/stumpwm")
-;;     (license license:gpl2+)))
-;; ;    (properties `((cl-source-variant . ,(delay cl-stumpwm))))))
-
 (define-public sbcl-swm-lirc
   (let ((commit "72bc09eecbcdb989b8d80fa2be8361ead058b2ea")
         (revision "1"))
@@ -378,3 +218,26 @@ continuations of the @code{cl-cont} library.")
            (delete 'create-asd-file)
            (delete 'cleanup)
            (delete 'create-symlinks)))))))
+
+(define-public kanshi
+  (package
+    (name "kanshi")
+    (version "1.1.0")
+    (source (origin
+             (method url-fetch)
+             (uri (string-append "https://github.com/emersion/kanshi/releases/download/v"
+                                 version "/kanshi-" version ".tar.gz"))
+
+             (sha256
+              (base32
+               "0rk5w8c4nps7g68w3cwlvkchds4zmxs8sfr1f39sx04knk985rzp"))))
+    (build-system meson-build-system)
+    (inputs `(("wayland" ,wayland)))
+    (native-inputs `(("scdoc" ,scdoc)
+                     ("pkg-config" ,pkg-config)))
+    (home-page "https://github.com/swaywm/wlroots")
+    (synopsis "Pluggable, composable, unopinionated modules for building a
+Wayland compositor")
+    (description "wlroots is a set of pluggable, composable, unopinionated
+modules for building a Wayland compositor.")
+    (license license:expat)))  ; MIT license
