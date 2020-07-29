@@ -288,8 +288,8 @@ shorthands for guards with one of the implemented strategies.
          ("rust-libc" ,rust-libc)
          ("rust-log" ,rust-log-0.4)
          ("rust-rand-core" ,rust-rand-core-0.5)
-         ("rust-serde" ,rust-serde-1.0)
-         ("rust-serde-derive" ,rust-serde-derive-1.0)
+         ("rust-serde" ,rust-serde-1)
+         ("rust-serde-derive" ,rust-serde-derive-1)
          ("rust-stdweb" ,rust-stdweb-0.4)
          ("rust-winapi" ,rust-winapi-0.3))
         #:cargo-development-inputs
@@ -323,13 +323,13 @@ shorthands for guards with one of the implemented strategies.
         (("rust-byteorder" ,rust-byteorder-1.3)
          ("rust-rayon" ,rust-rayon-1)
          ("rust-scopeguard" ,rust-scopeguard-0.3)
-         ("rust-serde" ,rust-serde-1.0))
+         ("rust-serde" ,rust-serde-1))
         #:cargo-development-inputs
         (("rust-lazy-static" ,rust-lazy-static-1.3)
          ("rust-rand" ,rust-rand-0.5)
          ("rust-rayon" ,rust-rayon-1)
          ("rust-rustc-hash" ,rust-rustc-hash)
-         ("rust-serde-test" ,rust-serde-test-1.0))))
+         ("rust-serde-test" ,rust-serde-test-1))))
     (home-page
       "https://github.com/rust-lang/hashbrown")
     (synopsis
@@ -952,3 +952,224 @@ implementing custom derives.
     (description
       "This package provides a safer binding to platformâ\x80\x99s dynamic library loading utilities")
     (license license:isc)))
+
+
+(define-public rust-pin-project-internal
+  (package
+    (name "rust-pin-project-internal")
+    (version "0.4.22")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "pin-project-internal" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "1xxac6f3ip45zqbfcmmk748ywjw9sbavz1fcswvqgn3rrx2zs3va"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-proc-macro2" ,rust-proc-macro2-1.0)
+         ("rust-quote" ,rust-quote-1.0)
+         ("rust-syn" ,rust-syn-1.0))))
+    (home-page
+      "https://github.com/taiki-e/pin-project")
+    (synopsis
+      "An internal crate to support pin_project - do not use directly
+")
+    (description
+      "An internal crate to support pin_project - do not use directly
+")
+    (license (list license:asl2.0 license:expat))))
+
+(define-public rust-pin-project
+  (package
+    (name "rust-pin-project")
+    (version "0.4.22")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "pin-project" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "05wwxy46j9z27ibbiisjqk0rivf0z00h4al1f92mwjp9pz6sdqqj"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-pin-project-internal"
+          ,rust-pin-project-internal))))
+    (home-page
+      "https://github.com/taiki-e/pin-project")
+    (synopsis
+      "A crate for safe and ergonomic pin-projection.
+")
+    (description
+      "This package provides a crate for safe and ergonomic pin-projection.
+")
+    (license (list license:asl2.0 license:expat))))
+
+(define-public rust-tracing-core-0.1.10
+  (package
+    (name "rust-tracing-core")
+    (version "0.1.10")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "tracing-core" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "05dpa21valy0c6nj5ybn951774icxhdb70cwq0ida7088yd3ma0a"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-lazy-static" ,rust-lazy-static-1))))
+    (home-page "https://tokio.rs")
+    (synopsis
+      "Core primitives for application-level tracing.
+")
+    (description
+      "Core primitives for application-level tracing.
+")
+    (license license:expat)))
+
+
+(define-public rust-tracing-futures
+  (package
+    (name "rust-tracing-futures")
+    (version "0.2.4")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "tracing-futures" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "0k4vd3jyqz9cx8rbwbp0p93qfp1w6rfk7sc6c1jh1ai18zqvcyxb"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-futures" ,rust-futures-0.1)
+         ("rust-futures-task" ,rust-futures-task-0.3)
+         ("rust-pin-project" ,rust-pin-project)
+         ("rust-tokio" ,rust-tokio-0.1)
+         ("rust-tokio-executor" ,rust-tokio-executor-0.1)
+         ("rust-tracing" ,rust-tracing))
+        #:cargo-development-inputs
+        (("rust-tokio" ,rust-tokio-0.1)
+         ("rust-tokio-test" ,rust-tokio-test-0.2)
+         ("rust-tracing-core" ,rust-tracing-core-0.1.10))))
+    (home-page "https://tokio.rs")
+    (synopsis
+      "Utilities for instrumenting `futures` with `tracing`.
+")
+    (description
+      "Utilities for instrumenting `futures` with `tracing`.
+")
+    (license license:expat)))
+
+(define-public rust-tracing-attributes
+  (package
+    (name "rust-tracing-attributes")
+    (version "0.1.8")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "tracing-attributes" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "0k4qvq437md3zynm8qbas6jfb0xp222xisij6af3r4pxwc6svfwr"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-proc-macro2" ,rust-proc-macro2-1.0)
+         ("rust-quote" ,rust-quote-1.0)
+         ("rust-syn" ,rust-syn-1.0))
+        #:cargo-development-inputs
+        (("rust-async-trait" ,rust-async-trait)
+         ("rust-tokio-test" ,rust-tokio-test-0.2)
+         ("rust-tracing" ,rust-tracing)
+         ("rust-tracing-core" ,rust-tracing-core-0.1.10)
+         ("rust-tracing-futures" ,rust-tracing-futures))))
+    (home-page "https://tokio.rs")
+    (synopsis
+      "Procedural macro attributes for automatically instrumenting functions.
+")
+    (description
+      "Procedural macro attributes for automatically instrumenting functions.
+")
+    (license license:expat)))
+
+(define-public rust-tracing
+  (package
+    (name "rust-tracing")
+    (version "0.1.14")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "tracing" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "08r98sp312rxwsm26wzgd013w134gfvhdswhv6r8q8bd26fvbim7"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-cfg-if" ,rust-cfg-if-0.1)
+         ("rust-log" ,rust-log-0.4)
+         ("rust-tracing-attributes"
+          ,rust-tracing-attributes)
+         ("rust-tracing-core" ,rust-tracing-core-0.1.10))
+        #:cargo-development-inputs
+        (("rust-criterion" ,rust-criterion-0.3)
+         ("rust-futures" ,rust-futures-0.1)
+         ("rust-log" ,rust-log-0.4))))
+    (home-page "https://tokio.rs")
+    (synopsis
+      "Application-level tracing for Rust.
+")
+    (description
+      "Application-level tracing for Rust.
+")
+    (license license:expat)))
+
+(define-public rust-async-trait
+  (package
+    (name "rust-async-trait")
+    (version "0.1.36")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "async-trait" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "14pbhl1psi81851in004fh3ccdzy4ar12ykbwar31kpxxymy6rd2"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-proc-macro2" ,rust-proc-macro2-1.0)
+         ("rust-quote" ,rust-quote-1.0)
+         ("rust-syn" ,rust-syn-1.0))
+        #:cargo-development-inputs
+        (("rust-rustversion" ,rust-rustversion)
+         ("rust-tracing" ,rust-tracing)
+         ("rust-tracing-attributes"
+          ,rust-tracing-attributes)
+         ("rust-tracing-futures" ,rust-tracing-futures)
+         ("rust-trybuild" ,rust-trybuild-1.0))))
+    (home-page
+      "https://github.com/dtolnay/async-trait")
+    (synopsis "Type erasure for async trait methods")
+    (description
+      "Type erasure for async trait methods")
+    (license (list license:expat license:asl2.0))))
