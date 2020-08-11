@@ -122,9 +122,9 @@
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
-        (("rust-proc-macro2" ,rust-proc-macro2-1.0)
+        (("rust-proc-macro2" ,rust-proc-macro2-1)
          ("rust-quote" ,rust-quote)
-         ("rust-syn" ,rust-syn-1.0))
+         ("rust-syn" ,rust-syn-1))
         #:cargo-development-inputs
         (("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/dtolnay/no-panic")
@@ -569,7 +569,7 @@ combinators library.")
       `(#:cargo-inputs
         (("rust-darling-core" ,rust-darling-core)
          ("rust-quote" ,rust-quote)
-         ("rust-syn" ,rust-syn-1.0))))
+         ("rust-syn" ,rust-syn-1))))
     (home-page
       "https://github.com/TedDriggs/darling")
     (synopsis
@@ -668,10 +668,10 @@ Includes Hamming, Levenshtein, OSA, Damerau-Levenshtein, Jaro, and Jaro-Winkler.
       `(#:cargo-inputs
         (("rust-fnv" ,rust-fnv)
          ("rust-ident-case" ,rust-ident-case)
-         ("rust-proc-macro2" ,rust-proc-macro2-1.0)
+         ("rust-proc-macro2" ,rust-proc-macro2-1)
          ("rust-quote" ,rust-quote)
          ("rust-strsim" ,rust-strsim)
-         ("rust-syn" ,rust-syn-1.0))))
+         ("rust-syn" ,rust-syn-1))))
     (home-page
       "https://github.com/TedDriggs/darling")
     (synopsis
@@ -703,9 +703,9 @@ implementing custom derives.  Use https://crates.io/crates/darling in your code.
         (("rust-darling-core" ,rust-darling-core)
          ("rust-darling-macro" ,rust-darling-macro))
         #:cargo-development-inputs
-        (("rust-proc-macro2" ,rust-proc-macro2-1.0)
+        (("rust-proc-macro2" ,rust-proc-macro2-1)
          ("rust-quote" ,rust-quote)
-         ("rust-syn" ,rust-syn-1.0))))
+         ("rust-syn" ,rust-syn-1))))
     (home-page
       "https://github.com/TedDriggs/darling")
     (synopsis
@@ -736,7 +736,7 @@ implementing custom derives.
       `(#:cargo-inputs
         (("rust-darling" ,rust-darling)
          ("rust-quote" ,rust-quote)
-         ("rust-syn" ,rust-syn-1.0))))
+         ("rust-syn" ,rust-syn-1))))
     (home-page
       "https://github.com/ubolonton/emacs-module-rs")
     (synopsis "Proc macros for emacs modules")
@@ -833,9 +833,9 @@ implementing custom derives.
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
-        (("rust-proc-macro2" ,rust-proc-macro2-1.0)
+        (("rust-proc-macro2" ,rust-proc-macro2-1)
          ("rust-quote" ,rust-quote)
-         ("rust-syn" ,rust-syn-1.0))))
+         ("rust-syn" ,rust-syn-1))))
     (home-page
       "https://github.com/dtolnay/rustversion")
     (synopsis
@@ -860,7 +860,7 @@ implementing custom derives.
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
-        (("rust-proc-macro2" ,rust-proc-macro2-1.0))
+        (("rust-proc-macro2" ,rust-proc-macro2-1))
         #:cargo-development-inputs
         (("rust-rustversion" ,rust-rustversion)
          ("rust-trybuild" ,rust-trybuild-1.0))))
@@ -886,7 +886,7 @@ implementing custom derives.
     (arguments
       `(#:cargo-inputs
         (("rust-quote" ,rust-quote)
-         ("rust-syn" ,rust-syn-1.0))
+         ("rust-syn" ,rust-syn-1))
         #:cargo-development-inputs
         (("rust-libc-print" ,rust-libc-print))))
     (home-page
@@ -970,9 +970,9 @@ implementing custom derives.
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
-        (("rust-proc-macro2" ,rust-proc-macro2-1.0)
-         ("rust-quote" ,rust-quote-1.0)
-         ("rust-syn" ,rust-syn-1.0))))
+        (("rust-proc-macro2" ,rust-proc-macro2-1)
+         ("rust-quote" ,rust-quote-1)
+         ("rust-syn" ,rust-syn-1))))
     (home-page
       "https://github.com/taiki-e/pin-project")
     (synopsis
@@ -1089,9 +1089,9 @@ implementing custom derives.
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
-        (("rust-proc-macro2" ,rust-proc-macro2-1.0)
-         ("rust-quote" ,rust-quote-1.0)
-         ("rust-syn" ,rust-syn-1.0))
+        (("rust-proc-macro2" ,rust-proc-macro2-1)
+         ("rust-quote" ,rust-quote-1)
+         ("rust-syn" ,rust-syn-1))
         #:cargo-development-inputs
         (("rust-async-trait" ,rust-async-trait)
          ("rust-tokio-test" ,rust-tokio-test-0.2)
@@ -1157,9 +1157,9 @@ implementing custom derives.
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
-        (("rust-proc-macro2" ,rust-proc-macro2-1.0)
-         ("rust-quote" ,rust-quote-1.0)
-         ("rust-syn" ,rust-syn-1.0))
+        (("rust-proc-macro2" ,rust-proc-macro2-1)
+         ("rust-quote" ,rust-quote-1)
+         ("rust-syn" ,rust-syn-1))
         #:cargo-development-inputs
         (("rust-rustversion" ,rust-rustversion)
          ("rust-tracing" ,rust-tracing)
