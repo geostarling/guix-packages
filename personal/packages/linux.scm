@@ -59,7 +59,7 @@
 
 (define-public linux-5.8-source
   (let ((version linux-5.8-version)
-        (hash (base32 "1fv7bknwjyzh176rwn11dxvpymp97h5v94mhpdhxqx3hkb6nsgvr")))
+        (hash (base32 "0zwl0nk3x6fxwsbnmpx1drh7v0116yhgamisb1pghd472mmw6klx")))
     ((@@ (gnu packages linux) %upstream-linux-source) version hash)))
 
 
@@ -97,7 +97,7 @@
     (file-name (string-append "linux-firmware-" version "-checkout"))
     (sha256
      (base32
-      "0256p99bqwf1d1s6gqnzpjcdmg6skcp1jzz64sd1p29xxrf0pzfa"))))
+      "0c0m1qyrgqnqip5xqsi0sa80vqc5pl7kqa7mmq908vwn09c11z7j"))))
 
 (define-public linux-firmware-iwlwifi
   (package
