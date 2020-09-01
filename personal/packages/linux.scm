@@ -55,41 +55,38 @@
   #:use-module (gnu packages search)
   #:use-module (gnu packages textutils))
 
-(define-public linux-5.4-version "5.4.20")
+(define-public linux-5.8-version "5.8.5")
 
-(define-public linux-5.4-source
-  (let ((version linux-5.4-version)
+(define-public linux-5.8-source
+  (let ((version linux-5.8-version)
         (hash (base32 "1fv7bknwjyzh176rwn11dxvpymp97h5v94mhpdhxqx3hkb6nsgvr")))
     ((@@ (gnu packages linux) %upstream-linux-source) version hash)))
 
 
-(define-public linux-5.4-source
+(define-public linux-5.8-source
   ((@@ (gnu packages linux)
        source-with-patches)
-   linux-5.4-source
+   linux-5.8-source
    (list (@@ (gnu packages linux) %boot-logo-patch)
          (@@ (gnu packages linux) %linux-libre-arm-export-__sync_icache_dcache-patch))))
 
-
-(define-public linux-headers-5.4
+(define-public linux-headers-5.8
   ((@@ (gnu packages linux) make-linux-libre-headers*)
-   linux-5.4-version
-   linux-5.4-source))
+   linux-5.8-version
+   linux-5.8-source))
 
-
-(define-public linux-5.4-vanilla
+(define-public linux-5.8-vanilla
   ((@@ (gnu packages linux) make-linux-libre*)
-   linux-5.4-version
-   linux-5.4-source
+   linux-5.8-version
+   linux-5.8-source
    '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux")
    #:configuration-file (@@ (gnu packages linux) kernel-config)
    #:extra-version "vanilla"))
 
 
-(define-public linux-vanilla linux-5.4-vanilla)
+(define-public linux-vanilla linux-5.8-vanilla)
 
-
-(define (linux-firmware-version) "20200122")
+(define (linux-firmware-version) "20200817")
 (define (linux-firmware-source version)
   (origin
     (method git-fetch)
@@ -153,39 +150,6 @@
                                            (string-append fw-dir (basename file))))
                               (find-files source
                                           "dvb-demod-si2168.+\\.fw$")))
-                  #t)))
-   (home-page "https://wireless.wiki.kernel.org/en/users/drivers/iwlwifi")
-   (synopsis "Non-free firmware for Intel wifi chips")
-   (description "Non-free iwlwifi firmware")
-   (license (license:non-copyleft
-             "https://git.kernel.org/cgit/linux/kernel/git/firmware/linux-firmware.git/tree/LICENCE.iwlwifi_firmware?id=HEAD"))))
-
-(define-public linux-firmware-demod-usb-it9135
-  (package
-   (name "linux-firmware-demod-usb-it9135")
-   (version "20200216")
-   (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/OpenELEC/dvb-firmware.git")
-             (commit "3fef04a4a4bfeba88ae3b20aff9d3a1fabf1c159")))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "04lv3hv22r65ficrlq637jfyp8rbz9cjazvrsnv7z2q4cgz7gvbd"))))
-   (build-system trivial-build-system)
-   (arguments
-    `(#:modules ((guix build utils))
-      #:builder (begin
-                  (use-modules (guix build utils))
-                  (let ((source (assoc-ref %build-inputs "source"))
-                        (fw-dir (string-append %output "/lib/firmware/")))
-                    (mkdir-p fw-dir)
-                    (for-each (lambda (file)
-                                (copy-file file
-                                           (string-append fw-dir (basename file))))
-                              (find-files source
-                                          "dvb-usb-it9135.+\\.fw$")))
                   #t)))
    (home-page "https://wireless.wiki.kernel.org/en/users/drivers/iwlwifi")
    (synopsis "Non-free firmware for Intel wifi chips")
