@@ -27,6 +27,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages llvm))
 
 (define-public rust-emacs-module
@@ -863,7 +864,7 @@ implementing custom derives.
         (("rust-proc-macro2" ,rust-proc-macro2-1))
         #:cargo-development-inputs
         (("rust-rustversion" ,rust-rustversion)
-         ("rust-trybuild" ,rust-trybuild-1.0))))
+         ("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://github.com/dtolnay/quote")
     (synopsis "Quasi-quoting macro quote!(...)")
     (description "Quasi-quoting macro quote!(...)")
@@ -1166,7 +1167,7 @@ implementing custom derives.
          ("rust-tracing-attributes"
           ,rust-tracing-attributes)
          ("rust-tracing-futures" ,rust-tracing-futures)
-         ("rust-trybuild" ,rust-trybuild-1.0))))
+         ("rust-trybuild" ,rust-trybuild-1))))
     (home-page
       "https://github.com/dtolnay/async-trait")
     (synopsis "Type erasure for async trait methods")
