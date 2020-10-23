@@ -228,7 +228,7 @@
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
-        (("rust-byteorder" ,rust-byteorder-1.3))))
+        (("rust-byteorder" ,rust-byteorder-1))))
     (home-page
       "https://github.com/rust-lang-nursery/rustc-hash")
     (synopsis
@@ -321,7 +321,7 @@ shorthands for guards with one of the implemented strategies.
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
-        (("rust-byteorder" ,rust-byteorder-1.3)
+        (("rust-byteorder" ,rust-byteorder-1)
          ("rust-rayon" ,rust-rayon-1)
          ("rust-scopeguard" ,rust-scopeguard-0.3)
          ("rust-serde" ,rust-serde-1))
