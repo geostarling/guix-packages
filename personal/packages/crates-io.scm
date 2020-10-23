@@ -160,7 +160,7 @@
          ("rust-hex" ,rust-hex-0.3)
          ("rust-no-panic" ,rust-no-panic)
          ("rust-rand" ,rust-rand-0.6)
-         ("rust-seahash" ,rust-seahash-3.0))))
+         ("rust-seahash" ,rust-seahash-3))))
     (home-page "https://github.com/tkaitchuck/ahash")
     (synopsis
       "A non-cryprographic hash function using AES-NI for high performance")
