@@ -73,7 +73,7 @@
         (uri (git-reference
               (url "https://github.com/sergey-dryabzhinsky/nginx-rtmp-module")
               (commit commit)))
-        (file-name (git-file-name "lua-rtmp-module" version))
+        (file-name (git-file-name "nginx-rtmp-module" version))
         (sha256
          (base32
           "1xqph5n6chq13wiz3yr7lbjm2pars740av7nn94nrjfm9zzcccqy"))))
