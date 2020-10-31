@@ -55,38 +55,37 @@
   #:use-module (gnu packages search)
   #:use-module (gnu packages textutils))
 
-(define-public linux-5.8-version "5.8.5")
+(define-public linux-5.9-version "5.9.2")
 
-(define-public linux-5.8-source
-  (let ((version linux-5.8-version)
-        (hash (base32 "0zwl0nk3x6fxwsbnmpx1drh7v0116yhgamisb1pghd472mmw6klx")))
+(define-public linux-5.9-source
+  (let ((version linux-5.9-version)
+        (hash (base32 "0dh2ciyrm2ac7r4pybxa1cq3pfw3z3ilj50gdaa0clm9j7nyrx2i")))
     ((@@ (gnu packages linux) %upstream-linux-source) version hash)))
 
 
-(define-public linux-5.8-source
+(define-public linux-5.9-source
   ((@@ (gnu packages linux)
        source-with-patches)
-   linux-5.8-source
+   linux-5.9-source
    (list (@@ (gnu packages linux) %boot-logo-patch)
          (@@ (gnu packages linux) %linux-libre-arm-export-__sync_icache_dcache-patch))))
 
-(define-public linux-headers-5.8
+(define-public linux-headers-5.9
   ((@@ (gnu packages linux) make-linux-libre-headers*)
-   linux-5.8-version
-   linux-5.8-source))
+   linux-5.9-version
+   linux-5.9-source))
 
-(define-public linux-5.8-vanilla
+(define-public linux-5.9-vanilla
   ((@@ (gnu packages linux) make-linux-libre*)
-   linux-5.8-version
-   linux-5.8-source
+   linux-5.9-version
+   linux-5.9-source
    '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux")
    #:configuration-file (@@ (gnu packages linux) kernel-config)
    #:extra-version "vanilla"))
 
+(define-public linux-vanilla linux-5.9-vanilla)
 
-(define-public linux-vanilla linux-5.8-vanilla)
-
-(define (linux-firmware-version) "20200817")
+(define (linux-firmware-version) "20201022")
 (define (linux-firmware-source version)
   (origin
     (method git-fetch)
@@ -97,7 +96,7 @@
     (file-name (string-append "linux-firmware-" version "-checkout"))
     (sha256
      (base32
-      "0c0m1qyrgqnqip5xqsi0sa80vqc5pl7kqa7mmq908vwn09c11z7j"))))
+      "15l32993pfm0albx7ky64c5i60vph150hrdkg87md15919a6naia"))))
 
 (define-public linux-firmware-iwlwifi
   (package
