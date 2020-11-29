@@ -200,7 +200,7 @@ continuations of the @code{cl-cont} library.")
                  (build-program program outputs
                                 #:entry-program '((stumpwm:stumpwm) 0)
                                 #:dependencies '("stumpwm"
-                                                 ,@(@@ (gnu packages lisp-xyz) slynk-systems)
+                                                 "slynk"
                                                  "swm-lirc"
                                                  "kbd-layouts"
                                                  "clipboard-history"
@@ -209,15 +209,11 @@ continuations of the @code{cl-cont} library.")
                                 #:dependency-prefixes
                                 (map (lambda (input) (assoc-ref inputs input))
                                      '("stumpwm" "slynk" "swm-lirc" "kbd-layouts" "clipboard-history" "trivial-features")))
-                 ;; Remove unneeded file.
-                 (delete-file (string-append out "/bin/stumpwm-exec.fasl"))
                  #t)))
            (delete 'copy-source)
            (delete 'build)
            (delete 'check)
-           (delete 'create-asd-file)
-           (delete 'cleanup)
-           (delete 'create-symlinks)))))))
+           (delete 'cleanup)))))))
 
 (define-public kanshi
   (package
