@@ -88,6 +88,8 @@
                                 (("user-emacs-directory \"parinfer-rust/\"")
                                  (string-append
                                   "\"" parinfer-rust-libdir "\""))
+                                (("0.4.4-beta")
+                                 "0.4.3")
                                 (("\\(locate-user-emacs-file \\(concat \"parinfer-rust/\"")
                                  (string-append
                                   "(concat \"" parinfer-rust-libdir "\""))
