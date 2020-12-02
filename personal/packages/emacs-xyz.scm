@@ -77,14 +77,22 @@
              (add-after 'unpack 'parinfer-rust-path-patch
                (lambda* (#:key inputs #:allow-other-keys)
                  ;; Hard-code path to `parinfer-rust`
-                 (let ((parinfer-rust-lib (string-append (assoc-ref inputs "parinfer-rust")
-                                                         "/lib/parinfer-rust-linux.so")))
+                 (let* ((parinfer-rust-libdir (string-append (assoc-ref inputs "parinfer-rust")
+                                                            "/lib/"))
+                        (parinfer-rust-lib (string-append parinfer-rust-libdir "parinfer-rust-linux.so")))
+                   (substitute* "parinfer-rust-changes.el"
+                                (("user-emacs-directory \"parinfer-rust/\"")
+                                 (string-append
+                                  "\"" parinfer-rust-libdir "\"")))
                    (substitute* "parinfer-rust-mode.el"
-                     (("\\(defcustom parinfer-rust-library \\(locate-user-emacs-file \\(concat \"parinfer-rust/\"")
-                      (string-append
-                       "(defcustom parinfer-rust-library \"" parinfer-rust-lib "\""))
-                     (("^[ ]+parinfer-rust--lib-name\\)\\)")
-                      ""))))))))
+                                (("user-emacs-directory \"parinfer-rust/\"")
+                                 (string-append
+                                  "\"" parinfer-rust-libdir "\""))
+                                (("\\(locate-user-emacs-file \\(concat \"parinfer-rust/\"")
+                                 (string-append
+                                  "(concat \"" parinfer-rust-libdir "\""))
+                                (("^[ ]+parinfer-rust--lib-name\\)\\)")
+                                 "parinfer-rust--lib-name)"))))))))
         (propagated-inputs
          `(("parinfer-rust" ,parinfer-rust)))
         (synopsis "GNU Emacs client for the Telegram messenger")
