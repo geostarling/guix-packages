@@ -56,7 +56,7 @@
 
 (define-public emacs-parinfer-rust-mode
   (let ((commit "ca9e7b6f8c3c70daf6a933952955b6931a24af83")
-        (revision "1"))
+        (revision "3"))
       (package
         (name "emacs-parinfer-rust-mode")
         (version "0.8.2")
@@ -80,9 +80,11 @@
                  (let ((parinfer-rust-lib (string-append (assoc-ref inputs "parinfer-rust")
                                                          "/lib/parinfer-rust-linux.so")))
                    (substitute* "parinfer-rust-mode.el"
-                     (("\\(defcustom parinfer-rust-library \\(locate-user-emacs-file \\(concat \"parinfer-rust/\" parinfer-rust--lib-name\\)\\)")
+                     (("\\(defcustom parinfer-rust-library \\(locate-user-emacs-file \\(concat \"parinfer-rust/\"")
                       (string-append
-                       "(defcustom parinfer-rust-library \"" parinfer-rust-lib "\"")))))))))
+                       "(defcustom parinfer-rust-library \"" parinfer-rust-lib "\""))
+                     (("^[ ]+parinfer-rust--lib-name\\)\\)")
+                      ""))))))))
         (propagated-inputs
          `(("parinfer-rust" ,parinfer-rust)))
         (synopsis "GNU Emacs client for the Telegram messenger")
