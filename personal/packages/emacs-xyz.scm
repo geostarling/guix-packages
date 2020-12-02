@@ -55,39 +55,41 @@
 
 
 (define-public emacs-parinfer-rust-mode
-    (package
-      (name "emacs-parinfer-rust-mode")
-      (version "0.5.2")
-      (source (origin
-               (method git-fetch)
-               (uri (git-reference
-                     (url "https://github.com/justinbarclay/parinfer-rust-mode.git")
-                     (commit (string-append "v" version))))
-               (file-name (git-file-name name version))
-               (sha256
-                (base32
-                 "10sv5mk0swykrzkig7yyxnib75yammxq8mxdwqinwxwwahm2dnxp"))))
-      (build-system emacs-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (delete 'build)
-           (add-after 'unpack 'parinfer-rust-path-patch
-             (lambda* (#:key inputs #:allow-other-keys)
-               ;; Hard-code path to `parinfer-rust`
-               (let ((parinfer-rust-lib (string-append (assoc-ref inputs "parinfer-rust")
-                                                   "/lib/parinfer-rust-linux.so")))
-                 (substitute* "parinfer-rust-mode.el"
-                   (("\\(defcustom parinfer-rust-library \\(locate-user-emacs-file \\(concat \"parinfer-rust/\" parinfer-rust--lib-name\\)\\)")
-                    (string-append
-                     "(defcustom parinfer-rust-library \"" parinfer-rust-lib "\"")))))))))
-      (propagated-inputs
-       `(("parinfer-rust" ,parinfer-rust)))
-      (synopsis "GNU Emacs client for the Telegram messenger")
-      (description
-       "")
-      (home-page "https://github.com/zevlg/telega.el")
-      (license license:gpl3+)))
+  (let ((commit "ca9e7b6f8c3c70daf6a933952955b6931a24af83")
+        (revision "1"))
+      (package
+        (name "emacs-parinfer-rust-mode")
+        (version "0.8.2")
+        (source (origin
+                 (method git-fetch)
+                 (uri (git-reference
+                       (url "https://github.com/justinbarclay/parinfer-rust-mode.git")
+                       (commit (string-append "v" version))))
+                 (file-name (git-file-name name version))
+                 (sha256
+                  (base32
+                   "1d9885l1aifrdrg6c4m2kakhs3bbmfmsm02q96j0k0mzzwr7rs41"))))
+        (build-system emacs-build-system)
+        (arguments
+         `(#:phases
+           (modify-phases %standard-phases
+             (delete 'build)
+             (add-after 'unpack 'parinfer-rust-path-patch
+               (lambda* (#:key inputs #:allow-other-keys)
+                 ;; Hard-code path to `parinfer-rust`
+                 (let ((parinfer-rust-lib (string-append (assoc-ref inputs "parinfer-rust")
+                                                         "/lib/parinfer-rust-linux.so")))
+                   (substitute* "parinfer-rust-mode.el"
+                     (("\\(defcustom parinfer-rust-library \\(locate-user-emacs-file \\(concat \"parinfer-rust/\" parinfer-rust--lib-name\\)\\)")
+                      (string-append
+                       "(defcustom parinfer-rust-library \"" parinfer-rust-lib "\"")))))))))
+        (propagated-inputs
+         `(("parinfer-rust" ,parinfer-rust)))
+        (synopsis "GNU Emacs client for the Telegram messenger")
+        (description
+         "")
+        (home-page "https://github.com/zevlg/telega.el")
+        (license license:gpl3+))))
 
 (define-public emacs-selected
   (package
