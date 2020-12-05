@@ -40,7 +40,7 @@
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
-  ;; #:use-module (personal packages tv)
+  #:use-module (personal packages tv)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages documentation)
@@ -1079,3 +1079,27 @@ plug-in system.")
        ("waylandp-protocols" ,wayland-protocols)
        ,@(package-inputs my-kodi)))
     (synopsis "Kodi with Wayland rendering backend")))
+
+(define-public my-kodi-with-addons/wayland
+  (package
+   (inherit my-kodi/wayland)
+   (name "my-kodi-with-addons-wayland")
+
+   (source #f)
+   (build-system trivial-build-system)
+   (arguments
+    `(#:modules ((guix build utils) (guix build union))
+      #:builder
+      (begin
+        (use-modules (guix build utils) (guix build union) (srfi srfi-26))
+        (union-build (assoc-ref %outputs "out")
+                     (map (lambda (input) (cdr input)) %build-inputs)
+                     #:symlink (lambda [input output]
+                                 (if (file-is-directory? input)
+                                     (copy-recursively input output)
+                                     (copy-file input output))))
+        #t)))
+   (inputs
+    `(("kodi" ,my-kodi/wayland)
+      ,@(map (lambda (addon) (list "addon" addon))
+             `(,kodi-pvr-hts))))))
