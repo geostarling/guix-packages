@@ -242,7 +242,8 @@ plug-in system.")
    (build-system cmake-build-system)
    (arguments
     `(#:tests? #f
-      #:configure-flags '("-DOVERRIDE_PATHS=1")))
+      #:configure-flags `("-DOVERRIDE_PATHS=1"
+                          "-DCMAKE_INSTALL_LIBDIR=lib/kodi"))) ;; override cmake-build-system libdir
    (inputs
     `(("libp8-platform" ,libp8-platform)
       ("kodi-platform" ,kodi-platform)
