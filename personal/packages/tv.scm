@@ -243,7 +243,11 @@ plug-in system.")
    (arguments
     `(#:tests? #f
       #:configure-flags `("-DOVERRIDE_PATHS=1"
-                          "-DCMAKE_INSTALL_LIBDIR=lib/kodi"))) ;; override cmake-build-system libdir
+                          ;; override cmake-build-system libdir
+                          "-DCMAKE_INSTALL_LIBDIR=lib/kodi"
+                          ;; ugly hack: kodi from kodi pkg for some reason looks for addons.xml in lib/kodi instead
+                          ;; of share/kodi, so we place all of the data resources alongside the shared lib
+                          "-DCMAKE_INSTALL_DATADIR=lib/kodi")))
    (inputs
     `(("libp8-platform" ,libp8-platform)
       ("kodi-platform" ,kodi-platform)
