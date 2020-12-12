@@ -1080,11 +1080,10 @@ plug-in system.")
        ,@(package-inputs my-kodi)))
     (synopsis "Kodi with Wayland rendering backend")))
 
-(define-public my-kodi-with-addons/wayland
+(define-public kodi-with-addons/wayland
   (package
-   (inherit my-kodi/wayland)
-   (name "my-kodi-with-addons-wayland")
-
+   (inherit kodi/wayland)
+   (name "kodi-with-addons-wayland")
    (source #f)
    (build-system trivial-build-system)
    (arguments
@@ -1104,6 +1103,6 @@ plug-in system.")
             ((kodi-input) kodi-output))
           #t))))
    (inputs
-    `(("kodi" ,my-kodi/wayland)
+    `(("kodi" ,kodi/wayland)
       ,@(map (lambda (addon) (list "addon" addon))
              `(,kodi-pvr-hts))))))
