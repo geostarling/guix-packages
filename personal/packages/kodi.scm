@@ -1092,13 +1092,17 @@ plug-in system.")
       #:builder
       (begin
         (use-modules (guix build utils) (guix build union) (srfi srfi-26))
-        (union-build (assoc-ref %outputs "out")
-                     (map (lambda (input) (cdr input)) %build-inputs)
-                     #:symlink (lambda [input output]
-                                 (if (file-is-directory? input)
-                                     (copy-recursively input output)
-                                     (copy-file input output))))
-        #t)))
+        (let ((kodi-input (assoc-ref %build-inputs "kodi"))
+              (kodi-output (assoc-ref %outputs "out")))
+          (union-build kodi-output
+                       (map (lambda (input) (cdr input)) %build-inputs)
+                       #:symlink (lambda [input output]
+                                   (if (file-is-directory? input)
+                                       (copy-recursively input output)
+                                       (copy-file input output))))
+          (substitute* (string-append kodi-output "/bin/kodi")
+            ((kodi-input) kodi-output))
+          #t))))
    (inputs
     `(("kodi" ,my-kodi/wayland)
       ,@(map (lambda (addon) (list "addon" addon))
