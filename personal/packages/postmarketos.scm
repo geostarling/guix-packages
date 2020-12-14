@@ -38,6 +38,7 @@
   #:use-module (gnu packages cups)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages base)
@@ -45,10 +46,10 @@
 
 
 (define-public pmbootstrap
-  (let ((commit "be41c94c5707729f54c99b8f551eb6be890f0c91"))
+  (let ((commit "27127f1cae6aa72f97566853f2133a28f11a28be"))
     (package
      (name "pmbootstrap")
-     (version  (git-version "1.22.2" "1" commit))
+     (version  (git-version "1.26.0" "1" commit))
      (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -57,7 +58,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0rjyr2sjwfcls9fx9xxcj9ni8w8bw1arrgjq8z25cjywfzavqp3d"))))
+                "1inrx4cvz8cdihya3frc76hj6ir1d3j3my0h9zsn79p2p51fzib4"))))
      (build-system python-build-system)
      (arguments
       `(#:tests? #f))
