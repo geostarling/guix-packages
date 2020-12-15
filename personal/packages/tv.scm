@@ -41,6 +41,7 @@
   #:use-module (gnu packages dlang)
   #:use-module (gnu packages gnome)      ;; for vte and libpeas
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages xiph)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages lirc)
@@ -113,16 +114,47 @@
     (license (list license:gpl2+ license:lgpl2.0+))))
 
 
+(define-public libdvbcsa
+  (package
+    (name "libdvbcsa")
+    (version "1")
+    (source (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/glenvt18/libdvbcsa.git")
+                   (commit "2a1e61e569a621c55c2426f235f42c2398b7f18f")))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32
+               "09pcx2pygxazy2nyyl9ll2c8kgybvddarfkzgcyff4nabs6g7pwd"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags '("--disable-static")))
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("libtool" ,libtool)))
+    (synopsis "Library for handling PNG files")
+    (description
+     "Libpng is the official PNG (Portable Network Graphics) reference
+library.  It supports almost all PNG features and is extensible.")
+    (license license:zlib)
+   (home-page "http://www.libpng.org/pub/png/libpng.html")))
+
+
 (define-public tvheadend
   (package
     (name "tvheadend")
     (version "4.2.8")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/tvheadend/tvheadend/archive/v" version ".tar.gz"))
-              (sha256
-               (base32
-                "1bgp05gl3px2d2w8g2yknrj4mqymsib924rgpnkx5ynmff9qivqs"))))
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/tvheadend/tvheadend.git")
+                   (commit "bd88f3db6a7ed43dc0dca5ed832da13bf627feaf")))
+             (file-name (string-append name "-" version "-checkout"))
+             (sha256
+              (base32
+               "1pgqpzkfg4icrwnfnyh9qb07nikyqmjsghwxfn7g97jjh6xsp3nr"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f    ; there is no test target
@@ -158,9 +190,14 @@
                      ("python" ,python)
                      ("which" ,which)
                      ("wget" ,wget)
+                     ("libdvbcsa" ,libdvbcsa)
                      ("git" ,git)))
     (inputs `(("ffmpeg" ,ffmpeg)
               ("openssl" ,openssl)
+              ("libx264" ,libx264)
+              ("x265" ,x265)
+              ("opus" ,opus)
+              ("libvpx" ,libvpx)
               ("dtv-scan-tables" ,dtv-scan-tables)))
 
     (home-page
