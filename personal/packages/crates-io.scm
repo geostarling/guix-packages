@@ -737,7 +737,7 @@ implementing custom derives.
       `(#:cargo-inputs
         (("rust-darling" ,rust-darling)
          ("rust-quote" ,rust-quote)
-         ("rust-syn" ,rust-syn-1))))
+         ("rust-syn" ,rust-syn-0.15))))
     (home-page
       "https://github.com/ubolonton/emacs-module-rs")
     (synopsis "Proc macros for emacs modules")
