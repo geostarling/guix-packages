@@ -74,7 +74,7 @@
           ("rust-serde-json" ,rust-serde-json-1)
           ("rust-serde-derive" ,rust-serde-derive-1)
           ("rust-emacs" ,rust-emacs) ;; TODO pin input version
-          ("rust-unicode-segmentation" ,rust-unicode-segmentation-1.3)
+          ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
           ("rust-unicode-width" ,rust-unicode-width-0.1))
          #:phases
          ;; clang is required by rust-emacs-module
