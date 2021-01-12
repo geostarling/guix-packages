@@ -37,7 +37,7 @@
 
 
 (define-public lokke
-  (let ((commit "b9aa7e3dfd3b4134df0b72e82174adbe165dbe53"))
+  (let ((commit "1a1735df63111859d59329bfdf35f59f5ad18eaf"))
     (package
      (name "lokke")
      (version "0.0.0")
@@ -50,7 +50,7 @@
         (file-name (git-file-name "lokke" version))
         (sha256
          (base32
-          "14bzl53n1wqjin3crd3bdx3h6r89daqwpgrd02693yvgicz39qs5"))))
+          "064j04fdrc8sz151vq5lrkggzn46j5fdaay4mw8jaj8927038vbk"))))
      (build-system gnu-build-system)
      (arguments
       `(#:phases
@@ -63,19 +63,6 @@
                 (("/usr/bin/env bash") (which "bash")))
               (substitute* "gen-makefile"
                 (("/usr/bin/env guile") (which "guile")))
-              (substitute* "guile.in"
-                (("guile-@GUILE_EFFECTIVE_VERSION@") (which "guile")))
-              ;; (substitute* "guile.in"
-              ;;              (("libs\"") (string-append "libs\"\nexport XDG_CACHE_HOME=" "/tmp/ccache" "\n set -x"
-              ;;                                         "\nexport HOME=" "/tmp/ccache" "\n"
-              ;;                                         "\n guile -c '(use-modules (system base compile)) (display %compile-fallback-path )'")))
-              ;;                           ;
-
-              ;; (substitute* "mod/lokke/ns.scm"
-              ;;              ((".*define debug-ns.*") "(define debug-ns? #t)")
-              ;;              ((".*found src.*") "(dbgf \"found src: ~s\n\" %load-compiled-extensions)"))
-              (substitute* "Makefile.am.in"
-                (("COLUMNS=80.*") "COLUMNS=80 man -l $^ > /dev/null"))
               #t))
           (add-before 'bootstrap 'invoke-setup-script
             (lambda _
@@ -90,13 +77,7 @@
               (invoke "autoreconf" "-vfi")))
           (add-before 'configure 'setenv-vars
             (lambda _
-              ;; (setenv "GUILE_LOAD_PATH"
-              ;;  (string-append (getcwd) "/mod"))
-              ;; (setenv "GUILE_LOAD_COMPILED_PATH"
-              ;;         (string-append "" (getcwd) "/mod"))
               (setenv "XDG_CACHE_HOME" "/tmp/ccache"))))))
-              ;; (setenv "LTDL_LIBRARY_PATH"
-              ;;  (string-append "" (getcwd) "/lib/.libs")))))))
      (native-inputs
       `(("autoconf" ,autoconf)
         ("automake" ,automake)
