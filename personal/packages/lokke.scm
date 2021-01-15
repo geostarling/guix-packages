@@ -21,7 +21,7 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (personal packages scheme)
+(define-module (personal packages lokke)
   #:use-module (guix build-system gnu)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -37,7 +37,7 @@
 
 
 (define-public lokke
-  (let ((commit "1a1735df63111859d59329bfdf35f59f5ad18eaf"))
+  (let ((commit "977a93207660aed6e190d601717872c20fdce0bf"))
     (package
      (name "lokke")
      (version "0.0.0")
@@ -50,7 +50,7 @@
         (file-name (git-file-name "lokke" version))
         (sha256
          (base32
-          "064j04fdrc8sz151vq5lrkggzn46j5fdaay4mw8jaj8927038vbk"))))
+          "1qd4b8kqqssvwjxc4s3psps86bw8l44xlvaqklc6x1r2wvdxrb5n"))))
      (build-system gnu-build-system)
      (arguments
       `(#:phases
@@ -66,6 +66,8 @@
               #t))
           (add-before 'bootstrap 'invoke-setup-script
             (lambda _
+              ;; default unpack phase deletes .git/ directory required by setup script
+              ;; so we have to recreate here
               (invoke "git" "init")
               (invoke "git" "add" ".")
               (invoke "git" "config" "user.email" "you@example.com")
@@ -74,10 +76,13 @@
               (invoke (which "sh") "./setup")))
           (replace 'bootstrap
             (lambda _
-              (invoke "autoreconf" "-vfi")))
+              (invoke "autoreconf" "-fi")))
           (add-before 'configure 'setenv-vars
             (lambda _
-              (setenv "XDG_CACHE_HOME" "/tmp/ccache"))))))
+              ;; compilation requires writeable ccache directory
+              ;; default is not writeable
+              (setenv "XDG_CACHE_HOME" "/tmp/ccache")))
+          (delete 'strip))))
      (native-inputs
       `(("autoconf" ,autoconf)
         ("automake" ,automake)
