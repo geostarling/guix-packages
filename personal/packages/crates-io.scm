@@ -326,7 +326,7 @@ shorthands for guards with one of the implemented strategies.
          ("rust-scopeguard" ,rust-scopeguard-0.3)
          ("rust-serde" ,rust-serde-1))
         #:cargo-development-inputs
-        (("rust-lazy-static" ,rust-lazy-static-1.3)
+        (("rust-lazy-static" ,rust-lazy-static-1)
          ("rust-rand" ,rust-rand-0.5)
          ("rust-rayon" ,rust-rayon-1)
          ("rust-rustc-hash" ,rust-rustc-hash)
@@ -476,7 +476,7 @@ dropped.
         ("rust-clap" ,rust-clap-2)
         ("rust-env-logger" ,rust-env-logger-0.6)
         ("rust-fxhash" ,rust-fxhash-0.2)
-        ("rust-lazy-static" ,rust-lazy-static-1.3)
+        ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-hashbrown" ,rust-hashbrown-0.1)
         ("rust-log" ,rust-log-0.4)
         ("rust-peeking-take-while" ,rust-peeking-take-while-0.1)
@@ -534,7 +534,7 @@ dropped.
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1.3)
+       (("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-lexical-core" ,rust-lexical-core-0.4)
         ("rust-memchr" ,rust-memchr-2)
         ("rust-regex" ,rust-regex-1)
@@ -919,7 +919,7 @@ implementing custom derives.
          ("rust-emacs-module" ,rust-emacs-module)
          ("rust-failure" ,rust-failure-0.1)
          ("rust-failure-derive" ,rust-failure-derive-0.1)
-         ("rust-lazy-static" ,rust-lazy-static-1.3))))
+         ("rust-lazy-static" ,rust-lazy-static-1))))
     (home-page
       "https://github.com/ubolonton/emacs-module-rs")
     (synopsis
