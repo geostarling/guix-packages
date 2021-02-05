@@ -484,7 +484,7 @@ dropped.
         ("rust-quote" ,rust-quote)
         ("rust-regex" ,rust-regex-1)
         ("rust-shlex" ,rust-shlex-0.1)
-        ("rust-which" ,rust-which-2.0))
+        ("rust-which" ,rust-which-2))
        #:cargo-development-inputs
        (("rust-clap" ,rust-clap-2)
         ("rust-diff" ,rust-diff-0.1)
