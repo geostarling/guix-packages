@@ -18,7 +18,7 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-(define-module (nonguix packages linux)
+(define-module (nongnu packages linux)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
@@ -564,7 +564,7 @@ package contains nonfree firmware for the following chips:
                        "broadcom-sta-linux-4.15.patch"
                        "broadcom-sta-fix_mac_profile_discrepancy.patch"
                        "broadcom-sta-linux-5.1.patch"
-                                                                                                                                                                                                                                                                                                                                                                                                               ;; source: https://github.com/NixOS/nixpkgs/commit/8ce65087c333097ab714d23800b69fc471ec48ca
+                                       ;; source: https://github.com/NixOS/nixpkgs/commit/8ce65087c333097ab714d23800b69fc471ec48ca
                        "broadcom-sta-linux-5.6.patch"
                        "broadcom-sta-linux-5.9.patch"
                        "broadcom-sta-linux-5.10.patch")))
