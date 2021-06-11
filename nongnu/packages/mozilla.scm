@@ -17,6 +17,7 @@
 ;;; Copyright (C) 2019, 2020 Adrian Malacoda <malacoda@monarch-pass.net>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2021 pineapples <guixuser6392@protonmail.com>
 ;;;
 ;;; This file is not part of GNU Guix.
 ;;;
@@ -36,6 +37,7 @@
 (define-module (nongnu packages mozilla)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cargo)
+  #:use-module (guix build-system trivial)
   #:use-module (guix download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -45,6 +47,7 @@
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages cups)
@@ -78,19 +81,19 @@
 
 ;; Update this id with every firefox update to it's release date.
 ;; It's used for cache validation and therefor can lead to strange bugs.
-(define %firefox-build-id "20210223000000")
+(define %firefox-build-id "20210601000000")
 
 (define-public firefox
   (package
     (name "firefox")
-    (version "86.0")
+    (version "89.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://archive.mozilla.org/pub/firefox/releases/"
                            version "/source/firefox-" version ".source.tar.xz"))
        (sha256
-        (base32 "1paqkflyfp7jh2cymkkaic4barxyglswfmrgjqdf7a7n5i54gb63"))))
+        (base32 "02m9w3igb1higxnqp318r41khf936jm6szw4bcd0amb4g7axfhyv"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -104,7 +107,6 @@
            "--with-system-icu"
            "--enable-system-ffi"
            "--enable-system-pixman"
-           "--enable-default-toolkit=cairo-gtk3"
            "--enable-jemalloc"
 
            ;; see https://bugs.gnu.org/32833
@@ -214,8 +216,10 @@
              (setenv "MACH_USE_SYSTEM_PYTHON" "1")
 
              ;; Use Clang, Clang is 2x faster than GCC
-             (setenv "AR" "llvm-ar") (setenv "NM" "llvm-nm")
-             (setenv "CC" "clang") (setenv "CXX" "clang++")
+             (setenv "AR" "llvm-ar")
+             (setenv "NM" "llvm-nm")
+             (setenv "CC" "clang")
+             (setenv "CXX" "clang++")
 
              (setenv "MOZ_NOSPAM" "1")
              ;; Firefox will write the timestamp to output, which is harmful for
@@ -278,10 +282,13 @@
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (lib (string-append out "/lib"))
-                    (ld-libs (map (lambda (x)
-                                    (string-append (assoc-ref inputs x)
-                                                   "/lib"))
-                                  '("pulseaudio" "mesa")))
+                    (ld-libs
+                     (map (lambda (x)
+                            (string-append (assoc-ref inputs x)
+                                           "/lib"))
+                          '("pulseaudio" "mesa"
+                            ;; For the integration of native notifications
+                            "libnotify")))
                     (gtk-share (string-append (assoc-ref inputs "gtk+")
                                               "/share")))
                (wrap-program (car (find-files lib "^firefox$"))
@@ -347,6 +354,7 @@
        ("libffi" ,libffi)
        ("libgnome" ,libgnome)
        ("libjpeg-turbo" ,libjpeg-turbo)
+       ("libnotify" ,libnotify)
        ;; ("libpng-apng" ,libpng-apng)
        ("libvpx" ,libvpx)
        ("libxcomposite" ,libxcomposite)
@@ -369,8 +377,8 @@
     (native-inputs
      `(("autoconf" ,autoconf-2.13)
        ("cargo" ,rust-1.47 "cargo")
-       ("clang" ,clang)
-       ("llvm" ,llvm)
+       ("clang" ,clang-10)
+       ("llvm" ,llvm-10)
        ("m4" ,m4)
        ("nasm" ,nasm)
        ("node" ,node)
@@ -379,7 +387,7 @@
        ("python" ,python)
        ("python2" ,python-2.7)
        ("rust" ,rust-1.47)
-       ("rust-cbindgen" ,rust-cbindgen-0.16)
+       ("rust-cbindgen" ,rust-cbindgen-0.19)
        ("which" ,which)
        ("yasm" ,yasm)))
     (home-page "https://mozilla.org/firefox/")
@@ -390,30 +398,37 @@ the official icon and the name \"firefox\".")
     (license license:mpl2.0)))
 
 (define-public firefox/wayland
-  (package/inherit firefox
+  (package
+    (inherit firefox)
     (name "firefox-wayland")
+    (native-inputs '())
+    (inputs
+     `(("bash" ,bash-minimal)
+       ("firefox" ,firefox)))
+    (build-system trivial-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments firefox)
-       ((#:configure-flags flags)
-        `(append (list "--enable-default-toolkit=cairo-gtk3-wayland")
-                 (delete "--enable-default-toolkit=cairo-gtk3" ,flags)))
-       ;; We need to set the MOZ_ENABLE_WAYLAND env variable.
-       ((#:phases phases)
-        `(modify-phases ,phases
-          (replace 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib (string-append out "/lib"))
-                    (ld-libs (map (lambda (x)
-                                    (string-append (assoc-ref inputs x)
-                                                   "/lib"))
-                                  '("pulseaudio" "mesa")))
-                    (gtk-share (string-append (assoc-ref inputs "gtk+")
-                                              "/share")))
-               (wrap-program (car (find-files lib "^firefox$"))
-                 `("LD_LIBRARY_PATH" prefix ,ld-libs)
-                 `("XDG_DATA_DIRS" prefix (,gtk-share))
-                 `("MOZ_ENABLE_WAYLAND" = ("1"))
-                 `("MOZ_LEGACY_PROFILES" = ("1"))
-                 `("MOZ_ALLOW_DOWNGRADE" = ("1")))
-               #t)))))))))
+     '(#:modules ((guix build utils))
+       #:builder
+       (begin
+         (use-modules (guix build utils))
+         (let* ((bash    (assoc-ref %build-inputs "bash"))
+                (firefox (assoc-ref %build-inputs "firefox"))
+                (out     (assoc-ref %outputs "out"))
+                (exe     (string-append out "/bin/firefox")))
+           (mkdir-p (dirname exe))
+
+           (call-with-output-file exe
+             (lambda (port)
+               (format port "#!~a
+ MOZ_ENABLE_WAYLAND=1 exec ~a $@"
+                       (string-append bash "/bin/bash")
+                       (string-append firefox "/bin/firefox"))))
+           (chmod exe #o555)
+
+           ;; Provide the manual and .desktop file.
+           (copy-recursively (string-append firefox "/share")
+                             (string-append out "/share"))
+           (substitute* (string-append
+                         out "/share/applications/firefox.desktop")
+             ((firefox) out))
+           #t))))))
