@@ -4,6 +4,7 @@
 ;;; Copyright © 2019 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020, 2021 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2020, 2021 Jonathan Brielmaier <jonathan.brielmaier@web.de>
+;;; Copyright © 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;;
 ;;; This program is free software: you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -55,42 +56,42 @@
      "The unmodified Linux kernel, including nonfree blobs, for running Guix
 System on hardware which requires nonfree software to function.")))
 
-(define-public linux-5.11
-  (corrupt-linux linux-libre-5.11 "5.11"
-                 "1d37w0zvmf8c1l99xvy1hy6p55icjhmbsv7f0amxy2nly1a7pw04"))
+(define-public linux-5.12
+  (corrupt-linux linux-libre-5.12 "5.12.9"
+                 "0vg71h8r90fl01a8khyf1776y76rgqisxafky89cswa2fpsvxyn7"))
 
 (define-public linux-5.10
-  (corrupt-linux linux-libre-5.10 "5.10.17"
-                 "05289lr531piv1ncisbazfk0lj0q7gxflqkb0bn4c95vx0y64kp8"))
+  (corrupt-linux linux-libre-5.10 "5.10.42"
+                 "1r86v6q7ml7zv001f25w3h667nqqy39439s94vnqsyyn7g3jg84b"))
 
 (define-public linux-5.4
-  (corrupt-linux linux-libre-5.4 "5.4.99"
-                 "09qs6nqzq7hsaq928jvbri4nfjm0m6rf0lfx6vc30g95d4nd3njv"))
+  (corrupt-linux linux-libre-5.4 "5.4.124"
+                 "10kxa1ng9w9xd2d5xh48fbhp1kri650p90nihrcpnb845gd9vwpp"))
 
 (define-public linux-4.19
-  (corrupt-linux linux-libre-4.19 "4.19.176"
-                 "0wv0hb25c5jgw6h3zwbb24mfnn19yr0sgcmk1g2xa6x33g9bihz1"))
+  (corrupt-linux linux-libre-4.19 "4.19.193"
+                 "17ci49ak5iw01kfkn3fcgncg9hm4j188417bxi3bnsq9il5ymhl4"))
 
 (define-public linux-4.14
-  (corrupt-linux linux-libre-4.14 "4.14.217"
-                 "04adj8x7p1has4mh8ygxhqgwb1i08fz9izqw1y6xj5hh8cjnm8v2"))
+  (corrupt-linux linux-libre-4.14 "4.14.235"
+                 "03k793hj294zf7jncs1h8zh5dh6xagkfvnydd9jadxvq2z8vvl8f"))
 
 (define-public linux-4.9
-  (corrupt-linux linux-libre-4.9 "4.9.253"
-                 "065w35vb0qp4fvnwmcx7f92inmx64f9r04zzwcwbs0826nl52nws"))
+  (corrupt-linux linux-libre-4.9 "4.9.271"
+                 "1480miixphkf0b8w00m753ar7yp1rnl3zyr9wp4inngi2f90553r"))
 
 (define-public linux-4.4
-  (corrupt-linux linux-libre-4.4 "4.4.253"
-                 "0nlqnfhrkaj2s582kc0wxqi0881hgp6l9z85qx4ckflc8jwrh7k6"))
+  (corrupt-linux linux-libre-4.4 "4.4.271"
+                 "0n5h2lv1p542a45pas3pi0vkhgrk096vwrps79a7v3a6c1q2dxx6"))
 
-(define-public linux linux-5.10)
+(define-public linux linux-5.12)
 ;; linux-lts points to the *newest* released long-term support version.
-(define-public linux-lts linux-5.4)
+(define-public linux-lts linux-5.10)
 
 (define-public linux-firmware
   (package
     (name "linux-firmware")
-    (version "20210208")
+    (version "20210511")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://git.kernel.org/pub/scm/linux/kernel"
@@ -98,7 +99,7 @@ System on hardware which requires nonfree software to function.")))
                                   "linux-firmware-" version ".tar.gz"))
               (sha256
                (base32
-                "0w27m4gx7gx67pmfb5n4bwv3w2cf3mj8si5bjyyabyxm4s1l9l65"))))
+                "1i0ikbs0s9djq6jqg557j8wqw3vjspqh9249c0g93qkmayhycf2c"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
@@ -785,3 +786,50 @@ documented in the respective processor revision guides.")
      (nonfree
       (string-append "https://git.kernel.org/pub/scm/linux/kernel/git/"
                      "firmware/linux-firmware.git/plain/LICENSE.amd-ucode")))))
+
+(define-public sof-firmware
+  (package
+    (name "sof-firmware")
+    (version "1.6.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/thesofproject/sof-bin")
+             (commit (string-append "stable-v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zg5fki8skmmx84p4ws8x2m13bm13fb3kvlhz7zsnmdg6ra06az6"))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan
+       (let* ((base
+               (string-append "lib/firmware/intel/sof/v" ,version))
+              (dest "lib/firmware/intel/sof")
+              (tplg
+               (string-append "lib/firmware/intel/sof-tplg-v" ,version))
+              (dest-tplg "lib/firmware/intel/sof-tplg")
+              (fw-file (lambda* (file #:optional subdir)
+                         (list (string-append base "/"
+                                              (or subdir "")
+                                              file "-v" ,version ".ri")
+                               (string-append dest "/" file ".ri"))))
+              (unsigned fw-file)
+              (intel-signed (lambda (file)
+                              (fw-file file "intel-signed/"))))
+         (list (unsigned "sof-bdw")
+               (unsigned "sof-byt")
+               (unsigned "sof-cht")
+               (intel-signed "sof-apl")
+               (intel-signed "sof-cnl")
+               (intel-signed "sof-ehl")
+               (intel-signed "sof-icl")
+               (intel-signed "sof-tgl")
+               (list tplg dest-tplg)))))
+    (home-page "https://www.sofproject.org")
+    (synopsis "Sound Open Firmware")
+    (description "This package contains Linux firmwares and topology files for
+audio DSPs that can be found on the Intel Skylake architecture.  Those
+firmware can be built for source but need to be signed by Intel in order to be
+loaded by Linux.")
+    (license bsd-3)))
