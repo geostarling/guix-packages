@@ -66,6 +66,7 @@
       `(("python-pytest" ,python-pytest)))
      (propagated-inputs
       `(("openssl" ,openssl)
+        ("tinyxml2" ,tinyxml2)
         ("git" ,git)))
      (home-page "https://github.com/attwad/python-osc")
      (synopsis "Open Sound Control server and client implementations")
