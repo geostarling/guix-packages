@@ -28,6 +28,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages fonts)
+  #:use-module (gnu packages xml)
   #:use-module (gnu packages check)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages webkit)
@@ -49,7 +50,7 @@
   (let ((commit "53dfe859569a9abdd620ab06c03b3d92a0b04681"))
     (package
      (name "pmbootstrap")
-     (version  (git-version "1.33.0" "1" commit))
+     (version  (git-version "1.33.0" "2" commit))
      (source (origin
               (method git-fetch)
               (uri (git-reference
