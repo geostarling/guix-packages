@@ -48,6 +48,7 @@
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages kodi)
+  #:use-module (personal packages kodi)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages tcl)
@@ -266,16 +267,16 @@ plug-in system.")
 (define-public kodi-pvr-hts
   (package
    (name "kodi-pvr-hts")
-   (version "4.4.20")
+   (version "8.3.0")
    (source (origin
             (method git-fetch)
             (uri (git-reference
                   (url "https://github.com/kodi-pvr/pvr.hts.git")
-                  (commit (string-append version "-Leia"))))
+                  (commit (string-append version "-Matrix"))))
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "09icwncgvzfxngf6ln81yd5pxdl6ql6bing5zkvsmvfp2d4ammzz"))))
+              "1lqd0kkfv06n8ax8ywsi1rx9glvx3pwi9yj9yb3fdf39xmd3hz7y"))))
    (build-system cmake-build-system)
    (arguments
     `(#:tests? #f
@@ -286,9 +287,7 @@ plug-in system.")
                           ;; of share/kodi, so we place all of the data resources alongside the shared lib
                           "-DCMAKE_INSTALL_DATADIR=lib/kodi")))
    (inputs
-    `(("libp8-platform" ,libp8-platform)
-      ("kodi-platform" ,kodi-platform)
-      ("kodi" ,kodi)))
+    `(("kodi" ,kodi-19)))
    (synopsis "Media center for home theater computers")
    (description "Kodi is a media center application for playing videos,
 music, games, etc.  Kodi is highly customizable and features a theme and
