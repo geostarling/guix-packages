@@ -85,16 +85,16 @@
 (define-public dtv-scan-tables
   (package
     (name "dtv-scan-tables")
-    (version "20191116")
+    (version "20210623")
     (source (origin
              (method git-fetch)
              (uri (git-reference
                    (url "https://github.com/crazycat69/dtv-scan-tables.git")
-                   (commit "8767d01455e9d74eb954683fcde24009e15fd609")))
+                   (commit "a89c4055b0394ae50de3f425294f7b7d8929483a")))
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1rla37s45ckwc9x4ybii5kavprfln2i4mqizbfll0zh5j2y7l60q"))))
+               "0kwhwlmy29bbq7mkkndmr0l4nv3m0h34in7xzby7n1h1zxvfvax9"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
@@ -118,7 +118,7 @@
 (define-public libdvbcsa
   (package
     (name "libdvbcsa")
-    (version "1")
+    (version "20210623")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -146,16 +146,16 @@ library.  It supports almost all PNG features and is extensible.")
 (define-public tvheadend
   (package
     (name "tvheadend")
-    (version "4.2.8")
+    (version "20210623")
     (source (origin
              (method git-fetch)
              (uri (git-reference
                    (url "https://github.com/tvheadend/tvheadend.git")
-                   (commit "bd88f3db6a7ed43dc0dca5ed832da13bf627feaf")))
+                   (commit "eb59284b8527e3c51eadfeca94ec1e9174cdbdb0")))
              (file-name (string-append name "-" version "-checkout"))
              (sha256
               (base32
-               "1pgqpzkfg4icrwnfnyh9qb07nikyqmjsghwxfn7g97jjh6xsp3nr"))))
+               "1f2nn4kcxjfr0xpm2f1zaj2rdvjx9mjdkklnryqrjilq9bdjii44"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f    ; there is no test target
