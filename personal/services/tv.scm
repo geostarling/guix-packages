@@ -43,7 +43,10 @@
             kodi-service-type
             lirc-configuration
             lirc-configuation?
-            lirc-service-type))
+            lirc-service-type
+            irexec-configuration
+            irexec-configuation?
+            irexec-service-type))
 
 ;;;; Commentary:
 ;;;
