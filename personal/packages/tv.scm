@@ -199,6 +199,7 @@ library.  It supports almost all PNG features and is extensible.")
               ("x265" ,x265)
               ("opus" ,opus)
               ("libvpx" ,libvpx)
+              ("tar" ,tar) ;; required for migrations
               ("dtv-scan-tables" ,dtv-scan-tables)))
 
     (home-page
