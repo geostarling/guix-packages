@@ -363,6 +363,7 @@
        ("libxrandr" ,libxrandr)
        ("libxrender" ,libxrender)
        ("libxslt" ,libxslt)
+       ("lirc" ,lirc)
        ("lzo" ,lzo)
        ("mariadb-dev" ,mariadb "lib")
        ("mariadb-dev" ,mariadb "dev")
