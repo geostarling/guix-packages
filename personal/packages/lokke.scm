@@ -37,7 +37,7 @@
 
 
 (define-public lokke
-  (let ((commit "7cf300781631740d86b86b2f145f8860276cc5fe"))
+  (let ((commit "f995d21df57e50bd81a4b69a161d1c88196b812c"))
     (package
      (name "lokke")
      (version "0.0.0")
@@ -50,7 +50,7 @@
         (file-name (git-file-name "lokke" version))
         (sha256
          (base32
-          "0lz9xvd429gs36y2yg962gqrcil86pkigxdaprdnckr4jja0p1is"))))
+          "0h22sfpzhr8m1mw1j28aj5jbvk65r0xl85bxk3r6q7xa73c2r8v9"))))
      (build-system gnu-build-system)
      (arguments
       `(#:phases
