@@ -428,7 +428,10 @@ plug-in system.")
         (let ((kodi-input (assoc-ref %build-inputs "kodi"))
               (kodi-output (assoc-ref %outputs "out")))
           (union-build kodi-output
-                       (map (lambda (input) (cdr input)) %build-inputs)
+                       (map (lambda (input) (cdr input))
+                            (filter (lambda (input)
+                                      (member (car input) '("kodi" "addon")))
+                                    %build-inputs))
                        #:symlink (lambda [input output]
                                    (if (file-is-directory? input)
                                        (copy-recursively input output)
