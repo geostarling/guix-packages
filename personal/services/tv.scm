@@ -282,8 +282,8 @@
            (documentation "Run irexec daemon.")
            (start #~(make-forkexec-constructor
                      (list (string-append #$irexec "/bin/irexec")
-                           "--loglevel=" #$(irexec-configuration-log-level config)
-                           "--name=" #$(irexec-configuration-program-name config)
+                           (string-append "--loglevel=" #$(irexec-configuration-log-level config))
+                           (string-append "--name=" #$(irexec-configuration-program-name config))
                            #$(irexec-configuration-config-path config))))
            (stop #~(make-kill-destructor))))))
 
