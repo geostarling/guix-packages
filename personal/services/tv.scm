@@ -266,12 +266,6 @@
   (config-path
    (string "")
    "Path to lircrc configuration file.")
-  (user
-   (string "")
-   "User who will run the Irexec daemon.")
-  (group
-   (string "video")
-   "Group who will run the Irexec daemon.")
   (program-name
    (string "irexec")
    "Name of program in lircrc")
@@ -288,14 +282,11 @@
     (list (shepherd-service
            (provision '(irexec))
            (documentation "Run irexec daemon.")
-           (requirement '(networking))
            (start #~(make-forkexec-constructor
                      (list (string-append #$irexec "/bin/irexec")
                            "--loglevel=" #$(irexec-configuration-log-level config)
                            "--name=" #$(irexec-configuration-program-name config)
-                           #$(irexec-configuration-config-path config))
-                     #:user #$user
-                     #:group #$group))
+                           #$(irexec-configuration-config-path config))))
            (stop #~(make-kill-destructor))))))
 
 (define irexec-service-type
