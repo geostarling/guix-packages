@@ -276,9 +276,7 @@
 
 (define (irexec-shepherd-service config)
   "Return a <shepherd-service> for irexec with CONFIG."
-  (let* ((irexec   (irexec-configuration-package config))
-         (user        (irexec-configuration-user config))
-         (group       (irexec-configuration-group config)))
+  (let* ((irexec   (irexec-configuration-package config)))
     (list (shepherd-service
            (provision '(irexec))
            (documentation "Run irexec daemon.")
