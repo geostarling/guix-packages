@@ -277,6 +277,11 @@
                ;; to make them writable before the build process starts.
                (("autoreconf -vif") "chmod -R u+w ."))
 
+             (substitute* "xbmc/platform/posix/PosixTimezone.cpp"
+              (("/usr/share/zoneinfo")
+               (string-append (assoc-ref inputs "tzdata")
+                              "/share/zoneinfo")))
+
              ;; Don't phone home to check for updates.
              (substitute* "system/addon-manifest.xml"
                (("<addon optional=\\\"true\\\">service.xbmc.versioncheck</addon>")
