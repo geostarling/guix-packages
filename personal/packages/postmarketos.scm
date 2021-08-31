@@ -47,10 +47,10 @@
 
 
 (define-public pmbootstrap
-  (let ((commit "2d3cfbcbb424bb5339f7a77267d6e4e25a7e4150"))
+  (let ((commit "468d313790e7783210761e56369cf715d5b1abf1"))
     (package
      (name "pmbootstrap")
-     (version  (git-version "1.36.0" "1" commit))
+     (version  (git-version "1.36.0" "2" commit))
      (source (origin
               (method git-fetch)
               (uri (git-reference
