@@ -47,7 +47,7 @@
 
 
 (define-public pmbootstrap
-  (let ((commit "468d313790e7783210761e56369cf715d5b1abf1"))
+  (let ((commit "1b1bs6v79qin9hifmm9ibibr8nwvf3657q85adgyycm4549fkgrc"))
     (package
      (name "pmbootstrap")
      (version  (git-version "1.36.0" "2" commit))
