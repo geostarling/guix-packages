@@ -157,3 +157,55 @@ files and subdirectories when appropriate.")
  mode for Lisp programming languages.  It will infer some changes to
  keep Parens and Indentation inline with one another.")
      (license license:gpl3+))))
+
+(define-public emacs-plz
+  (let ((commit "7e456638a651bab3a814e3ea81742dd917509cbb")
+        (revision "1")
+        (version "0.1-pre"))
+    (package
+      (name "emacs-plz")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/alphapapa/plz.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "05kgxrps1s20im5hhq799nrs3615bvssm4r0ysgmwm203mmzsjgj"))))
+      (build-system emacs-build-system)
+      (home-page
+       "https://github.com/alphapapa/plz.el")
+      (synopsis "GNU Emacs HTTP library")
+      (description #f)
+      (license license:gpl3+))))
+
+
+(define-public emacs-ement
+  (let ((commit "3c14f6c4c10f994218689d372bf1fdbe714ac529")
+        (revision "1")
+        (version "0.1-pre"))
+    (package
+      (name "emacs-ement")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/alphapapa/ement.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0hvyaia1hacm1kxgd5gvac8m7wxp62qwyf1gjng5sg5rpa0ppavz"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       `(("emacs-plz" ,emacs-plz)
+         ("emacs-ts" ,emacs-ts)))
+      (home-page
+       "https://github.com/alphapapa/ement.el")
+      (synopsis "GNU Emacs client for Matrix")
+      (description #f)
+      (license license:gpl3+))))
