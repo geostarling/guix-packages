@@ -336,7 +336,7 @@
        ("ffmpeg" ,ffmpeg)
        ("flac" ,flac)
        ("flatbuffers" ,flatbuffers)
-       ("fmt" ,fmt)
+       ("fmt" ,fmt-7)
        ("fontconfig" ,fontconfig)
        ("freetype" ,freetype)
        ("fribidi" ,fribidi)
