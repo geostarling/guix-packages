@@ -204,7 +204,7 @@
 (define-public kodi-19
   (package
     (name "kodi")
-    (version "19.1")
+    (version "19.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -213,7 +213,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0jh67vw3983lnfgqzqfislawwbpq0vxxk1ljsg7mar06mlwfxb7h"))
+                "02bnknk87zzv9j6b6k9c0xx47q2gh399j6v25rm94g7rhzf8phbw"))
               ;;(patches (search-patches)) ;;"kodi-skip-test-449.patch"
                                        ;;"kodi-increase-test-timeout.patch"
                                        ;;"kodi-set-libcurl-ssl-parameters.patch"))
@@ -336,7 +336,7 @@
        ("ffmpeg" ,ffmpeg)
        ("flac" ,flac)
        ("flatbuffers" ,flatbuffers)
-       ("fmt" ,fmt-7)
+       ("fmt" ,fmt)
        ("fontconfig" ,fontconfig)
        ("freetype" ,freetype)
        ("fribidi" ,fribidi)
