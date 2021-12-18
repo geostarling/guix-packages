@@ -47,10 +47,10 @@
 
 
 (define-public pmbootstrap
-  (let ((commit "498738abcc8a9f51792540b0943648a3fdc70e2f"))
+  (let ((commit "fd7050835f88797d15ebdfbfa1424ebcf002de3d"))
     (package
      (name "pmbootstrap")
-     (version  (git-version "1.39.0" "0" commit))
+     (version  (git-version "1.40.0" "0" commit))
      (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -59,7 +59,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mrhgi5y3jwd922cmm2niy9ia0g8p6bsqjjxg523yandshpa3683"))))
+                "1m059k91s2m0f111p4jzk46w2sh0pc1c7nz2vgbh35q8g808fb6v"))))
      (build-system python-build-system)
      (arguments
       `(#:tests? #f))
