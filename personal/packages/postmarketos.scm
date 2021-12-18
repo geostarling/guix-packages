@@ -67,7 +67,8 @@
       `(("python-pytest" ,python-pytest)))
      (propagated-inputs
       `(("openssl" ,openssl)
-        ("git" ,git)))
+        ("git" ,git)
+        ("sudo" ,sudo)))
      (home-page "https://github.com/attwad/python-osc")
      (synopsis "Open Sound Control server and client implementations")
      (description
