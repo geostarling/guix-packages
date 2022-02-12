@@ -93,7 +93,7 @@
         ("libtool" ,libtool)
         ("man-db" ,man-db)))
      (inputs
-      `(("guile" ,guile-3.0)
+      `(("guile" ,guile-3.0-latest)
         ("pcre2" ,pcre2)))
      (synopsis "NGINX module for Lua programming language support")
      (description "This NGINX module provides a scripting support with Lua
