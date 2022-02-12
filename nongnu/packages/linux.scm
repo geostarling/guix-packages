@@ -3,9 +3,12 @@
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020, 2021 James Smith <jsubuntuxp@disroot.org>
-;;; Copyright © 2020, 2021 Jonathan Brielmaier <jonathan.brielmaier@web.de>
+;;; Copyright © 2020, 2021, 2022 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2021 Risto Stevcev <me@risto.codes>
+;;; Copyright © 2021 aerique <aerique@xs4all.nl>
+;;; Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
 ;;;
 ;;; This program is free software: you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -58,13 +61,17 @@
      "The unmodified Linux kernel, including nonfree blobs, for running Guix
 System on hardware which requires nonfree software to function.")))
 
+(define-public linux-5.16
+  (corrupt-linux linux-libre-5.16 "5.16.8"
+                 "05h3b11czr710lilmb5gq84a78cfz3jm03q2q0gcrpcaxq2mzajj"))
+
 (define-public linux-5.15
-  (corrupt-linux linux-libre-5.15 "5.15.6"
-                 "1w0plw9rzk2c0g8yxzwj7c6wkq538sy56mx1skmf58wrl83bmsdk"))
+  (corrupt-linux linux-libre-5.15 "5.15.21"
+                 "1lgvf3mrsbwjdjfvznbf5c3np76a7xxqr2rw7i6196ywsxnfnki9"))
 
 (define-public linux-5.10
-  (corrupt-linux linux-libre-5.10 "5.10.83"
-                 "0w4vq8wby3m9f5ryssh6z948m6zj1bjz9x432805dnrxyd1rl9gg"))
+  (corrupt-linux linux-libre-5.10 "5.10.98"
+                 "0hwl1ypllx9l5pv04yavz627qb31ki9mhznsak5bq48hbz0wc90v"))
 
 (define-public linux-5.4
   (corrupt-linux linux-libre-5.4 "5.4.145"
@@ -82,18 +89,14 @@ System on hardware which requires nonfree software to function.")))
   (corrupt-linux linux-libre-4.9 "4.9.282"
                  "059fin4si93ya13xy831w84q496ksxidpd3kyw38918sfy4p6wk7"))
 
-(define-public linux-4.4
-  (corrupt-linux linux-libre-4.4 "4.4.283"
-                 "1d9v4h4cbc4i371lhhwpxbmg88gna6xyi2ahfvv0clz60802y982"))
-
-(define-public linux linux-5.15)
+(define-public linux linux-5.16)
 ;; linux-lts points to the *newest* released long-term support version.
 (define-public linux-lts linux-5.10)
 
 (define-public linux-firmware
   (package
     (name "linux-firmware")
-    (version "20210919")
+    (version "20211216")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://git.kernel.org/pub/scm/linux/kernel"
@@ -101,7 +104,7 @@ System on hardware which requires nonfree software to function.")))
                                   "linux-firmware-" version ".tar.gz"))
               (sha256
                (base32
-                "1fy6alg7pz5bc09vq0icmgbwqpribws6nyc6k2pkip8jljmxvlr0"))))
+                "18qrlrkdzygmd9ihm7dziimkpzkfil50afnjwhfd88ic4gfkbxy0"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
@@ -412,6 +415,26 @@ support for 5GHz and 802.11ac, among others.")
                "https://git.kernel.org/pub/scm/linux/kernel/git/firmware"
                "/linux-firmware.git/plain/LICENCE.iwlwifi_firmware")))))
 
+(define-public i915-firmware
+  (package
+    (inherit linux-firmware)
+    (name "i915-firmware")
+    (arguments
+     `(#:license-file-regexp "LICENCE.i915"
+       ,@(substitute-keyword-arguments (package-arguments linux-firmware)
+           ((#:phases phases)
+            `(modify-phases ,phases
+               (add-after 'unpack 'select-firmware
+                 ,(select-firmware "^i915/")))))))
+    (home-page "https://01.org/linuxgraphics/gfx-docs/drm/gpu/i915.html")
+    (synopsis "Nonfree firmware for Intel integrated graphics")
+    (description "This package contains the various firmware for Intel
+integrated graphics chipsets, including GuC, HuC and DMC.")
+    (license
+     (nonfree (string-append
+               "https://git.kernel.org/pub/scm/linux/kernel/git/firmware"
+               "/linux-firmware.git/plain/LICENCE.i915")))))
+
 (define-public realtek-firmware
   (package
     (inherit linux-firmware)
@@ -422,7 +445,8 @@ support for 5GHz and 802.11ac, among others.")
            ((#:phases phases)
             `(modify-phases ,phases
                (add-after 'unpack 'select-firmware
-                 ,(select-firmware "^(rtlwifi|rtl_nic|rtl_bt)/")))))))
+                 ,(select-firmware
+                   "^(rtlwifi|rtl_nic|rtl_bt|rtw88|rtw89)/")))))))
     (home-page "https://wireless.wiki.kernel.org/en/users/drivers/rtl819x")
     (synopsis "Nonfree firmware for Realtek ethernet, wifi, and bluetooth chips")
     (description
@@ -512,8 +536,8 @@ package contains nonfree firmware for the following chips:
   (deprecated-package "rtl-bt-firmware" realtek-firmware))
 
 (define-public rtl8192eu-linux-module
-  (let ((commit "cdf1b06b7bff49042f42d0294610d3f3780ee62b")
-        (revision "1"))
+  (let ((commit "fb81d860ea4f6d54bfc2a9a8f1aa5c37eb6aea6b")
+        (revision "2"))
     (package
       (name "rtl8192eu-linux-module")
       (version (git-version "0.0.0" revision commit))
@@ -526,7 +550,7 @@ package contains nonfree firmware for the following chips:
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1afscxmjmapvm8hcd0blp1fn5lxg92rhpiqkgj89x53shfsp12d6"))))
+           "1cr5agl19srbpkklpjlhnrc9v3xdzm1lwrka4iafvp02k4sbwh02"))))
       (build-system linux-module-build-system)
       (arguments
        `(#:make-flags
@@ -544,6 +568,8 @@ package contains nonfree firmware for the following chips:
       (synopsis "Linux driver for Realtek RTL8192EU wireless network adapters")
       (description "This is Realtek's RTL8192EU Linux driver for wireless
 network adapters.")
+      ;; Rejected by Guix beause it contains a binary blob in:
+      ;; hal/rtl8192e/hal8192e_fw.c
       (license gpl2))))
 
 (define broadcom-sta-version "6.30.223.271")
@@ -598,25 +624,15 @@ network adapters.")
   (package
     (name "broadcom-sta")
     (version broadcom-sta-version)
-    (source #f)
+    (source
+     (match (or (%current-target-system) (%current-system))
+       ("x86_64-linux" broadcom-sta-x86_64-source)
+       (_ broadcom-sta-i686-source)))
     (build-system linux-module-build-system)
     (arguments
      `(#:linux ,linux
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'unpack
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((source (assoc-ref inputs "broadcom-sta-source")))
-               (invoke "tar" "xf" source)
-               (chdir ((@@ (guix build gnu-build-system) first-subdirectory) "."))
-               #t))))))
+       #:tests? #f))
     (supported-systems '("i686-linux" "x86_64-linux"))
-    (native-inputs
-     `(("broadcom-sta-source"
-        ,(match (or (%current-target-system) (%current-system))
-           ("x86_64-linux" broadcom-sta-x86_64-source)
-           (_ broadcom-sta-i686-source)))))
     (home-page "https://www.broadcom.com/support/802.11")
     (synopsis "Broadcom 802.11 Linux STA wireless driver")
     (description "This package contains Broadcom's IEEE 802.11a/b/g/n/ac hybrid
@@ -791,42 +807,21 @@ documented in the respective processor revision guides.")
 (define-public sof-firmware
   (package
     (name "sof-firmware")
-    (version "1.6.1")
+    (version "1.7")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/thesofproject/sof-bin")
-             (commit (string-append "stable-v" version))))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zg5fki8skmmx84p4ws8x2m13bm13fb3kvlhz7zsnmdg6ra06az6"))))
+        (base32 "1fb4rxgg3haxqg2gcm89g7af6v0a0h83c1ar2fyfa8h8pcf7hik7"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan
-       (let* ((base
-               (string-append "lib/firmware/intel/sof/v" ,version))
-              (dest "lib/firmware/intel/sof")
-              (tplg
-               (string-append "lib/firmware/intel/sof-tplg-v" ,version))
-              (dest-tplg "lib/firmware/intel/sof-tplg")
-              (fw-file (lambda* (file #:optional subdir)
-                         (list (string-append base "/"
-                                              (or subdir "")
-                                              file "-v" ,version ".ri")
-                               (string-append dest "/" file ".ri"))))
-              (unsigned fw-file)
-              (intel-signed (lambda (file)
-                              (fw-file file "intel-signed/"))))
-         (list (unsigned "sof-bdw")
-               (unsigned "sof-byt")
-               (unsigned "sof-cht")
-               (intel-signed "sof-apl")
-               (intel-signed "sof-cnl")
-               (intel-signed "sof-ehl")
-               (intel-signed "sof-icl")
-               (intel-signed "sof-tgl")
-               (list tplg dest-tplg)))))
+       (list (list (string-append "sof-v" ,version) "lib/firmware/intel/sof")
+             (list (string-append "sof-tplg-v" ,version) "lib/firmware/intel/sof-tplg"))))
     (home-page "https://www.sofproject.org")
     (synopsis "Sound Open Firmware")
     (description "This package contains Linux firmwares and topology files for
