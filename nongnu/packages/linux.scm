@@ -62,12 +62,12 @@
 System on hardware which requires nonfree software to function.")))
 
 (define-public linux-5.16
-  (corrupt-linux linux-libre-5.16 "5.16.8"
-                 "05h3b11czr710lilmb5gq84a78cfz3jm03q2q0gcrpcaxq2mzajj"))
+  (corrupt-linux linux-libre-5.16 "5.16.11"
+                 "08xhm3ngg9157r69v44akp6cj73g33l6wa7073s4sjn4lic6263d"))
 
 (define-public linux-5.15
-  (corrupt-linux linux-libre-5.15 "5.15.21"
-                 "1lgvf3mrsbwjdjfvznbf5c3np76a7xxqr2rw7i6196ywsxnfnki9"))
+  (corrupt-linux linux-libre-5.15 "5.15.25"
+                 "0y9qahkya5dfnr6g04w5ym0p6h9ixmcdhvgz9g2b64aaaazgz6a3"))
 
 (define-public linux-5.10
   (corrupt-linux linux-libre-5.10 "5.10.98"
@@ -174,16 +174,30 @@ advanced 3D.")))
 (define-public raspberrypi-firmware
 (package
   (name "raspberrypi-firmware")
-  (version "1.20210527")
+  (version "1.20220120")
   (source (origin
             (method git-fetch)
             (uri (git-reference
                   (url "https://github.com/raspberrypi/firmware")
                   (commit version)))
+            (modules '((guix build utils)
+                       (ice-9 ftw)
+                       (srfi srfi-26)))
+            (snippet
+             '(begin
+                (for-each (lambda (name)
+                            (delete-file-recursively name))
+                          `("documentation" "extra" ".github" "hardfp" "modules" "opt" "README.md"
+                            ,@(map (lambda (name)
+                                     (string-append "boot/" name))
+                                   (scandir "boot" (cut (file-name-predicate "^(kernel.*|COPYING\\.linux)$") <> #f)))))))
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "08lgg90k6lhqm3ccg7db0lrrng0pgf63dvbrxpfpwm1pswrc5vf5"))))
+              "0s75fw4n83bkh78xh5rdgpiyp1bkvv1v18pawl4cs9v4gjkn6pi2"))))
+    (arguments
+     '(#:install-plan
+       '(("boot/" "."))))
   (build-system copy-build-system)
   (synopsis "Firmware for the Raspberry Pi boards")
   (description "Pre-compiled binaries of the current Raspberry Pi kernel
@@ -754,7 +768,7 @@ chipsets from Broadcom:
 (define-public intel-microcode
   (package
     (name "intel-microcode")
-    (version "20210608")
+    (version "20220207")
     (source
      (origin
        (method git-fetch)
@@ -765,7 +779,7 @@ chipsets from Broadcom:
              (commit (string-append "microcode-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08nk353z2lcqsjbm2qdsfapfgrvlfw0rj7r9scr9pllzkjj5n9x3"))))
+        (base32 "0g4fz108xzc1khxg50ll4spx8jgfmsp5k196i6yc0pq0zw0xilf8"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan
