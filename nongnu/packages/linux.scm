@@ -9,6 +9,8 @@
 ;;; Copyright © 2021 Risto Stevcev <me@risto.codes>
 ;;; Copyright © 2021 aerique <aerique@xs4all.nl>
 ;;; Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This program is free software: you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -46,10 +48,10 @@
   (list (string-append "https://www.kernel.org/pub/linux/kernel/v"
                        (version-major version) ".x/linux-" version ".tar.xz")))
 
-(define (corrupt-linux freedo version hash)
+(define* (corrupt-linux freedo version hash #:key (name "linux"))
   (package
     (inherit freedo)
-    (name "linux")
+    (name name)
     (version version)
     (source (origin
               (method url-fetch)
@@ -61,17 +63,17 @@
      "The unmodified Linux kernel, including nonfree blobs, for running Guix
 System on hardware which requires nonfree software to function.")))
 
-(define-public linux-5.16
-  (corrupt-linux linux-libre-5.16 "5.16.11"
-                 "08xhm3ngg9157r69v44akp6cj73g33l6wa7073s4sjn4lic6263d"))
+(define-public linux-5.17
+  (corrupt-linux linux-libre-5.17 "5.17.5"
+                 "11z95wsgmj97pg77yck26l0383gncbla0zwpzv4gjdj4p62x3g4v"))
 
 (define-public linux-5.15
-  (corrupt-linux linux-libre-5.15 "5.15.25"
-                 "0y9qahkya5dfnr6g04w5ym0p6h9ixmcdhvgz9g2b64aaaazgz6a3"))
+  (corrupt-linux linux-libre-5.15 "5.15.36"
+                 "1466557034q1fzvpy8vwj8ps3cv2q8s7z76af9y1jz4kgaqmsd1n"))
 
 (define-public linux-5.10
-  (corrupt-linux linux-libre-5.10 "5.10.98"
-                 "0hwl1ypllx9l5pv04yavz627qb31ki9mhznsak5bq48hbz0wc90v"))
+  (corrupt-linux linux-libre-5.10 "5.10.107"
+                 "1snzzhkzdjlj92gqig3sanxlhv0xc0xk2xwjdjr0yds6g43w6ry4"))
 
 (define-public linux-5.4
   (corrupt-linux linux-libre-5.4 "5.4.145"
@@ -89,9 +91,23 @@ System on hardware which requires nonfree software to function.")))
   (corrupt-linux linux-libre-4.9 "4.9.282"
                  "059fin4si93ya13xy831w84q496ksxidpd3kyw38918sfy4p6wk7"))
 
-(define-public linux linux-5.16)
+(define-public linux linux-5.17)
 ;; linux-lts points to the *newest* released long-term support version.
-(define-public linux-lts linux-5.10)
+(define-public linux-lts linux-5.15)
+
+(define-public linux-arm64-generic-5.17
+  (corrupt-linux linux-libre-arm64-generic "5.17.1"
+                 "092cx18va108lb27kxx2b00ma3l9g22nmkk81034apx26bacbmbw"
+		 #:name "linux-arm64-generic"))
+
+(define-public linux-arm64-generic-5.15
+  (corrupt-linux linux-libre-arm64-generic "5.15.30"
+                 "0ckiz985x88x68psg6wazyk7zpv34k8rbzpzyzj0gaph13za4ki5"
+		 #:name "linux-arm64-generic"))
+
+(define-public linux-arm64-generic linux-arm64-generic-5.17)
+
+(define-public linux-arm64-generic-lts linux-arm64-generic-5.15)
 
 (define-public linux-firmware
   (package
@@ -550,8 +566,8 @@ package contains nonfree firmware for the following chips:
   (deprecated-package "rtl-bt-firmware" realtek-firmware))
 
 (define-public rtl8192eu-linux-module
-  (let ((commit "fb81d860ea4f6d54bfc2a9a8f1aa5c37eb6aea6b")
-        (revision "2"))
+  (let ((commit "8396a4ebb4bde6b5c919d291838320f0e5b480dd")
+        (revision "3"))
     (package
       (name "rtl8192eu-linux-module")
       (version (git-version "0.0.0" revision commit))
@@ -564,7 +580,7 @@ package contains nonfree firmware for the following chips:
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1cr5agl19srbpkklpjlhnrc9v3xdzm1lwrka4iafvp02k4sbwh02"))))
+           "0kbfrvrfbi1r6if9vi7ccn0nc4lcqp85insiksyg3kg99mx78xhk"))))
       (build-system linux-module-build-system)
       (arguments
        `(#:make-flags
