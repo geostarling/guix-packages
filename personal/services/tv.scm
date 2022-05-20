@@ -253,6 +253,7 @@
 
 (define lirc-service-type
   (service-type (name 'lirc)
+                (description "TODO")
                 (extensions
                  (list (service-extension shepherd-root-service-type
                                           lirc-shepherd-service)
@@ -291,6 +292,7 @@
 (define irexec-service-type
   (service-type
    (name 'irexec)
+   (description "TODO")
    (extensions
     (list (service-extension shepherd-root-service-type irexec-shepherd-service)))
    (default-value (irexec-configuration))))
