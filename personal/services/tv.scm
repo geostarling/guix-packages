@@ -182,6 +182,7 @@
 (define tvheadend-service-type
   (service-type
    (name 'tvheadend)
+   (description "TODO")
    (extensions
     (list (service-extension shepherd-root-service-type tvheadend-shepherd-service)
           (service-extension account-service-type tvheadend-account)

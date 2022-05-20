@@ -114,6 +114,7 @@
 (define bridge-service-type
   (service-type
    (name 'bridge)
+   (description "TODO")
    (extensions
     (list (service-extension shepherd-root-service-type bridge-shepherd-service)))
    (default-value (bridge-configuration))))
