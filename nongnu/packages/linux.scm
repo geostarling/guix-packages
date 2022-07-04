@@ -11,6 +11,7 @@
 ;;; Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
 ;;;
 ;;; This program is free software: you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -63,17 +64,17 @@
      "The unmodified Linux kernel, including nonfree blobs, for running Guix
 System on hardware which requires nonfree software to function.")))
 
-(define-public linux-5.17
-  (corrupt-linux linux-libre-5.17 "5.17.5"
-                 "11z95wsgmj97pg77yck26l0383gncbla0zwpzv4gjdj4p62x3g4v"))
+(define-public linux-5.18
+  (corrupt-linux linux-libre-5.18 "5.18.8"
+                 "0dhaj1zcsr5sfg62byzvvkhm9j419px6v9v04ngcy0d0vc2yn8q8"))
 
 (define-public linux-5.15
-  (corrupt-linux linux-libre-5.15 "5.15.36"
-                 "1466557034q1fzvpy8vwj8ps3cv2q8s7z76af9y1jz4kgaqmsd1n"))
+  (corrupt-linux linux-libre-5.15 "5.15.51"
+                 "1229m4r4n61n5l8anp2pcqdhajkwmavhr1z00n8gvx3yn9w4ifhz"))
 
 (define-public linux-5.10
-  (corrupt-linux linux-libre-5.10 "5.10.107"
-                 "1snzzhkzdjlj92gqig3sanxlhv0xc0xk2xwjdjr0yds6g43w6ry4"))
+  (corrupt-linux linux-libre-5.10 "5.10.113"
+                 "1z3dd5hrdbn2axsi2n70n41q1dq2dvg7s8aph1p6yiajpc16llc2"))
 
 (define-public linux-5.4
   (corrupt-linux linux-libre-5.4 "5.4.145"
@@ -91,7 +92,7 @@ System on hardware which requires nonfree software to function.")))
   (corrupt-linux linux-libre-4.9 "4.9.282"
                  "059fin4si93ya13xy831w84q496ksxidpd3kyw38918sfy4p6wk7"))
 
-(define-public linux linux-5.17)
+(define-public linux linux-5.18)
 ;; linux-lts points to the *newest* released long-term support version.
 (define-public linux-lts linux-5.15)
 
@@ -112,7 +113,7 @@ System on hardware which requires nonfree software to function.")))
 (define-public linux-firmware
   (package
     (name "linux-firmware")
-    (version "20211216")
+    (version "20220509")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://git.kernel.org/pub/scm/linux/kernel"
@@ -120,7 +121,7 @@ System on hardware which requires nonfree software to function.")))
                                   "linux-firmware-" version ".tar.gz"))
               (sha256
                (base32
-                "18qrlrkdzygmd9ihm7dziimkpzkfil50afnjwhfd88ic4gfkbxy0"))))
+                "09461dcfxvzzsl768myywb64jivnxyx3m4apbygq4501l8h8ybig"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
@@ -190,7 +191,7 @@ advanced 3D.")))
 (define-public raspberrypi-firmware
 (package
   (name "raspberrypi-firmware")
-  (version "1.20220120")
+  (version "1.20220331")
   (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -210,7 +211,7 @@ advanced 3D.")))
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "0s75fw4n83bkh78xh5rdgpiyp1bkvv1v18pawl4cs9v4gjkn6pi2"))))
+              "1hd1vkghkgdlmw04fap28f68nsf7d7i8dq6h9r4xa0h9y4f6j6ag"))))
     (arguments
      '(#:install-plan
        '(("boot/" "."))))
@@ -660,7 +661,7 @@ network adapters.")
        (_ broadcom-sta-i686-source)))
     (build-system linux-module-build-system)
     (arguments
-     `(#:linux ,linux
+     `(#:linux ,linux-lts
        #:tests? #f))
     (supported-systems '("i686-linux" "x86_64-linux"))
     (home-page "https://www.broadcom.com/support/802.11")
@@ -705,9 +706,7 @@ releases.")
          "1b1qjwxjk4y91l3iz157kms8601n0mmiik32cs6w9b1q4sl4pxx9"))))
     (build-system trivial-build-system)
     (arguments
-     `(#:modules ((guix build utils)
-                  (ice-9 rdelim)
-                  (ice-9 regex))
+     `(#:modules ((guix build utils))
        #:builder
        (begin
          (use-modules (guix build utils)
@@ -784,7 +783,7 @@ chipsets from Broadcom:
 (define-public intel-microcode
   (package
     (name "intel-microcode")
-    (version "20220207")
+    (version "20220510")
     (source
      (origin
        (method git-fetch)
@@ -795,7 +794,7 @@ chipsets from Broadcom:
              (commit (string-append "microcode-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g4fz108xzc1khxg50ll4spx8jgfmsp5k196i6yc0pq0zw0xilf8"))))
+        (base32 "1qxp5r9rg1aqwgmryr2s0dw75jwc5nh8b2xszwlbfgyq5v42mvy7"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan
