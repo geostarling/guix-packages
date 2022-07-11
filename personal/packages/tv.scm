@@ -146,16 +146,16 @@ library.  It supports almost all PNG features and is extensible.")
 (define-public tvheadend
   (package
     (name "tvheadend")
-    (version "20210623")
+    (version "20220705")
     (source (origin
              (method git-fetch)
              (uri (git-reference
                    (url "https://github.com/tvheadend/tvheadend.git")
-                   (commit "eb59284b8527e3c51eadfeca94ec1e9174cdbdb0")))
+                   (commit "351b5b4158e4201b3567371f80775aca182cbb0e")))
              (file-name (string-append name "-" version "-checkout"))
              (sha256
               (base32
-               "1f2nn4kcxjfr0xpm2f1zaj2rdvjx9mjdkklnryqrjilq9bdjii44"))))
+               "1y2mcn94pwcykbh6cr9v5a3dp12bw6sfz2r8hgl4d9f3srcl1j7a"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f    ; there is no test target
@@ -268,7 +268,7 @@ plug-in system.")
 (define-public kodi-pvr-hts
   (package
    (name "kodi-pvr-hts")
-   (version "8.3.0")
+   (version "19.0.0")
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -277,7 +277,7 @@ plug-in system.")
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "1lqd0kkfv06n8ax8ywsi1rx9glvx3pwi9yj9yb3fdf39xmd3hz7y"))))
+              "099mgxxp08d7xr6mkybzhg6flf8xjd4k4wwsx57vwqa9lg8rczzy"))))
    (build-system cmake-build-system)
    (arguments
     `(#:tests? #f

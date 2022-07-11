@@ -204,7 +204,7 @@
 (define-public kodi-19
   (package
     (name "kodi")
-    (version "19.3")
+    (version "19.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -213,7 +213,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02bnknk87zzv9j6b6k9c0xx47q2gh399j6v25rm94g7rhzf8phbw"))
+                "0c8bdjjfhmv6nrkr81nzrrs5qq3aa827kvjbsvyj11mdf9incfsw"))
               ;;(patches (search-patches)) ;;"kodi-skip-test-449.patch"
                                        ;;"kodi-increase-test-timeout.patch"
                                        ;;"kodi-set-libcurl-ssl-parameters.patch"))
