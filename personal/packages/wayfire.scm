@@ -320,41 +320,42 @@ and Matrox.")
 
 
 (define-public wcm
-  (package
-    (name "wcm")
-    (version "0.7.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/WayfireWM/wcm/releases/download/v" version "/wcm-" version  ".tar.xz"))
-              (sha256
-               (base32
-                "19za1fnlf5hz4n4mxxwqcr5yxp6mga9ah539ifnjnqrgvj19cjlj"))))
-    (build-system meson-build-system)
-    ;; (arguments
-    ;;  `(#:phases
-    ;;    (modify-phases %standard-phases
-    ;;                   (add-before 'configure 'fixgcc7
-    ;;                               (lambda _
-    ;;                                 (unsetenv "C_INCLUDE_PATH")
-    ;;                                 (unsetenv "CPLUS_INCLUDE_PATH"))))))
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ("cmake" ,cmake)
-                     ("gcc" ,gcc-7)))
-    (inputs `(("wf-shell" ,wf-shell)
-              ("wayfire" ,wayfire)
-              ("wlroots" ,wlroots)
-              ("cairo" ,cairo)
-              ("libxml2" ,libxml2)
-              ("wayland" ,wayland)
-              ("wayland-protocols" ,wayland-protocols)
-              ("glm" ,glm)
-              ("gtk+" ,gtk+)
-              ("pango" ,pango)
-              ("libevdev" ,libevdev)))
+  (let ((commit "4c80340e7a207adb203037094ab378d933839485"))
+    (package
+      (name "wcm")
+      (version "0.7.1-alpha")
+      (source (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/WayfireWM/wcm")
+                     (commit commit)))
+               (file-name (string-append name "-" version "-checkout"))
+               (sha256
+                (base32
+                 "05ba7plk6p7h5ayn0594n3bd00x97fnid3ix991b9ndzpwq3qi6q"))))
+      (build-system meson-build-system)
+      (arguments
+        `(#:configure-flags
+          (list
+           "-Denable_wdisplays=false")))
+      (native-inputs `(("pkg-config" ,pkg-config)
+                       ("cmake" ,cmake)
+                       ("gcc" ,gcc-7)))
+      (inputs `(("wf-shell" ,wf-shell)
+                ("wayfire" ,wayfire)
+                ("wlroots" ,wlroots)
+                ("cairo" ,cairo)
+                ("libxml2" ,libxml2)
+                ("wayland" ,wayland)
+                ("wayland-protocols" ,wayland-protocols)
+                ("glm" ,glm)
+                ("gtk+" ,gtk+)
+                ("pango" ,pango)
+                ("libevdev" ,libevdev)))
 
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-sensors-plugin")
-    (synopsis "3D wayland compositor")
-    (description
-     "")
-    (license (list license:gpl2+ license:lgpl2.0+))))
+      (home-page
+       "https://goodies.xfce.org/projects/panel-plugins/xfce4-sensors-plugin")
+      (synopsis "3D wayland compositor")
+      (description
+       "")
+      (license (list license:gpl2+ license:lgpl2.0+)))))
