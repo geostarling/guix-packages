@@ -207,17 +207,18 @@ and Matrox.")
               (uri (string-append "https://github.com/WayfireWM/wf-config/releases/download/v" version "/wf-config-" version  ".tar.xz"))
               (sha256
                (base32
-                "1ma0b4gl0hing3g00kyckjpfl3g3qi4fm2mgfm6kflqs2xrwwknn"))))
+                "1w75yxhz0nvw4mlv38sxp8k8wb5h99b51x3fdvizc3yaxanqa8kx"))))
     (build-system meson-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-                      (add-before 'configure 'fixgcc7
-                                  (lambda _
-                                    (unsetenv "C_INCLUDE_PATH")
-                                    (unsetenv "CPLUS_INCLUDE_PATH"))))))
+    ;; (arguments
+    ;;  `(#:phases
+    ;;    (modify-phases %standard-phases
+    ;;                   (add-before 'configure 'fixgcc7
+    ;;                               (lambda _
+    ;;                                 (unsetenv "C_INCLUDE_PATH")
+    ;;                                 (unsetenv "CPLUS_INCLUDE_PATH"))))))
     (native-inputs `(("pkg-config" ,pkg-config)
                      ("cmake" ,cmake)
+                     ("glibc" ,glibc)
                      ("gcc" ,gcc-7)))
     (inputs `(("wlroots" ,wlroots)
               ("wayland" ,wayland)
@@ -226,6 +227,7 @@ and Matrox.")
               ("libcap" ,libcap) ;; dep of wlroots
               ("elogind" ,elogind) ;; dep of wlroots
               ("libevdev" ,libevdev)
+              ("libxml2" ,libxml2)
               ("cairo" ,cairo)
               ("libdrm" ,libdrm)
               ("libinput" ,libinput)
@@ -246,25 +248,28 @@ and Matrox.")
     (version "0.7.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://github.com/WayfireWM/wf-shell/releases/download/" version "/wf-shell-" version  ".tar.xz"))
+              (uri (string-append "https://github.com/WayfireWM/wf-shell/releases/download/v" version "/wf-shell-" version  ".tar.xz"))
               (sha256
                (base32
-                "1jgmjclxjnfrxb9l06nm3slxrfsickrkycyvfz38aa5mq6nkqq82"))))
+                "1isybm9lcpxwyf6zh2vzkwrcnw3q7qxm21535g4f08f0l68cd5bl"))))
     (build-system meson-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-                      (add-before 'configure 'fixgcc7
-                                  (lambda _
-                                    (unsetenv "C_INCLUDE_PATH")
-                                    (unsetenv "CPLUS_INCLUDE_PATH"))))))
+    ;; (arguments
+    ;;  `(#:phases
+    ;;    (modify-phases %standard-phases
+    ;;                   (add-before 'configure 'fixgcc7
+    ;;                               (lambda _
+    ;;                                 (unsetenv "C_INCLUDE_PATH")
+    ;;                                 (unsetenv "CPLUS_INCLUDE_PATH"))))))
     (native-inputs `(("pkg-config" ,pkg-config)
                      ("cmake" ,cmake)
                      ("gcc" ,gcc-7)))
     (inputs `(("wayland" ,wayland)
               ("wayland-protocols" ,wayland-protocols)
               ("wf-config" ,wf-config)
-              ("gtkmm" ,gtkmm)
+              ("wayfire" ,wayfire)
+              ("gobject-introspection" ,gobject-introspection)
+              ("libxml2" ,libxml2)
+              ("gtkmm" ,gtkmm-3)
               ("mesa" ,mesa)
               ("libcap" ,libcap) ;; dep of wlroots
               ("elogind" ,elogind) ;; dep of wlroots
@@ -314,61 +319,42 @@ and Matrox.")
 ;;     (license (list license:gpl2+ license:lgpl2.0+))))
 
 
-(define-public albert
+(define-public wcm
   (package
-   (name "albert")
-   (version "0.16.1")
-   (source
-    (origin
-     (method git-fetch)
-     (uri (git-reference
-           (url "https://github.com/albertlauncher/albert")
-           (commit (string-append "v" version))
-           (recursive? #t)))
-     (file-name (git-file-name name version))
-     (sha256
-      (base32
-       "04sr35fqz66i24lv7r2p9qfqxs55i8xpj7aam0v9yakcr33lf55a"))))
-   (build-system cmake-build-system)
-   (arguments
-    `(#:tests? #f
-      #:phases
-      (modify-phases %standard-phases
-                     (add-before 'configure 'fix-x11extras
-                                 (lambda* (#:key outputs #:allow-other-keys)
-                                   (substitute* "plugins/widgetboxmodel/CMakeLists.txt"
-                                                (("^.*find_package.*$")
-                                                 "find_package(Qt5 5.5.0 REQUIRED COMPONENTS Widgets Svg X11Extras)")
-                                                (("^.*target_include_directories.*$")
-                                                 "target_include_directories(${PROJECT_NAME} PRIVATE src/)\nfind_package(Qt5 5.5.0 REQUIRED X11Extras)")
-                                                (("^.*Qt5::Svg.*$")
-                                                 "Qt5::Svg\nQt5::X11Extras"))
-                                   (substitute* "plugins/qmlboxmodel/CMakeLists.txt"
-                                                (("^.*find_package.*$")
-                                                 "find_package(Qt5 5.5.0 REQUIRED COMPONENTS Widgets Qml Quick X11Extras)")
-                                                (("^.*target_include_directories.*$")
-                                                 "target_include_directories(${PROJECT_NAME} PRIVATE src/)\nfind_package(Qt5 5.5.0 REQUIRED X11Extras)")
-                                                (("^.*Qt5::Qml.*$")
-                                                 "Qt5::Qml\nQt5::X11Extras"))
+    (name "wcm")
+    (version "0.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/WayfireWM/wcm/releases/download/v" version "/wcm-" version  ".tar.xz"))
+              (sha256
+               (base32
+                "19za1fnlf5hz4n4mxxwqcr5yxp6mga9ah539ifnjnqrgvj19cjlj"))))
+    (build-system meson-build-system)
+    ;; (arguments
+    ;;  `(#:phases
+    ;;    (modify-phases %standard-phases
+    ;;                   (add-before 'configure 'fixgcc7
+    ;;                               (lambda _
+    ;;                                 (unsetenv "C_INCLUDE_PATH")
+    ;;                                 (unsetenv "CPLUS_INCLUDE_PATH"))))))
+    (native-inputs `(("pkg-config" ,pkg-config)
+                     ("cmake" ,cmake)
+                     ("gcc" ,gcc-7)))
+    (inputs `(("wf-shell" ,wf-shell)
+              ("wayfire" ,wayfire)
+              ("wlroots" ,wlroots)
+              ("cairo" ,cairo)
+              ("libxml2" ,libxml2)
+              ("wayland" ,wayland)
+              ("wayland-protocols" ,wayland-protocols)
+              ("glm" ,glm)
+              ("gtk+" ,gtk+)
+              ("pango" ,pango)
+              ("libevdev" ,libevdev)))
 
-;                                   (substitute* "plugins/widgetboxmodel/src/frontend.ui"
-;                                                (("^.*<header location=\"global\">actionlist.h</header>.*$")
-;                                                 "<header>actionlist.h</header>"))
-                                        ;"find_package(Qt5 5.5.0 REQUIRED X11Extras)\nfind_package(Qt5 5.5.0 REQUIRED COMPONENTS Widgets Svg)"))
-                                   #t)))))
-   (native-inputs `(("pkg-config" ,pkg-config)
-                    ("cmake" ,cmake)))
-   (inputs `(("qtbase" ,qtbase)
-             ("qtx11extras" ,qtx11extras)
-             ("qtcharts" ,qtcharts)
-             ("qtsvg" ,qtsvg)
-             ("qtdeclarative" ,qtdeclarative)
-             ("muparser" ,muparser)
-             ("python" ,python)))
-
-   (home-page
-    "https://goodies.xfce.org/projects/panel-plugins/xfce4-sensors-plugin")
-   (synopsis "3D wayland compositor")
-   (description
-    "")
-   (license (list license:gpl2+ license:lgpl2.0+))))
+    (home-page
+     "https://goodies.xfce.org/projects/panel-plugins/xfce4-sensors-plugin")
+    (synopsis "3D wayland compositor")
+    (description
+     "")
+    (license (list license:gpl2+ license:lgpl2.0+))))
