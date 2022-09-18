@@ -4,6 +4,9 @@
 ;;; Copyright © 2019 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020, 2021 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2020, 2021, 2022 Jonathan Brielmaier <jonathan.brielmaier@web.de>
+;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2020, 2021, 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Risto Stevcev <me@risto.codes>
@@ -12,6 +15,7 @@
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
+
 ;;;
 ;;; This program is free software: you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -35,6 +39,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -64,49 +69,49 @@
      "The unmodified Linux kernel, including nonfree blobs, for running Guix
 System on hardware which requires nonfree software to function.")))
 
-(define-public linux-5.18
-  (corrupt-linux linux-libre-5.18 "5.18.8"
-                 "0dhaj1zcsr5sfg62byzvvkhm9j419px6v9v04ngcy0d0vc2yn8q8"))
+(define-public linux-5.19
+  (corrupt-linux linux-libre-5.19 "5.19.8"
+                 "1kl7fifsa6vsm34xg3kd2svhx18n771hfj67nhwnlalmb9whhqv1"))
 
 (define-public linux-5.15
-  (corrupt-linux linux-libre-5.15 "5.15.51"
-                 "1229m4r4n61n5l8anp2pcqdhajkwmavhr1z00n8gvx3yn9w4ifhz"))
+  (corrupt-linux linux-libre-5.15 "5.15.67"
+                 "0h7r2k59jsw8ykb2p7nxrpazbwx1n5p3nmfbbj1lhib91fldjiys"))
 
 (define-public linux-5.10
-  (corrupt-linux linux-libre-5.10 "5.10.113"
-                 "1z3dd5hrdbn2axsi2n70n41q1dq2dvg7s8aph1p6yiajpc16llc2"))
+  (corrupt-linux linux-libre-5.10 "5.10.142"
+                 "0s52vfvw5pgnq7gq9n66ib05ryhkxwv765f16862l5gykbdynirz"))
 
 (define-public linux-5.4
-  (corrupt-linux linux-libre-5.4 "5.4.145"
-                 "1yb8vk5sbnyswylkpqw5i4n9cmnmlrfmbrnmy3nif579q8p7ixsw"))
+  (corrupt-linux linux-libre-5.4 "5.4.212"
+                 "1hngr4hsrcd6hmlyvc3msy5racniav2jagp5abmp7xsxv0yjxiq9"))
 
 (define-public linux-4.19
-  (corrupt-linux linux-libre-4.19 "4.19.206"
-                 "1h44lvzxd0cngj71bk8qba9dz7jlqj68ir6xjwfafglb81ppgsxp"))
+  (corrupt-linux linux-libre-4.19 "4.19.257"
+                 "0izaldl2l2zsshkd07qsnr9x6ikipmj5jp7lxr8dyz7kf2m17pga"))
 
 (define-public linux-4.14
-  (corrupt-linux linux-libre-4.14 "4.14.246"
-                 "0fpgig84shpas1jc0h4s3aw9brkcq1as84gjbk4bfhc48bpi4mlw"))
+  (corrupt-linux linux-libre-4.14 "4.14.292"
+                 "0zc97qy62dhc5xkjnvsfn4lpl4dgrj23hlxvxcr4cr8sj0hxzx3h"))
 
 (define-public linux-4.9
-  (corrupt-linux linux-libre-4.9 "4.9.282"
-                 "059fin4si93ya13xy831w84q496ksxidpd3kyw38918sfy4p6wk7"))
+  (corrupt-linux linux-libre-4.9 "4.9.327"
+                 "1lh63viynf9f7vl0a52mnal8jack9lbqfsfammwkxi3kafpw30r2"))
 
-(define-public linux linux-5.18)
+(define-public linux linux-5.19)
 ;; linux-lts points to the *newest* released long-term support version.
 (define-public linux-lts linux-5.15)
 
-(define-public linux-arm64-generic-5.17
-  (corrupt-linux linux-libre-arm64-generic "5.17.1"
-                 "092cx18va108lb27kxx2b00ma3l9g22nmkk81034apx26bacbmbw"
+(define-public linux-arm64-generic-5.19
+  (corrupt-linux linux-libre-arm64-generic "5.19.8"
+                 "1kl7fifsa6vsm34xg3kd2svhx18n771hfj67nhwnlalmb9whhqv1"
 		 #:name "linux-arm64-generic"))
 
 (define-public linux-arm64-generic-5.15
-  (corrupt-linux linux-libre-arm64-generic "5.15.30"
-                 "0ckiz985x88x68psg6wazyk7zpv34k8rbzpzyzj0gaph13za4ki5"
+  (corrupt-linux linux-libre-arm64-generic "5.15.67"
+                 "0h7r2k59jsw8ykb2p7nxrpazbwx1n5p3nmfbbj1lhib91fldjiys"
 		 #:name "linux-arm64-generic"))
 
-(define-public linux-arm64-generic linux-arm64-generic-5.17)
+(define-public linux-arm64-generic linux-arm64-generic-5.19)
 
 (define-public linux-arm64-generic-lts linux-arm64-generic-5.15)
 
@@ -783,7 +788,7 @@ chipsets from Broadcom:
 (define-public intel-microcode
   (package
     (name "intel-microcode")
-    (version "20220510")
+    (version "20220809")
     (source
      (origin
        (method git-fetch)
@@ -794,7 +799,7 @@ chipsets from Broadcom:
              (commit (string-append "microcode-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qxp5r9rg1aqwgmryr2s0dw75jwc5nh8b2xszwlbfgyq5v42mvy7"))))
+        (base32 "0252ig6lp39rh87zgiadsmlwjwjr6q0275k5j28rpbq6f108pjxx"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan
@@ -854,7 +859,48 @@ documented in the respective processor revision guides.")
     (home-page "https://www.sofproject.org")
     (synopsis "Sound Open Firmware")
     (description "This package contains Linux firmwares and topology files for
-audio DSPs that can be found on the Intel Skylake architecture.  Those
-firmware can be built for source but need to be signed by Intel in order to be
+audio DSPs that can be found on the Intel Skylake architecture.  This
+firmware can be built from source but need to be signed by Intel in order to be
 loaded by Linux.")
     (license bsd-3)))
+
+(define-public rtl8821ce-linux-module
+  (let ((commit "812fb928f05980d13a3c58a62c8762d3aa21c033")
+        (revision "7"))
+    (package
+      (name "rtl8821ce-linux-module")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tomaspinho/rtl8821ce")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1wa5rdz730w8xpzahcqylinwkp0ljyywgmvny66ab0wb4zf8cb6j"))))
+      (build-system linux-module-build-system)
+      (arguments
+       (list #:make-flags
+             #~(list (string-append "CC=" #$(cc-for-target))
+                     (string-append "KSRC="
+                                    (assoc-ref %build-inputs
+                                               "linux-module-builder")
+                                    "/lib/modules/build"))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (replace 'build
+                   (lambda* (#:key (make-flags '()) (parallel-build? #t)
+                                   #:allow-other-keys)
+                     (apply invoke "make"
+                            `(,@(if parallel-build?
+                                    `("-j" ,(number->string (parallel-job-count)))
+                                    '())
+                              ,@make-flags)))))
+             #:tests? #f))                  ; no test suite
+      (home-page "https://github.com/tomaspinho/rtl8821ce")
+      (synopsis "Linux driver for Realtek RTL8821CE wireless network adapters")
+      (description "This is Realtek's RTL8821CE Linux driver for wireless
+network adapters.")
+      (license gpl2))))
