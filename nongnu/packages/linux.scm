@@ -70,12 +70,12 @@
 System on hardware which requires nonfree software to function.")))
 
 (define-public linux-5.19
-  (corrupt-linux linux-libre-5.19 "5.19.8"
-                 "1kl7fifsa6vsm34xg3kd2svhx18n771hfj67nhwnlalmb9whhqv1"))
+  (corrupt-linux linux-libre-5.19 "5.19.11"
+                 "0wyrwdqm4dypx2jbb7d8c3b7fl7q5j434d6g9x2v6sw01gwx4m2m"))
 
 (define-public linux-5.15
-  (corrupt-linux linux-libre-5.15 "5.15.67"
-                 "0h7r2k59jsw8ykb2p7nxrpazbwx1n5p3nmfbbj1lhib91fldjiys"))
+  (corrupt-linux linux-libre-5.15 "5.15.70"
+                 "0xhdjz7aqq13pkh1yr7ax3msqdb2xvrcpj464wibn1rl4pq2cz0s"))
 
 (define-public linux-5.10
   (corrupt-linux linux-libre-5.10 "5.10.142"
@@ -572,8 +572,8 @@ package contains nonfree firmware for the following chips:
   (deprecated-package "rtl-bt-firmware" realtek-firmware))
 
 (define-public rtl8192eu-linux-module
-  (let ((commit "8396a4ebb4bde6b5c919d291838320f0e5b480dd")
-        (revision "3"))
+  (let ((commit "1c42c4d780314add13dc7ad64f983e297f155499")
+        (revision "4"))
     (package
       (name "rtl8192eu-linux-module")
       (version (git-version "0.0.0" revision commit))
@@ -586,7 +586,7 @@ package contains nonfree firmware for the following chips:
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0kbfrvrfbi1r6if9vi7ccn0nc4lcqp85insiksyg3kg99mx78xhk"))))
+           "03kpm0vdjk1cnwn0y00fm56gd3pkcz1vvh9ybj4hrpsrklbbwi2p"))))
       (build-system linux-module-build-system)
       (arguments
        `(#:make-flags

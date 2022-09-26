@@ -18,7 +18,7 @@
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 pineapples <guixuser6392@protonmail.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
-;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2021, 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;;
 ;;; This file is not part of GNU Guix.
@@ -45,6 +45,7 @@
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix utils)
+  #:use-module ((guix build utils) #:select (alist-replace))
 
   #:use-module (gnu packages)
   #:use-module (gnu packages assembly)
@@ -84,21 +85,234 @@
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg))
 
+;; Copied from guix/gnu/packages/rust.scm
+(define* (rust-uri version #:key (dist "static"))
+  (string-append "https://" dist ".rust-lang.org/dist/"
+                 "rustc-" version "-src.tar.gz"))
+
+(define* (rust-bootstrapped-package base-rust version checksum)
+  "Bootstrap rust VERSION with source checksum CHECKSUM using BASE-RUST."
+  (package
+    (inherit base-rust)
+    (version version)
+    (source
+     (origin
+       (inherit (package-source base-rust))
+       (uri (rust-uri version))
+       (sha256 (base32 checksum))))
+    (native-inputs
+     (alist-replace "cargo-bootstrap" (list base-rust "cargo")
+                    (alist-replace "rustc-bootstrap" (list base-rust)
+                                   (package-native-inputs base-rust))))))
+
+(define rust-firefox-1.58
+  (rust-bootstrapped-package
+   rust "1.58.1" "1iq7kj16qfpkx8gvw50d8rf7glbm6s0pj2y1qkrz7mi56vfsyfd8"))
+
+(define rust-firefox-1.59
+  (rust-bootstrapped-package
+   rust-firefox-1.58 "1.59.0" "1yc5bwcbmbwyvpfq7zvra78l0r8y3lbv60kbr62fzz2vx2pfxj57"))
+
+(define rust-firefox-1.60
+  (rust-bootstrapped-package
+   rust-firefox-1.59 "1.60.0" "1drqr0a26x1rb2w3kj0i6abhgbs3jx5qqkrcwbwdlx7n3inq5ji0"))
+
+(define rust-firefox-1.61
+  (let ((base-rust (rust-bootstrapped-package
+                    rust-firefox-1.60 "1.61.0"
+                    "1vfs05hkf9ilk19b2vahqn8l6k17pl9nc1ky9kgspaascx8l62xd")))
+    (package
+      (inherit base-rust)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base-rust)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'unpack 'disable-tests-with-sigint
+               ;; These tests rely on killing a process with SIGINT which
+               ;; fails in the build container.
+               (lambda _
+                 (substitute* "library/std/src/sys/unix/process/process_common/tests.rs"
+                   (("fn test_process_group_posix_spawn")
+                    "#[ignore]\nfn test_process_group_posix_spawn")
+                   (("fn test_process_group_no_posix_spawn")
+                    "#[ignore]\nfn test_process_group_no_posix_spawn")))))))))))
+
+;; Define the versions of rust needed to build firefox, trying to match
+;; upstream.  See the file taskcluster/ci/toolchain/rust.yml at
+;; https://searchfox.org under the particular firefox release, like
+;; mozilla-esr102.
+(define-public rust-firefox-esr rust-firefox-1.60)
+(define-public rust-firefox rust-firefox-1.61) ; 1.63 is also listed, but 1.61 is the minimum needed
+
+;; rust-cbindgen-0.23/0.24 dependencies
+(define-public rust-unicode-ident-1
+  (package
+    (name "rust-unicode-ident")
+    (version "1.0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "unicode-ident" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1bqswc96ws8l6k7xx56dg521a3l5imi3mhlcz7rsi6a92mxb7xf4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t))
+    (home-page "https://github.com/dtolnay/unicode-ident")
+    (synopsis
+     "Better optimized implementation of the older unicode-xid crate")
+    (description
+     "Determine whether characters have the XID_Start or XID_Continue properties
+according to Unicode Standard Annex #31")
+    (license (list license:unicode license:expat))))
+
+(define-public rust-textwrap-0.15
+  (package
+    (inherit rust-textwrap-0.12)
+    (name "rust-textwrap")
+    (version "0.15.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "textwrap" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1yw513k61lfiwgqrfvsjw1a5wpvm0azhpjr2kr0jhnq9c56is55i"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-hyphenation" ,rust-hyphenation-0.8)
+                       ("rust-smawk" ,rust-smawk-0.3)
+                       ("rust-terminal-size" ,rust-terminal-size-0.1)
+                       ("rust-unicode-linebreak" ,rust-unicode-linebreak-0.1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))))))
+
+(define-public rust-clap-lex-0.2
+  (package
+    (name "rust-clap-lex")
+    (version "0.2.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "clap_lex" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ib1a9v55ybnaws11l63az0jgz5xiy24jkdgsmyl7grcm3sz4l18"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-os-str-bytes" ,rust-os-str-bytes-6))))
+    (home-page "https://github.com/clap-rs/clap/tree/master/clap_lex")
+    (synopsis "Minimal, flexible command line parser")
+    (description "Minimal, flexible command line parser")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-clap-derive-3.2.15
+  (package
+    (inherit rust-clap-derive-3)
+    (name "rust-clap-derive")
+    (version "3.2.15")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "clap_derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1d2c4vs345fwihkd8cc7m6acbiydcwramkd5mnp36p0a7g6jm9cv"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-heck" ,rust-heck-0.4)
+                       ("rust-proc-macro-error" ,rust-proc-macro-error-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))))
+
+(define-public rust-clap-3.2.16
+  (package
+    (inherit rust-clap-3)
+    (name "rust-clap")
+    (version "3.2.16")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "clap" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1af06z8z7m3327yz1xvzxfjanclgpvvy3lssb745rig7adkbpnx3"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-atty" ,rust-atty-0.2)
+                       ("rust-backtrace" ,rust-backtrace-0.3)
+                       ("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-clap-derive" ,rust-clap-derive-3.2.15)
+                       ("rust-clap-lex" ,rust-clap-lex-0.2)
+                       ("rust-indexmap" ,rust-indexmap-1)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-strsim" ,rust-strsim-0.10)
+                       ("rust-termcolor" ,rust-termcolor-1)
+                       ("rust-terminal-size" ,rust-terminal-size-0.1)
+                       ("rust-textwrap" ,rust-textwrap-0.15)
+                       ("rust-unicase" ,rust-unicase-2)
+                       ("rust-yaml-rust" ,rust-yaml-rust-0.4))))))
+
+(define-public rust-cbindgen-0.24
+  (package
+    (inherit rust-cbindgen-0.19)
+    (name "rust-cbindgen")
+    (version "0.24.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "cbindgen" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1yqxqsz2d0cppd8zwihk2139g5gy38wqgl9snj6rnk8gyvnqsdd6"))))
+    (arguments
+     `(#:cargo-inputs (("rust-clap" ,rust-clap-3.2.16)
+                       ("rust-heck" ,rust-heck-0.4)
+                       ("rust-indexmap" ,rust-indexmap-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-syn" ,rust-syn-1)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-toml" ,rust-toml-0.5))
+       #:cargo-development-inputs (("rust-serial-test" ,rust-serial-test-0.5))))))
+
+;; Bug with firefox build (v101-102) with cbindgen-0.24, see
+;; https://bugzilla.mozilla.org/show_bug.cgi?id=1773259#c5 for possible patch
+;; (untested)
+(define-public rust-cbindgen-0.23
+  (package
+    (inherit rust-cbindgen-0.24)
+    (name "rust-cbindgen")
+    (version "0.23.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "cbindgen" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "006rn3fn4njayjxr2vd24g1awssr9i3894nbmfzkybx07j728vav"))))))
+
 ;; Update this id with every firefox update to it's release date.
 ;; It's used for cache validation and therefor can lead to strange bugs.
-(define %firefox-build-id "20220308000000")
+(define %firefox-esr-build-id "20220920000000")
 
-(define-public firefox
+(define-public firefox-esr
   (package
-    (name "firefox")
-    (version "98.0")
+    (name "firefox-esr")
+    (version "102.3.0esr")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://archive.mozilla.org/pub/firefox/releases/"
                            version "/source/firefox-" version ".source.tar.xz"))
        (sha256
-        (base32 "1pglnq657vxz6ywlqhl8a6a24x4vkzwv0zk60rbh9n87s08lq2px"))))
+        (base32 "0nmm861p4zakdvi9lj0ac8dkf9v17250rzcmrx1f6r7rvjv273ih"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -117,7 +331,7 @@
             "--enable-jemalloc"
 
             ;; see https://bugs.gnu.org/32833
-            ;; "--with-system-nspr"
+            "--with-system-nspr"
             ;; "--with-system-nss"
 
             ,(string-append "--with-clang-path="
@@ -175,7 +389,6 @@
                 (substitute* "dom/media/platforms/ffmpeg/FFmpegRuntimeLinker.cpp"
                   (("libavcodec\\.so")
                    libavcodec)))))
-
           (add-after 'patch-source-shebangs 'patch-cargo-checksums
             (lambda _
               (use-modules (guix build cargo-utils))
@@ -217,13 +430,24 @@
               (substitute* "build/RunCbindgen.py"
                 (("\"--frozen\",") ""))))
           (delete 'bootstrap)
+          (add-before 'configure 'set-build-id
+            ;; Firefox will write the timestamp to output, which is harmful
+            ;; for reproducibility, so change it to a fixed date.  Use a
+            ;; separate phase for easier modification with inherit.
+            (lambda _
+              (setenv "MOZ_BUILD_DATE" #$%firefox-esr-build-id)))
           (replace 'configure
             (lambda* (#:key inputs outputs configure-flags #:allow-other-keys)
               (setenv "AUTOCONF" (string-append (assoc-ref inputs "autoconf")
                                                 "/bin/autoconf"))
               (setenv "SHELL" (which "bash"))
               (setenv "CONFIG_SHELL" (which "bash"))
-              (setenv "MACH_USE_SYSTEM_PYTHON" "1")
+              (setenv "MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE" "system")
+              ;; This should use the host info probably (does firefox build on
+              ;; non-x86_64 though?)
+              (setenv "GUIX_PYTHONPATH"
+                      (string-append (getcwd)
+                                     "/obj-x86_64-pc-linux-gnu/_virtualenvs/build"))
 
               ;; Use Clang, Clang is 2x faster than GCC
               (setenv "AR" "llvm-ar")
@@ -240,9 +464,6 @@
                        "/bin/clang++"))
 
               (setenv "MOZ_NOSPAM" "1")
-              ;; Firefox will write the timestamp to output, which is harmful for
-              ;; reproducibility, so change it to a fixed date.
-              (setenv "MOZ_BUILD_DATE" #$%firefox-build-id)
 
               (setenv "MOZBUILD_STATE_PATH" (getcwd))
 
@@ -370,7 +591,7 @@
         gtk+
         gtk+-2
         hunspell
-        icu4c-70
+        icu4c-71
         jemalloc
         libcanberra
         libevent
@@ -388,9 +609,10 @@
         libxt
         mesa
         mit-krb5
-        ;; nspr
+        nspr-4.32
         ;; nss
         pango
+        pipewire
         pixman
         pulseaudio
         startup-notification
@@ -403,7 +625,7 @@
       (list
         alsa-lib
         autoconf-2.13
-        `(,rust "cargo")
+        `(,rust-firefox-esr "cargo")
         clang-12
         llvm-12
         wasm32-wasi-clang-toolchain
@@ -413,49 +635,119 @@
         perl
         pkg-config
         python
-        rust
-        rust-cbindgen-0.19
+        rust-firefox-esr
+        rust-cbindgen-0.23
         which
         yasm))
     (home-page "https://mozilla.org/firefox/")
     (synopsis "Trademarkless version of Firefox")
     (description
      "Full-featured browser client built from Firefox source tree, without
-the official icon and the name \"firefox\".")
+the official icon and the name \"firefox\".  This is the Extended Support
+Release (ESR) version.")
     (license license:mpl2.0)))
 
- (define-public firefox/wayland
-   (package
-     (inherit firefox)
-     (name "firefox-wayland")
-     (native-inputs '())
-     (inputs
-      `(("bash" ,bash-minimal)
-        ("firefox" ,firefox)))
-     (build-system trivial-build-system)
-     (arguments
-      '(#:modules ((guix build utils))
-        #:builder
-        (begin
-          (use-modules (guix build utils))
-          (let* ((bash    (assoc-ref %build-inputs "bash"))
-                 (firefox (assoc-ref %build-inputs "firefox"))
-                 (out     (assoc-ref %outputs "out"))
-                 (exe     (string-append out "/bin/firefox")))
-            (mkdir-p (dirname exe))
+(define-public firefox-esr/wayland
+  (package
+    (inherit firefox-esr)
+    (name "firefox-esr-wayland")
+    (native-inputs '())
+    (inputs
+     `(("bash" ,bash-minimal)
+       ("firefox-esr" ,firefox-esr)))
+    (build-system trivial-build-system)
+    (arguments
+     '(#:modules ((guix build utils))
+       #:builder
+       (begin
+         (use-modules (guix build utils))
+         (let* ((bash    (assoc-ref %build-inputs "bash"))
+                (firefox (assoc-ref %build-inputs "firefox-esr"))
+                (out     (assoc-ref %outputs "out"))
+                (exe     (string-append out "/bin/firefox")))
+           (mkdir-p (dirname exe))
 
-            (call-with-output-file exe
-              (lambda (port)
-                (format port "#!~a
+           (call-with-output-file exe
+             (lambda (port)
+               (format port "#!~a
 MOZ_ENABLE_WAYLAND=1 exec ~a $@\n"
-                        (string-append bash "/bin/bash")
-                        (string-append firefox "/bin/firefox"))))
-            (chmod exe #o555)
+                       (string-append bash "/bin/bash")
+                       (string-append firefox "/bin/firefox"))))
+           (chmod exe #o555)
 
-            ;; Provide the manual and .desktop file.
-            (copy-recursively (string-append firefox "/share")
-                              (string-append out "/share"))
-            (substitute* (string-append
-                          out "/share/applications/firefox.desktop")
-              ((firefox) out))
-            #t))))))
+           ;; Provide the manual and .desktop file.
+           (copy-recursively (string-append firefox "/share")
+                             (string-append out "/share"))
+           (substitute* (string-append
+                         out "/share/applications/firefox.desktop")
+             ((firefox) out))
+           #t))))))
+
+;; Update this id with every firefox update to it's release date.
+;; It's used for cache validation and therefor can lead to strange bugs.
+(define %firefox-build-id "20220920000000")
+
+(define-public firefox
+  (package
+    (inherit firefox-esr)
+    (name "firefox")
+    (version "105.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://archive.mozilla.org/pub/firefox/releases/"
+                           version "/source/firefox-" version ".source.tar.xz"))
+       (sha256
+        (base32 "0qpdl3k4n1dzmk9xj1yh0i4vbqgag98sv1lcp83j0axai6xyqnrb"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments firefox-esr)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'set-build-id
+              (lambda _
+                (setenv "MOZ_BUILD_DATE" #$%firefox-build-id)))))))
+    (native-inputs
+     (modify-inputs (package-native-inputs firefox-esr)
+       (replace "rust" rust-firefox)
+       (replace "rust:cargo" `(,rust-firefox "cargo"))
+       (replace "node" node-lts)
+       (replace "rust-cbindgen" rust-cbindgen-0.24)))
+    (description
+     "Full-featured browser client built from Firefox source tree, without
+the official icon and the name \"firefox\".")))
+
+(define-public firefox/wayland
+  (package
+    (inherit firefox)
+    (name "firefox-wayland")
+    (native-inputs '())
+    (inputs
+     `(("bash" ,bash-minimal)
+       ("firefox" ,firefox)))
+    (build-system trivial-build-system)
+    (arguments
+     '(#:modules ((guix build utils))
+       #:builder
+       (begin
+         (use-modules (guix build utils))
+         (let* ((bash    (assoc-ref %build-inputs "bash"))
+                (firefox (assoc-ref %build-inputs "firefox"))
+                (out     (assoc-ref %outputs "out"))
+                (exe     (string-append out "/bin/firefox")))
+           (mkdir-p (dirname exe))
+
+           (call-with-output-file exe
+             (lambda (port)
+               (format port "#!~a
+MOZ_ENABLE_WAYLAND=1 exec ~a $@\n"
+                       (string-append bash "/bin/bash")
+                       (string-append firefox "/bin/firefox"))))
+           (chmod exe #o555)
+
+           ;; Provide the manual and .desktop file.
+           (copy-recursively (string-append firefox "/share")
+                             (string-append out "/share"))
+           (substitute* (string-append
+                         out "/share/applications/firefox.desktop")
+             ((firefox) out))
+           #t))))))
