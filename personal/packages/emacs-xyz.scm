@@ -48,8 +48,7 @@
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages search)
-  #:use-module (gnu packages crates-io)
-  #:use-module (personal packages rust-apps)
+  #:use-module (gnu packages text-editors)
   #:use-module (gnu packages textutils)
   #:use-module (guix git-download))
 
