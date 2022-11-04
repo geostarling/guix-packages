@@ -15,6 +15,7 @@
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2022 Simen Endsjø <simendsjo@gmail.com>
 
 ;;;
 ;;; This program is free software: you can redistribute it and/or modify
@@ -70,45 +71,45 @@
 System on hardware which requires nonfree software to function.")))
 
 (define-public linux-5.19
-  (corrupt-linux linux-libre-5.19 "5.19.11"
-                 "0wyrwdqm4dypx2jbb7d8c3b7fl7q5j434d6g9x2v6sw01gwx4m2m"))
+  (corrupt-linux linux-libre-5.19 "5.19.17"
+                 "12cly10lad12idjwlgh2g0pp4hhj57h2qi4fy6jg1lbsm62b6fy9"))
 
 (define-public linux-5.15
-  (corrupt-linux linux-libre-5.15 "5.15.70"
-                 "0xhdjz7aqq13pkh1yr7ax3msqdb2xvrcpj464wibn1rl4pq2cz0s"))
+  (corrupt-linux linux-libre-5.15 "5.15.74"
+                 "0ra2ijpw7w07gm3kjwyszlwfq2rbnmq84z50qhv5r0svz2i3j59c"))
 
 (define-public linux-5.10
-  (corrupt-linux linux-libre-5.10 "5.10.142"
-                 "0s52vfvw5pgnq7gq9n66ib05ryhkxwv765f16862l5gykbdynirz"))
+  (corrupt-linux linux-libre-5.10 "5.10.147"
+                 "16pdpjmvrdml7am7s2kydrif1l7f4aq0wh4ak0xh3dby16zkl9c5"))
 
 (define-public linux-5.4
-  (corrupt-linux linux-libre-5.4 "5.4.212"
-                 "1hngr4hsrcd6hmlyvc3msy5racniav2jagp5abmp7xsxv0yjxiq9"))
+  (corrupt-linux linux-libre-5.4 "5.4.217"
+                 "0qrfrk0g1dky5apg8gdxczj2ir0g0z41zmdmbwwcxkxjz76jdf1b"))
 
 (define-public linux-4.19
-  (corrupt-linux linux-libre-4.19 "4.19.257"
-                 "0izaldl2l2zsshkd07qsnr9x6ikipmj5jp7lxr8dyz7kf2m17pga"))
+  (corrupt-linux linux-libre-4.19 "4.19.261"
+                 "1cicb3zydpka9yjx875hbh305bsdvni2kp674pkvaw04pnc35hxy"))
 
 (define-public linux-4.14
-  (corrupt-linux linux-libre-4.14 "4.14.292"
-                 "0zc97qy62dhc5xkjnvsfn4lpl4dgrj23hlxvxcr4cr8sj0hxzx3h"))
+  (corrupt-linux linux-libre-4.14 "4.14.295"
+                 "0svalywqmrhav63vw0ns06c25sgyvzwfngljpham3nm7jjxbkk32"))
 
 (define-public linux-4.9
-  (corrupt-linux linux-libre-4.9 "4.9.327"
-                 "1lh63viynf9f7vl0a52mnal8jack9lbqfsfammwkxi3kafpw30r2"))
+  (corrupt-linux linux-libre-4.9 "4.9.330"
+                 "0psrl8fcbp1bsanjmllic503dlyhkj8bjzfc20p2ksahlhv1j0mz"))
 
 (define-public linux linux-5.19)
 ;; linux-lts points to the *newest* released long-term support version.
 (define-public linux-lts linux-5.15)
 
 (define-public linux-arm64-generic-5.19
-  (corrupt-linux linux-libre-arm64-generic "5.19.8"
-                 "1kl7fifsa6vsm34xg3kd2svhx18n771hfj67nhwnlalmb9whhqv1"
+  (corrupt-linux linux-libre-arm64-generic "5.19.14"
+                 "1h8srn3fw4vw61qi0xxlk9fq0fqq4wl7fbrzz7sivdd8qkhjgv8x"
 		 #:name "linux-arm64-generic"))
 
 (define-public linux-arm64-generic-5.15
-  (corrupt-linux linux-libre-arm64-generic "5.15.67"
-                 "0h7r2k59jsw8ykb2p7nxrpazbwx1n5p3nmfbbj1lhib91fldjiys"
+  (corrupt-linux linux-libre-arm64-generic "5.15.72"
+                 "1aq75z2spa1jvxv9m89gsaxza29n25k8j1f0pg9yj6j7bcxk5430"
 		 #:name "linux-arm64-generic"))
 
 (define-public linux-arm64-generic linux-arm64-generic-5.19)
@@ -118,7 +119,7 @@ System on hardware which requires nonfree software to function.")))
 (define-public linux-firmware
   (package
     (name "linux-firmware")
-    (version "20220509")
+    (version "20221012")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://git.kernel.org/pub/scm/linux/kernel"
@@ -126,7 +127,7 @@ System on hardware which requires nonfree software to function.")))
                                   "linux-firmware-" version ".tar.gz"))
               (sha256
                (base32
-                "09461dcfxvzzsl768myywb64jivnxyx3m4apbygq4501l8h8ybig"))))
+                "0akk38qfkznanpj80jidz4cx8cvs580llb46xd7q1haljykipjys"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f

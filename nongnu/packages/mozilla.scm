@@ -105,21 +105,9 @@
                     (alist-replace "rustc-bootstrap" (list base-rust)
                                    (package-native-inputs base-rust))))))
 
-(define rust-firefox-1.58
-  (rust-bootstrapped-package
-   rust "1.58.1" "1iq7kj16qfpkx8gvw50d8rf7glbm6s0pj2y1qkrz7mi56vfsyfd8"))
-
-(define rust-firefox-1.59
-  (rust-bootstrapped-package
-   rust-firefox-1.58 "1.59.0" "1yc5bwcbmbwyvpfq7zvra78l0r8y3lbv60kbr62fzz2vx2pfxj57"))
-
-(define rust-firefox-1.60
-  (rust-bootstrapped-package
-   rust-firefox-1.59 "1.60.0" "1drqr0a26x1rb2w3kj0i6abhgbs3jx5qqkrcwbwdlx7n3inq5ji0"))
-
 (define rust-firefox-1.61
   (let ((base-rust (rust-bootstrapped-package
-                    rust-firefox-1.60 "1.61.0"
+                    rust "1.61.0"
                     "1vfs05hkf9ilk19b2vahqn8l6k17pl9nc1ky9kgspaascx8l62xd")))
     (package
       (inherit base-rust)
@@ -141,7 +129,7 @@
 ;; upstream.  See the file taskcluster/ci/toolchain/rust.yml at
 ;; https://searchfox.org under the particular firefox release, like
 ;; mozilla-esr102.
-(define-public rust-firefox-esr rust-firefox-1.60)
+(define-public rust-firefox-esr rust) ; 1.60 is the default in Guix
 (define-public rust-firefox rust-firefox-1.61) ; 1.63 is also listed, but 1.61 is the minimum needed
 
 ;; rust-cbindgen-0.23/0.24 dependencies
@@ -300,19 +288,19 @@ according to Unicode Standard Annex #31")
 
 ;; Update this id with every firefox update to it's release date.
 ;; It's used for cache validation and therefor can lead to strange bugs.
-(define %firefox-esr-build-id "20220920000000")
+(define %firefox-esr-build-id "20221018000000")
 
 (define-public firefox-esr
   (package
     (name "firefox-esr")
-    (version "102.3.0esr")
+    (version "102.4.0esr")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://archive.mozilla.org/pub/firefox/releases/"
                            version "/source/firefox-" version ".source.tar.xz"))
        (sha256
-        (base32 "0nmm861p4zakdvi9lj0ac8dkf9v17250rzcmrx1f6r7rvjv273ih"))))
+        (base32 "0klh3lbm0zdmv90kmmpkzgn15pfjibr7zsjy3kvbzpql97fhv7z7"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -626,8 +614,8 @@ according to Unicode Standard Annex #31")
         alsa-lib
         autoconf-2.13
         `(,rust-firefox-esr "cargo")
-        clang-12
-        llvm-12
+        clang
+        llvm
         wasm32-wasi-clang-toolchain
         m4
         nasm
@@ -685,20 +673,20 @@ MOZ_ENABLE_WAYLAND=1 exec ~a $@\n"
 
 ;; Update this id with every firefox update to it's release date.
 ;; It's used for cache validation and therefor can lead to strange bugs.
-(define %firefox-build-id "20220920000000")
+(define %firefox-build-id "20221103000000")
 
 (define-public firefox
   (package
     (inherit firefox-esr)
     (name "firefox")
-    (version "105.0")
+    (version "106.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://archive.mozilla.org/pub/firefox/releases/"
                            version "/source/firefox-" version ".source.tar.xz"))
        (sha256
-        (base32 "0qpdl3k4n1dzmk9xj1yh0i4vbqgag98sv1lcp83j0axai6xyqnrb"))))
+        (base32 "1dwykdd3nyvkv34nq2zwfa6kkzw4w8pw5300y25gfny94ksx06g6"))))
     (arguments
      (substitute-keyword-arguments (package-arguments firefox-esr)
        ((#:phases phases)
