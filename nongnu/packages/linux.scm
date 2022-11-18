@@ -70,56 +70,56 @@
      "The unmodified Linux kernel, including nonfree blobs, for running Guix
 System on hardware which requires nonfree software to function.")))
 
-(define-public linux-5.19
-  (corrupt-linux linux-libre-5.19 "5.19.17"
-                 "12cly10lad12idjwlgh2g0pp4hhj57h2qi4fy6jg1lbsm62b6fy9"))
+(define-public linux-6.0
+  (corrupt-linux linux-libre-6.0 "6.0.7"
+                 "03srfv33r2vc48h051zicvn9hz78kc08vh7ljzlmcnk0g0mwrnk7"))
 
 (define-public linux-5.15
-  (corrupt-linux linux-libre-5.15 "5.15.74"
-                 "0ra2ijpw7w07gm3kjwyszlwfq2rbnmq84z50qhv5r0svz2i3j59c"))
+  (corrupt-linux linux-libre-5.15 "5.15.77"
+                 "1yg9myqcv4kn2p7c9ap0z6xxh2qjsab2nbxf5z388skr6cgq8bql"))
 
 (define-public linux-5.10
-  (corrupt-linux linux-libre-5.10 "5.10.147"
-                 "16pdpjmvrdml7am7s2kydrif1l7f4aq0wh4ak0xh3dby16zkl9c5"))
+  (corrupt-linux linux-libre-5.10 "5.10.153"
+                 "0qhn5xv0m6baip1my1gp4mrjc4j6d6nbxa701vpwllg4kx8y9wiw"))
 
 (define-public linux-5.4
-  (corrupt-linux linux-libre-5.4 "5.4.217"
-                 "0qrfrk0g1dky5apg8gdxczj2ir0g0z41zmdmbwwcxkxjz76jdf1b"))
+  (corrupt-linux linux-libre-5.4 "5.4.223"
+                 "1svyf4m5d3vrskylpal6npk5jj454rzij772wabg31v8vw97zw4y"))
 
 (define-public linux-4.19
-  (corrupt-linux linux-libre-4.19 "4.19.261"
-                 "1cicb3zydpka9yjx875hbh305bsdvni2kp674pkvaw04pnc35hxy"))
+  (corrupt-linux linux-libre-4.19 "4.19.264"
+                 "07ihf55y4xcbzpfgj9mxzchy1jmdpy46j32w15hac46a4504xcps"))
 
 (define-public linux-4.14
-  (corrupt-linux linux-libre-4.14 "4.14.295"
-                 "0svalywqmrhav63vw0ns06c25sgyvzwfngljpham3nm7jjxbkk32"))
+  (corrupt-linux linux-libre-4.14 "4.14.298"
+                 "0w8f7m3mdj6gcxdvsvxw5hqqfhwffpfl794rgianl4r6iad8w7s6"))
 
 (define-public linux-4.9
-  (corrupt-linux linux-libre-4.9 "4.9.330"
-                 "0psrl8fcbp1bsanjmllic503dlyhkj8bjzfc20p2ksahlhv1j0mz"))
+  (corrupt-linux linux-libre-4.9 "4.9.332"
+                 "1kiqa9kw4932n5qglkyymsrak849wbbszw9rnq1aygmdinjz4c8i"))
 
-(define-public linux linux-5.19)
+(define-public linux linux-6.0)
 ;; linux-lts points to the *newest* released long-term support version.
 (define-public linux-lts linux-5.15)
 
-(define-public linux-arm64-generic-5.19
-  (corrupt-linux linux-libre-arm64-generic "5.19.14"
-                 "1h8srn3fw4vw61qi0xxlk9fq0fqq4wl7fbrzz7sivdd8qkhjgv8x"
+(define-public linux-arm64-generic-6.0
+  (corrupt-linux linux-libre-arm64-generic "6.0.7"
+                 "03srfv33r2vc48h051zicvn9hz78kc08vh7ljzlmcnk0g0mwrnk7"
 		 #:name "linux-arm64-generic"))
 
 (define-public linux-arm64-generic-5.15
-  (corrupt-linux linux-libre-arm64-generic "5.15.72"
-                 "1aq75z2spa1jvxv9m89gsaxza29n25k8j1f0pg9yj6j7bcxk5430"
+  (corrupt-linux linux-libre-arm64-generic "5.15.77"
+                 "1yg9myqcv4kn2p7c9ap0z6xxh2qjsab2nbxf5z388skr6cgq8bql"
 		 #:name "linux-arm64-generic"))
 
-(define-public linux-arm64-generic linux-arm64-generic-5.19)
+(define-public linux-arm64-generic linux-arm64-generic-6.0)
 
 (define-public linux-arm64-generic-lts linux-arm64-generic-5.15)
 
 (define-public linux-firmware
   (package
     (name "linux-firmware")
-    (version "20221012")
+    (version "20221109")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://git.kernel.org/pub/scm/linux/kernel"
@@ -127,7 +127,7 @@ System on hardware which requires nonfree software to function.")))
                                   "linux-firmware-" version ".tar.gz"))
               (sha256
                (base32
-                "0akk38qfkznanpj80jidz4cx8cvs580llb46xd7q1haljykipjys"))))
+                "16yv7snsy5zvcwwzy0sr0lx3nf74qhi3nammdsx8c28rdm19jcn2"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
@@ -789,7 +789,7 @@ chipsets from Broadcom:
 (define-public intel-microcode
   (package
     (name "intel-microcode")
-    (version "20220809")
+    (version "20221108")
     (source
      (origin
        (method git-fetch)
@@ -800,7 +800,7 @@ chipsets from Broadcom:
              (commit (string-append "microcode-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0252ig6lp39rh87zgiadsmlwjwjr6q0275k5j28rpbq6f108pjxx"))))
+        (base32 "1na797jixcwj27brzfy24lwgndc041kbnf1wh1l047nz7nnc35i5"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan
@@ -842,16 +842,15 @@ documented in the respective processor revision guides.")
 (define-public sof-firmware
   (package
     (name "sof-firmware")
-    (version "1.7")
+    (version "2.2.2")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/thesofproject/sof-bin")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "https://github.com/thesofproject/sof-bin/releases/download/v"
+                           version "/sof-bin-v" version ".tar.gz"))
        (sha256
-        (base32 "1fb4rxgg3haxqg2gcm89g7af6v0a0h83c1ar2fyfa8h8pcf7hik7"))))
+        (base32
+         "1h7waw7ia3xjaprlvkcycamphnpcalrr2sjkhm59w7npwclqzwq0"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan
@@ -866,8 +865,8 @@ loaded by Linux.")
     (license bsd-3)))
 
 (define-public rtl8821ce-linux-module
-  (let ((commit "812fb928f05980d13a3c58a62c8762d3aa21c033")
-        (revision "7"))
+  (let ((commit "50c1b120b06a3b0805e23ca9a4dbd274d74bb305")
+        (revision "8"))
     (package
       (name "rtl8821ce-linux-module")
       (version (git-version "0.0.0" revision commit))
@@ -880,7 +879,7 @@ loaded by Linux.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1wa5rdz730w8xpzahcqylinwkp0ljyywgmvny66ab0wb4zf8cb6j"))))
+           "09dsmbsrpnbpbq4kigq324s8xb567pdjyb5h07kg6xcbcb5npkpz"))))
       (build-system linux-module-build-system)
       (arguments
        (list #:make-flags
