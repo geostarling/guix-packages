@@ -18,8 +18,8 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix build-system emacs)
-  #:use-module (gnu packages text-editors)
-  #:use-module (guix git-download))
+  #:use-module (guix git-download)
+  #:use-module (personal packages text-editors))
 
 
 (define-public emacs-parinfer-rust-mode
