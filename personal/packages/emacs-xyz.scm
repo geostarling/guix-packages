@@ -37,7 +37,6 @@
                  (sha256
                   (base32
                    "0az4qp118vsqzgsl87wgszzq91qzqkpabifd8qrr2li3sizsn049"))))
-                 (patches (search-patches "owncloud-disable-updatecheck.patch"))))
         (build-system emacs-build-system)
         ;; (arguments
         ;;  `(#:phases
