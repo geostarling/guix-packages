@@ -38,31 +38,36 @@
                   (base32
                    "0az4qp118vsqzgsl87wgszzq91qzqkpabifd8qrr2li3sizsn049"))))
         (build-system emacs-build-system)
-        ;; (arguments
-        ;;  `(#:phases
-        ;;    (modify-phases %standard-phases
-        ;;      (delete 'build)
-        ;;      (add-after 'unpack 'parinfer-rust-path-patch
-        ;;        (lambda* (#:key inputs #:allow-other-keys)
-        ;;          ;; Hard-code path to `parinfer-rust`
-        ;;          (let* ((parinfer-rust-libdir (string-append (assoc-ref inputs "parinfer-rust")
-        ;;                                                     "/lib/"))
-        ;;                 (parinfer-rust-lib (string-append parinfer-rust-libdir "parinfer-rust-linux.so")))
-        ;;            (substitute* "parinfer-rust-changes.el"
-        ;;                         (("user-emacs-directory \"parinfer-rust/\"")
-        ;;                          (string-append
-        ;;                           "\"" parinfer-rust-libdir "\"")))
-        ;;            (substitute* "parinfer-rust-mode.el"
-        ;;                         (("user-emacs-directory \"parinfer-rust/\"")
-        ;;                          (string-append
-        ;;                           "\"" parinfer-rust-libdir "\""))
-        ;;                         (("0.4.4-beta")
-        ;;                          "0.4.3")
-        ;;                         (("\\(locate-user-emacs-file \\(concat \"parinfer-rust/\"")
-        ;;                          (string-append
-        ;;                           "(concat \"" parinfer-rust-libdir "\""))
-        ;;                         (("^[ ]+parinfer-rust--lib-name\\)\\)")
-        ;;                          "parinfer-rust--lib-name)"))))))))
+        ;;    (concat user-emacs-directory "parinfer-rust/"))
+
+;; (defcustom parinfer-rust-library-directory (locate-user-emacs-file (concat user-emacs-directory
+;;                                                                           "parinfer-rust/"))
+;;
+
+        (arguments
+         `(#:phases
+           (modify-phases %standard-phases
+             (delete 'build)
+             (add-after 'unpack 'parinfer-rust-path-patch
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (let* ((parinfer-rust-libdir (string-append (assoc-ref inputs "parinfer-rust")
+                                                             "/lib/"))
+                        (parinfer-rust-lib (string-append parinfer-rust-libdir "parinfer-rust-linux.so")))
+                   ;; (substitute* "parinfer-rust-changes.el"
+                   ;;              (("user-emacs-directory \"parinfer-rust/\"")
+                   ;;               (string-append
+                   ;;                "\"" parinfer-rust-libdir "\"")))
+                   (substitute* "parinfer-rust-mode.el"
+                                (("\\(concat user-emacs-directory \"parinfer-rust/\"\\)")
+                                 (string-append
+                                  "\"" parinfer-rust-libdir "\"")))))))))
+                                ;; (("0.4.4-beta")
+                                ;;  "0.4.3")
+                                ;; (("\\(locate-user-emacs-file \\(concat \"parinfer-rust/\"")
+                                ;;  (string-append
+                                ;;   "(concat \"" parinfer-rust-libdir "\""))
+                                ;; (("^[ ]+parinfer-rust--lib-name\\)\\)")
+                                ;;  "parinfer-rust--lib-name)"))))))))
         (inputs (list parinfer-rust))
         (synopsis "Parinfer-rust-mode aims to be a simpler adaptation of Parinfer for Emacs")
         (description "")
