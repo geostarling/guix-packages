@@ -55,7 +55,7 @@
 
 (define-public parinfer-rust
   (let ((commit "7e99d3afa830dd5ef1566ce9ba78c79835251bb4")
-        (revision "1"))
+        (revision "2"))
     (package
      (name "parinfer-rust")
      (version "0.4.3")
@@ -80,6 +80,7 @@
          ("rust-serde-derive" ,rust-serde-derive-1)
          ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
          ("rust-unicode-width" ,rust-unicode-width-0.1))
+        #:features '("emacs")
         #:phases
         ;; clang is required by rust-emacs-module
         (modify-phases %standard-phases
