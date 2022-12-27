@@ -1,3 +1,4 @@
+;;; SPDX-License-Identifier: GPL-3.0-or-later
 ;;; Copyright © 2019, 2020 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
@@ -16,20 +17,6 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022 Simen Endsjø <simendsjo@gmail.com>
-
-;;;
-;;; This program is free software: you can redistribute it and/or modify
-;;; it under the terms of the GNU General Public License as published by
-;;; the Free Software Foundation, either version 3 of the License, or
-;;; (at your option) any later version.
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;;; GNU General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 (define-module (nongnu packages linux)
   #:use-module (gnu packages)
@@ -63,7 +50,14 @@
     (source (origin
               (method url-fetch)
               (uri (linux-urls version))
-              (sha256 (base32 hash))))
+              (sha256 (base32 hash))
+              ;; By default the linux-libre package will "make infodocs" for
+              ;; supported kernels (version > 5.10) which needs the following
+              ;; patch.  Include the patch if it applies rather than disabling
+              ;; the associated "build-doc" phase.
+              (patches (if ((@@ (gnu packages linux) doc-supported?) version)
+                           (search-patches "linux-libre-infodocs-target.patch")
+                           '()))))
     (home-page "https://www.kernel.org/")
     (synopsis "Linux kernel with nonfree binary blobs included")
     (description
@@ -71,45 +65,45 @@
 System on hardware which requires nonfree software to function.")))
 
 (define-public linux-6.0
-  (corrupt-linux linux-libre-6.0 "6.0.7"
-                 "03srfv33r2vc48h051zicvn9hz78kc08vh7ljzlmcnk0g0mwrnk7"))
+  (corrupt-linux linux-libre-6.0 "6.0.12"
+                 "00ag63lnxw2gijw3b6v29lhrlv480m12954q5zh4jawlz3nk1dw9"))
 
 (define-public linux-5.15
-  (corrupt-linux linux-libre-5.15 "5.15.77"
-                 "1yg9myqcv4kn2p7c9ap0z6xxh2qjsab2nbxf5z388skr6cgq8bql"))
+  (corrupt-linux linux-libre-5.15 "5.15.82"
+                 "0r8v7113favmch2x6br7jk6idihza99l9qyd7ik99i5sg6xzdvpw"))
 
 (define-public linux-5.10
-  (corrupt-linux linux-libre-5.10 "5.10.153"
-                 "0qhn5xv0m6baip1my1gp4mrjc4j6d6nbxa701vpwllg4kx8y9wiw"))
+  (corrupt-linux linux-libre-5.10 "5.10.158"
+                 "1rq7lyp41fydybs53rcdjhiy271arh95xch16s5s3jhhanxj82hy"))
 
 (define-public linux-5.4
-  (corrupt-linux linux-libre-5.4 "5.4.223"
-                 "1svyf4m5d3vrskylpal6npk5jj454rzij772wabg31v8vw97zw4y"))
+  (corrupt-linux linux-libre-5.4 "5.4.224"
+                 "0dixs4w7nmkjgxv9dxgjdy8v6r4parkpqyvdfyr0wqk0amdz4zcb"))
 
 (define-public linux-4.19
-  (corrupt-linux linux-libre-4.19 "4.19.264"
-                 "07ihf55y4xcbzpfgj9mxzchy1jmdpy46j32w15hac46a4504xcps"))
+  (corrupt-linux linux-libre-4.19 "4.19.265"
+                 "1l5cdpgng1gci1p1gdr2jzqw486h3w56gpyc7fbq74hlc6nnwh1p"))
 
 (define-public linux-4.14
-  (corrupt-linux linux-libre-4.14 "4.14.298"
-                 "0w8f7m3mdj6gcxdvsvxw5hqqfhwffpfl794rgianl4r6iad8w7s6"))
+  (corrupt-linux linux-libre-4.14 "4.14.299"
+                 "0p5ic2mrb9vl3qkzvqxhia3kygjv8xa6s1kqkwgd6b4rmq1kc8r6"))
 
 (define-public linux-4.9
-  (corrupt-linux linux-libre-4.9 "4.9.332"
-                 "1kiqa9kw4932n5qglkyymsrak849wbbszw9rnq1aygmdinjz4c8i"))
+  (corrupt-linux linux-libre-4.9 "4.9.333"
+                 "0ash877gkrrc063h6ncl9d4gzyhndanpxsdgf1a93abbfv281gs1"))
 
 (define-public linux linux-6.0)
 ;; linux-lts points to the *newest* released long-term support version.
 (define-public linux-lts linux-5.15)
 
 (define-public linux-arm64-generic-6.0
-  (corrupt-linux linux-libre-arm64-generic "6.0.7"
-                 "03srfv33r2vc48h051zicvn9hz78kc08vh7ljzlmcnk0g0mwrnk7"
+  (corrupt-linux linux-libre-arm64-generic "6.0.9"
+                 "1irip1yk62carcisxlacwcxsiqib4qswx6h5mfhv8f97x04a4531"
 		 #:name "linux-arm64-generic"))
 
 (define-public linux-arm64-generic-5.15
-  (corrupt-linux linux-libre-arm64-generic "5.15.77"
-                 "1yg9myqcv4kn2p7c9ap0z6xxh2qjsab2nbxf5z388skr6cgq8bql"
+  (corrupt-linux linux-libre-arm64-generic "5.15.79"
+                 "0m61k7k6lj24z9a266q08wzghggjik2wizcabdwd1vn0vcqr18yb"
 		 #:name "linux-arm64-generic"))
 
 (define-public linux-arm64-generic linux-arm64-generic-6.0)
