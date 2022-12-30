@@ -1,4 +1,4 @@
- ;;; GNU Guix --- Functional package management for GNU
+;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2017, 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Oleg Pykhalov <go.wigust@gmail.com>
@@ -96,7 +96,7 @@
 ;; of the standard build process. To make things easier, we bootstrap
 ;; and patch shebangs here, so we don't have to worry about it later.
 (define libdvdnav/kodi
-  (let ((commit "6.0.0-Leia-Alpha-3"))
+  (let ((commit "6.1.1-Next-Nexus-Alpha2-2"))
     (package
       (name "libdvdnav-bootstrapped")
       (version commit)
@@ -108,7 +108,7 @@
                 (file-name (string-append name "-" version "-checkout"))
                 (sha256
                  (base32
-                  "0qwlf4lgahxqxk1r2pzl866mi03pbp7l1fc0rk522sc0ak2s9jhb"))))
+                  "1sfk4016aihqlgd1by68as6m0nm7vahn0pz5xl4vqm94xa685i4v"))))
       (build-system gnu-build-system)
       (arguments
        '(#:tests? #f
@@ -131,7 +131,7 @@
       (license license:gpl2+))))
 
 (define libdvdread/kodi
-  (let ((commit "6.0.0-Leia-Alpha-3"))
+  (let ((commit "6.1.3-Next-Nexus-Alpha2-2"))
     (package
       (name "libdvdread-bootstrapped")
       (version commit)
@@ -143,7 +143,7 @@
                 (file-name (string-append name "-" version "-checkout"))
                 (sha256
                  (base32
-                  "1xxn01mhkdnp10cqdr357wx77vyzfb5glqpqyg8m0skyi75aii59"))))
+                  "0xxrk7fhx45xlih6gab7fgkv7f75q8ycwxkfqaxfcxzf2m143602"))))
       (build-system gnu-build-system)
       (arguments
        '(#:tests? #f
@@ -154,6 +154,7 @@
            (replace 'install
              (lambda* (#:key outputs #:allow-other-keys)
                (copy-recursively "." (assoc-ref outputs "out"))
+               ;;(delete-file-recursively (string-append (assoc-ref outputs "out") "/autom4te.cache/"))
                #t)))))
       (native-inputs
        `(("autoconf" ,autoconf)
@@ -166,7 +167,7 @@
       (license (list license:gpl2+ license:lgpl2.1+)))))
 
 (define libdvdcss/kodi
-  (let ((commit "1.4.2-Leia-Beta-5"))
+  (let ((commit "1.4.3-Next-Nexus-Alpha2-2"))
     (package
       (name "libdvdcss-bootstrapped")
       (version commit)
@@ -178,7 +179,7 @@
                 (file-name (string-append name "-" version "-checkout"))
                 (sha256
                  (base32
-                  "0j41ydzx0imaix069s3z07xqw9q95k7llh06fc27dcn6f7b8ydyl"))))
+                  "0kp65q4cj5yi0zazcafr976pgc82g64p43f7pll0jd16klghd4q8"))))
       (build-system gnu-build-system)
       (arguments
        '(#:tests? #f
@@ -201,39 +202,39 @@
       (license license:gpl2+))))
 
 
-(define-public kodi-19
+(define-public kodi-20
   (package
     (name "kodi")
-    (version "19.4")
+    (version "20.0rc2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/xbmc/xbmc")
-                    (commit (string-append version "-Matrix"))))
+                    (commit (string-append version "-Nexus"))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0c8bdjjfhmv6nrkr81nzrrs5qq3aa827kvjbsvyj11mdf9incfsw"))
+                "0fs0z4kp35a27gzm6pcxxfiff16x7w5qs4shyjyw795w9sy2wvps"))))
               ;;(patches (search-patches)) ;;"kodi-skip-test-449.patch"
-                                       ;;"kodi-increase-test-timeout.patch"
-                                       ;;"kodi-set-libcurl-ssl-parameters.patch"))
-              (snippet
-               '(begin
-                  (use-modules (guix build utils))
-                  (for-each delete-file-recursively
-                            '("project/BuildDependencies/"
-                              ;; TODO: Purge these jars.
-                              ;;"tools/codegenerator/groovy"
-                              ;; And these sources:
-                              ;; "tools/depend/native/JsonSchemaBuilder"
-                              ;; "tools/depend/native/TexturePacker"
-                              ;; "lib/gtest"
-                              ;; "lib/cpluff"
-                              ;; "lib/libUPnP"
-                              "lib/libUPnP/Neptune/ThirdParty"
-                              "project/Win32BuildSetup/tools/7z"))
-                  #t))
-              (modules '((guix build utils)))))
+              ;;"kodi-increase-test-timeout.patch"
+              ;;"kodi-set-libcurl-ssl-parameters.patch"))
+              ;; (snippet
+              ;;  '(begin
+              ;;     (use-modules (guix build utils))
+              ;;     (for-each delete-file-recursively
+              ;;               '("project/BuildDependencies/"
+              ;;                 ;; TODO: Purge these jars.
+              ;;                 ;;"tools/codegenerator/groovy"
+              ;;                 ;; And these sources:
+              ;;                 ;; "tools/depend/native/JsonSchemaBuilder"
+              ;;                 ;; "tools/depend/native/TexturePacker"
+              ;;                 ;; "lib/gtest"
+              ;;                 ;; "lib/cpluff"
+              ;;                 ;; "lib/libUPnP"
+              ;;                 "lib/libUPnP/Neptune/ThirdParty"
+              ;;                 "project/Win32BuildSetup/tools/7z"))
+              ;;     #t))
+              ;; (modules '((guix build utils)))))
     (build-system cmake-build-system)
     (arguments
      '(#:modules ((srfi srfi-1)
@@ -243,8 +244,10 @@
        #:configure-flags
        (list "-DENABLE_INTERNAL_FFMPEG=OFF"
              "-DENABLE_INTERNAL_CROSSGUID=OFF"
+             "-DENABLE_INTERNAL_RapidJSON=OFF"
              "-DENABLE_INTERNAL_GTEST=OFF"
              "-DENABLE_INTERNAL_SPDLOG=OFF"
+             "-DENABLE_UPNP=OFF"
              "-DENABLE_TESTING=OFF" ;; TODO
              "-DCORE_PLATFORM_NAME=x11"
              "-DAPP_RENDER_SYSTEM=gl"
@@ -271,16 +274,20 @@
                       dirs))))
          (add-after 'bootstrap-bundled-software 'patch-stuff
            (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "cmake/modules/FindLibDvd.cmake"
-               ;; The libdvd* sources that we bootstrapped separately are
-               ;; unpacked in the build phase. This is our best opportunity
-               ;; to make them writable before the build process starts.
-               (("autoreconf -vif") "chmod -R u+w ."))
+             ;; The libdvd* sources that we bootstrapped separately are
+             ;; unpacked in the build phase. This is our best opportunity
+             ;; to make them writable before the build process starts.
+             (substitute* "cmake/modules/FindLibDvdRead.cmake"
+               (("\\$\\{AUTORECONF\\} -vif") "chmod -R u+w ."))
+             (substitute* "cmake/modules/FindLibDvdNav.cmake"
+               (("\\$\\{AUTORECONF\\} -vif") "chmod -R u+w ."))
+             (substitute* "cmake/modules/FindLibDvdCSS.cmake"
+               (("\\$\\{AUTORECONF\\} -vif") "chmod -R u+w ."))
 
              (substitute* "xbmc/platform/posix/PosixTimezone.cpp"
-              (("/usr/share/zoneinfo")
-               (string-append (assoc-ref inputs "tzdata")
-                              "/share/zoneinfo")))
+               (("/usr/share/zoneinfo")
+                (string-append (assoc-ref inputs "tzdata")
+                               "/share/zoneinfo")))
 
              ;; Don't phone home to check for updates.
              (substitute* "system/addon-manifest.xml"
@@ -304,9 +311,9 @@
              ;; if this is not set.
              (setenv "CONFIG_SHELL" (which "sh"))
              #t)))))
-         ;; (add-before 'check 'build-kodi-test
-         ;;   (lambda _
-         ;;     (invoke "make" "kodi-test"))))))
+    ;; (add-before 'check 'build-kodi-test
+    ;;   (lambda _
+    ;;     (invoke "make" "kodi-test"))))))
     ;; TODO: Add dependencies for:
     ;; - cec
     ;; - plist
@@ -333,7 +340,7 @@
        ("dcadec" ,dcadec)
        ("dbus" ,dbus)
        ("eudev" ,eudev)
-       ("ffmpeg" ,ffmpeg)
+       ("ffmpeg" ,ffmpeg-4)
        ("flac" ,flac)
        ("flatbuffers" ,flatbuffers)
        ("fmt" ,fmt)
@@ -388,8 +395,8 @@
        ("zlib" ,zlib)))
     (synopsis "Media center for home theater computers")
     (description "Kodi is a media center application for playing videos,
-music, games, etc.  Kodi is highly customizable and features a theme and
-plug-in system.")
+     music, games, etc.  Kodi is highly customizable and features a theme and
+     plug-in system.")
     (home-page "https://kodi.tv")
     ;; XBMC is largely GPL2+, with some library components as LGPL2.1+, but
     ;; there are some other licenses spread throughout.
@@ -400,11 +407,11 @@ plug-in system.")
                    license:bsd-3                  ;misc, gtest
                    license:bsd-2))))              ;xbmc/freebsd
 
-(define-public kodi-19/wayland
-  (package/inherit kodi-19
+(define-public kodi-20/wayland
+  (package/inherit kodi-20
     (name "kodi-wayland")
     (arguments
-     (substitute-keyword-arguments (package-arguments kodi-19)
+     (substitute-keyword-arguments (package-arguments kodi-20)
        ((#:configure-flags flags)
         `(append ,flags
                  '("-DCORE_PLATFORM_NAME=wayland"
@@ -415,36 +422,36 @@ plug-in system.")
        ("libxkbcommon" ,libxkbcommon)
        ("waylandpp" ,waylandpp)
        ("waylandp-protocols" ,wayland-protocols)
-       ,@(package-inputs kodi-19)))
+       ,@(package-inputs kodi-20)))
     (synopsis "Kodi with Wayland rendering backend")))
 
 
 (define-public kodi-with-addons/wayland
   (package
-   (inherit kodi-19/wayland)
-   (name "kodi-with-addons-wayland")
-   (source #f)
-   (build-system trivial-build-system)
-   (arguments
-    `(#:modules ((guix build utils) (guix build union))
-      #:builder
-      (begin
-        (use-modules (guix build utils) (guix build union) (srfi srfi-26))
-        (let ((kodi-input (assoc-ref %build-inputs "kodi"))
-              (kodi-output (assoc-ref %outputs "out")))
-          (union-build kodi-output
-                       (map (lambda (input) (cdr input))
-                            (filter (lambda (input)
-                                      (member (car input) '("kodi" "addon")))
-                                    %build-inputs))
-                       #:symlink (lambda [input output]
-                                   (if (file-is-directory? input)
-                                       (copy-recursively input output)
-                                       (copy-file input output))))
-          (substitute* (string-append kodi-output "/bin/kodi")
-            ((kodi-input) kodi-output))
-          #t))))
-   (inputs
-    `(("kodi" ,kodi-19/wayland)
-      ,@(map (lambda (addon) (list "addon" addon))
-             `(,kodi-pvr-hts))))))
+    (inherit kodi-20/wayland)
+    (name "kodi-with-addons-wayland")
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments
+     `(#:modules ((guix build utils) (guix build union))
+       #:builder
+       (begin
+         (use-modules (guix build utils) (guix build union) (srfi srfi-26))
+         (let ((kodi-input (assoc-ref %build-inputs "kodi"))
+               (kodi-output (assoc-ref %outputs "out")))
+           (union-build kodi-output
+                        (map (lambda (input) (cdr input))
+                             (filter (lambda (input)
+                                       (member (car input) '("kodi" "addon")))
+                                     %build-inputs))
+                        #:symlink (lambda [input output]
+                                    (if (file-is-directory? input)
+                                        (copy-recursively input output)
+                                        (copy-file input output))))
+           (substitute* (string-append kodi-output "/bin/kodi")
+             ((kodi-input) kodi-output))
+           #t))))
+    (inputs
+     `(("kodi" ,kodi-20/wayland)
+       ,@(map (lambda (addon) (list "addon" addon))
+              `(,kodi-pvr-hts))))))

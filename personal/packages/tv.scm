@@ -138,7 +138,7 @@
     (synopsis "Library for handling PNG files")
     (description
      "Libpng is the official PNG (Portable Network Graphics) reference
-library.  It supports almost all PNG features and is extensible.")
+     library.  It supports almost all PNG features and is extensible.")
     (license license:zlib)
    (home-page "http://www.libpng.org/pub/png/libpng.html")))
 
@@ -146,12 +146,12 @@ library.  It supports almost all PNG features and is extensible.")
 (define-public tvheadend
   (package
     (name "tvheadend")
-    (version "20220705")
+    (version "20221221")
     (source (origin
              (method git-fetch)
              (uri (git-reference
                    (url "https://github.com/tvheadend/tvheadend.git")
-                   (commit "351b5b4158e4201b3567371f80775aca182cbb0e")))
+                   (commit "c9a156a25a07f1f84c2f48a1b03b481430c8257d")))
              (file-name (string-append name "-" version "-checkout"))
              (sha256
               (base32
@@ -212,72 +212,72 @@ library.  It supports almost all PNG features and is extensible.")
     (license (list license:gpl2+ license:lgpl2.0+))))
 
 
-(define-public libp8-platform
-  (package
-   (name "libp8-platform")
-   (version "2.1.0.1")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "https://github.com/Pulse-Eight/platform/archive/p8-platform-" version ".tar.gz"))
-            (sha256
-             (base32
-              "18381y54f7d18ckpzf9cfxbz1ws6imprbbm9pvhcg5c86ln8skq6"))))
-   (build-system cmake-build-system)
-   (arguments
-    `(#:configure-flags
-      (list
-       (string-append "-DCMAKE_INSTALL_LIBDIR=" (assoc-ref %outputs "out") "/lib"))
-      #:tests? #f))
-   (synopsis "Media center for home theater computers")
-   (description "Kodi is a media center application for playing videos,
-music, games, etc.  Kodi is highly customizable and features a theme and
-plug-in system.")
-   (home-page "https://kodi.tv")
-   (license license:gpl2+)))
+;; (define-public libp8-platform
+;;   (package
+;;    (name "libp8-platform")
+;;    (version "2.1.0.1")
+;;    (source (origin
+;;             (method url-fetch)
+;;             (uri (string-append "https://github.com/Pulse-Eight/platform/archive/p8-platform-" version ".tar.gz"))
+;;             (sha256
+;;              (base32
+;;               "18381y54f7d18ckpzf9cfxbz1ws6imprbbm9pvhcg5c86ln8skq6"))))
+;;    (build-system cmake-build-system)
+;;    (arguments
+;;     `(#:configure-flags
+;;       (list
+;;        (string-append "-DCMAKE_INSTALL_LIBDIR=" (assoc-ref %outputs "out") "/lib"))
+;;       #:tests? #f))
+;;    (synopsis "Media center for home theater computers")
+;;    (description "Kodi is a media center application for playing videos,
+;;     music, games, etc.  Kodi is highly customizable and features a theme and
+;;     plug-in system.")
+;;    (home-page "https://kodi.tv")
+;;    (license license:gpl2+)))
 
-(define-public kodi-platform
-  (package
-    (name "kodi-platform")
-    (version "20190726")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/xbmc/kodi-platform.git")
-                    (commit "809c5e9d711e378561440a896fcb7dbcd009eb3d")))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1i3j2f856qi4b1dmh9wiwj6kklzpxc4myl7vna3ysnlfw2qqyf5j"))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:configure-flags
-       (list
-        (string-append "-DCMAKE_INSTALL_LIBDIR=" (assoc-ref %outputs "out") "/lib"))
-       #:tests? #f))
-    (inputs
-     `(("libp8-platform" ,libp8-platform)
-       ("kodi" ,kodi)
-       ("tinyxml" ,tinyxml)))
-    (synopsis "Media center for home theater computers")
-    (description "Kodi is a media center application for playing videos,
-music, games, etc.  Kodi is highly customizable and features a theme and
-plug-in system.")
-    (home-page "https://kodi.tv")
-    (license license:gpl2+)))
+;; (define-public kodi-platform
+;;   (package
+;;     (name "kodi-platform")
+;;     (version "20190726")
+;;     (source (origin
+;;               (method git-fetch)
+;;               (uri (git-reference
+;;                     (url "https://github.com/xbmc/kodi-platform.git")
+;;                     (commit "809c5e9d711e378561440a896fcb7dbcd009eb3d")))
+;;               (file-name (git-file-name name version))
+;;               (sha256
+;;                (base32
+;;                 "1i3j2f856qi4b1dmh9wiwj6kklzpxc4myl7vna3ysnlfw2qqyf5j"))))
+;;     (build-system cmake-build-system)
+;;     (arguments
+;;      `(#:configure-flags
+;;        (list
+;;         (string-append "-DCMAKE_INSTALL_LIBDIR=" (assoc-ref %outputs "out") "/lib"))
+;;        #:tests? #f))
+;;     (inputs
+;;      `(("libp8-platform" ,libp8-platform)
+;;        ("kodi" ,kodi-20)
+;;        ("tinyxml" ,tinyxml)))
+;;     (synopsis "Media center for home theater computers")
+;;     (description "Kodi is a media center application for playing videos,
+;;      music, games, etc.  Kodi is highly customizable and features a theme and
+;;      plug-in system.")
+;;     (home-page "https://kodi.tv")
+;;     (license license:gpl2+)))
 
 (define-public kodi-pvr-hts
   (package
    (name "kodi-pvr-hts")
-   (version "19.0.0")
+   (version "20.6.0")
    (source (origin
             (method git-fetch)
             (uri (git-reference
                   (url "https://github.com/kodi-pvr/pvr.hts.git")
-                  (commit (string-append version "-Matrix"))))
+                  (commit (string-append version "-Nexus"))))
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "099mgxxp08d7xr6mkybzhg6flf8xjd4k4wwsx57vwqa9lg8rczzy"))))
+              "0a4adwd8jq1prx56a7g9p4cyflf8jvw0kawmqd6004clybbpmaqg"))))
    (build-system cmake-build-system)
    (arguments
     `(#:tests? #f
@@ -288,11 +288,11 @@ plug-in system.")
                           ;; of share/kodi, so we place all of the data resources alongside the shared lib
                           "-DCMAKE_INSTALL_DATADIR=lib/kodi")))
    (inputs
-    `(("kodi" ,kodi-19)))
+    `(("kodi" ,kodi-20)))
    (synopsis "Media center for home theater computers")
    (description "Kodi is a media center application for playing videos,
-music, games, etc.  Kodi is highly customizable and features a theme and
-plug-in system.")
+    music, games, etc.  Kodi is highly customizable and features a theme and
+    plug-in system.")
    (home-page "https://kodi.tv")
    ;; XBMC is largely GPL2+, with some library components as LGPL2.1+, but
    ;; there are some other licenses spread throughout.
@@ -327,6 +327,6 @@ plug-in system.")
    (synopsis "Tool for managing Linux Software RAID arrays")
    (description
     "mdadm is a tool for managing Linux Software RAID arrays.  It can create,
-assemble, report on, and monitor arrays.  It can also move spares between raid
-arrays when needed.")
+    assemble, report on, and monitor arrays.  It can also move spares between raid
+    arrays when needed.")
    (license license:gpl2+)))
