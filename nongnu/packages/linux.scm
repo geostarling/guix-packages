@@ -5,8 +5,8 @@
 ;;; Copyright © 2019 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020, 2021 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2020, 2021, 2022 Jonathan Brielmaier <jonathan.brielmaier@web.de>
-;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2021, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021, 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
@@ -17,6 +17,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022 Simen Endsjø <simendsjo@gmail.com>
+;;; Copyright © 2022 Leo Famulari <leo@famulari.name>
 
 (define-module (nongnu packages linux)
   #:use-module (gnu packages)
@@ -42,69 +43,55 @@
   (list (string-append "https://www.kernel.org/pub/linux/kernel/v"
                        (version-major version) ".x/linux-" version ".tar.xz")))
 
-(define* (corrupt-linux freedo version hash #:key (name "linux"))
+(define* (corrupt-linux freedo #:key (name "linux"))
   (package
-    (inherit freedo)
-    (name name)
-    (version version)
-    (source (origin
-              (method url-fetch)
-              (uri (linux-urls version))
-              (sha256 (base32 hash))
-              ;; By default the linux-libre package will "make infodocs" for
-              ;; supported kernels (version > 5.10) which needs the following
-              ;; patch.  Include the patch if it applies rather than disabling
-              ;; the associated "build-doc" phase.
-              (patches (if ((@@ (gnu packages linux) doc-supported?) version)
-                           (search-patches "linux-libre-infodocs-target.patch")
-                           '()))))
-    (home-page "https://www.kernel.org/")
-    (synopsis "Linux kernel with nonfree binary blobs included")
-    (description
-     "The unmodified Linux kernel, including nonfree blobs, for running Guix
+   (inherit
+    (customize-linux
+     #:name name
+     #:source (origin (inherit (package-source freedo))
+                      (method url-fetch)
+                      (uri (linux-urls (package-version freedo)))
+                      (patches '()))))
+   (version (package-version freedo))
+   (home-page "https://www.kernel.org/")
+   (synopsis "Linux kernel with nonfree binary blobs included")
+   (description
+    "The unmodified Linux kernel, including nonfree blobs, for running Guix
 System on hardware which requires nonfree software to function.")))
 
+(define-public linux-6.1
+  (corrupt-linux linux-libre-6.1))
+
 (define-public linux-6.0
-  (corrupt-linux linux-libre-6.0 "6.0.12"
-                 "00ag63lnxw2gijw3b6v29lhrlv480m12954q5zh4jawlz3nk1dw9"))
+  (corrupt-linux linux-libre-6.0))
 
 (define-public linux-5.15
-  (corrupt-linux linux-libre-5.15 "5.15.82"
-                 "0r8v7113favmch2x6br7jk6idihza99l9qyd7ik99i5sg6xzdvpw"))
+  (corrupt-linux linux-libre-5.15))
 
 (define-public linux-5.10
-  (corrupt-linux linux-libre-5.10 "5.10.158"
-                 "1rq7lyp41fydybs53rcdjhiy271arh95xch16s5s3jhhanxj82hy"))
+  (corrupt-linux linux-libre-5.10))
 
 (define-public linux-5.4
-  (corrupt-linux linux-libre-5.4 "5.4.224"
-                 "0dixs4w7nmkjgxv9dxgjdy8v6r4parkpqyvdfyr0wqk0amdz4zcb"))
+  (corrupt-linux linux-libre-5.4))
 
 (define-public linux-4.19
-  (corrupt-linux linux-libre-4.19 "4.19.265"
-                 "1l5cdpgng1gci1p1gdr2jzqw486h3w56gpyc7fbq74hlc6nnwh1p"))
+  (corrupt-linux linux-libre-4.19))
 
 (define-public linux-4.14
-  (corrupt-linux linux-libre-4.14 "4.14.299"
-                 "0p5ic2mrb9vl3qkzvqxhia3kygjv8xa6s1kqkwgd6b4rmq1kc8r6"))
+  (corrupt-linux linux-libre-4.14))
 
 (define-public linux-4.9
-  (corrupt-linux linux-libre-4.9 "4.9.333"
-                 "0ash877gkrrc063h6ncl9d4gzyhndanpxsdgf1a93abbfv281gs1"))
+  (corrupt-linux linux-libre-4.9))
 
 (define-public linux linux-6.0)
 ;; linux-lts points to the *newest* released long-term support version.
 (define-public linux-lts linux-5.15)
 
 (define-public linux-arm64-generic-6.0
-  (corrupt-linux linux-libre-arm64-generic "6.0.9"
-                 "1irip1yk62carcisxlacwcxsiqib4qswx6h5mfhv8f97x04a4531"
-		 #:name "linux-arm64-generic"))
+  (corrupt-linux linux-libre-arm64-generic #:name "linux-arm64-generic"))
 
 (define-public linux-arm64-generic-5.15
-  (corrupt-linux linux-libre-arm64-generic "5.15.79"
-                 "0m61k7k6lj24z9a266q08wzghggjik2wizcabdwd1vn0vcqr18yb"
-		 #:name "linux-arm64-generic"))
+  (corrupt-linux linux-libre-arm64-generic #:name "linux-arm64-generic"))
 
 (define-public linux-arm64-generic linux-arm64-generic-6.0)
 
@@ -113,7 +100,7 @@ System on hardware which requires nonfree software to function.")))
 (define-public linux-firmware
   (package
     (name "linux-firmware")
-    (version "20221109")
+    (version "20221214")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://git.kernel.org/pub/scm/linux/kernel"
@@ -121,7 +108,7 @@ System on hardware which requires nonfree software to function.")))
                                   "linux-firmware-" version ".tar.gz"))
               (sha256
                (base32
-                "16yv7snsy5zvcwwzy0sr0lx3nf74qhi3nammdsx8c28rdm19jcn2"))))
+                "1f93aq0a35niv8qv8wyy033palpplbgr2cq0vihb97wxfkk5wmr2"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
@@ -603,6 +590,85 @@ network adapters.")
       ;; hal/rtl8192e/hal8192e_fw.c
       (license gpl2))))
 
+(define-public rtl8821ce-linux-module
+  (let ((commit "538c34671b391340e0ae23ff11bde77b6588496c")
+        (revision "7"))
+    (package
+      (name "rtl8821ce-linux-module")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tomaspinho/rtl8821ce")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0p7xj032bp3h6wp27dhf2j42bgd4gvpk7w95n830awbj07c04dss"))))
+      (build-system linux-module-build-system)
+      (arguments
+       (list #:make-flags
+             #~(list (string-append "CC=" #$(cc-for-target))
+                     (string-append "KSRC="
+                                    (assoc-ref %build-inputs
+                                               "linux-module-builder")
+                                    "/lib/modules/build"))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (replace 'build
+                   (lambda* (#:key (make-flags '()) (parallel-build? #t)
+                                   #:allow-other-keys)
+                     (apply invoke "make"
+                            `(,@(if parallel-build?
+                                    `("-j" ,(number->string (parallel-job-count)))
+                                    '())
+                              ,@make-flags)))))
+             #:tests? #f))                  ; no test suite
+      (home-page "https://github.com/tomaspinho/rtl8821ce")
+      (synopsis "Linux driver for Realtek RTL8821CE wireless network adapters")
+      (description "This is Realtek's RTL8821CE Linux driver for wireless
+network adapters.")
+      ;; Rejected by Guix beause it contains a binary blob in:
+      ;; hal/rtl8821c/hal8821c_fw.c
+      (license gpl2))))
+
+(define-public rtl8812au-aircrack-ng-linux-module
+  (let ((commit "450db78f7bd23f0c611553eb475fa5b5731d6497")
+        (revision "9"))
+    (package
+      (inherit rtl8821ce-linux-module)
+      (name "rtl8812au-aircrack-ng-linux-module")
+      (version (git-version "5.6.4.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/aircrack-ng/rtl8812au")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1f11v315bfrm5a8v17vamh6m2x22ib1p7kwpnw7aj9qvfyznhdzl"))
+         (modules '((guix build utils)))
+         (snippet
+          #~(begin
+              ;; Remove bundled tarballs, APKs, word lists, speadsheets,
+              ;; and other unnecessary unlicenced things.
+              (for-each delete-file-recursively (list "android"
+                                                      "docs"
+                                                      "tools"))))))
+      (supported-systems '("x86_64-linux" "i686-linux"))
+      (home-page "https://github.com/aircrack-ng/rtl8812au")
+      (synopsis "Linux driver for Realtek USB wireless network adapters")
+      (description
+       "This is Realtek's rtl8812au Linux driver for USB 802.11n wireless
+network adapters, modified by the aircrack-ng project to support monitor mode
+and frame injection.  It provides a @code{88XXau} kernel module that supports
+RTL8812AU, RTL8821AU, and RTL8814AU chips.")
+      ;; Rejected by Guix beause it contains a binary blob in:
+      ;; hal/rtl8812a/hal8812a_fw.c
+      (license gpl2+))))
+
 (define broadcom-sta-version "6.30.223.271")
 
 (define broadcom-sta-x86_64-source
@@ -836,7 +902,7 @@ documented in the respective processor revision guides.")
 (define-public sof-firmware
   (package
     (name "sof-firmware")
-    (version "2.2.2")
+    (version "2.2.3")
     (source
      (origin
        (method url-fetch)
@@ -844,7 +910,7 @@ documented in the respective processor revision guides.")
                            version "/sof-bin-v" version ".tar.gz"))
        (sha256
         (base32
-         "1h7waw7ia3xjaprlvkcycamphnpcalrr2sjkhm59w7npwclqzwq0"))))
+         "0hnvzbjgib8f0m2gw345vk0p4h9ba34g7vciih1jgcz2y5kgs7sr"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan
