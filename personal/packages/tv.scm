@@ -268,16 +268,16 @@
 (define-public kodi-pvr-hts
   (package
    (name "kodi-pvr-hts")
-   (version "20.6.0")
+   (version "19.0.6")
    (source (origin
             (method git-fetch)
             (uri (git-reference
                   (url "https://github.com/kodi-pvr/pvr.hts.git")
-                  (commit (string-append version "-Nexus"))))
+                  (commit (string-append version "-Matrix"))))
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "0a4adwd8jq1prx56a7g9p4cyflf8jvw0kawmqd6004clybbpmaqg"))))
+              "1qkvc50s5dspb2w6p2vrf4i2k5zvxq4bk2lc20489qjh6zaw3k9d"))))
    (build-system cmake-build-system)
    (arguments
     `(#:tests? #f
@@ -288,7 +288,7 @@
                           ;; of share/kodi, so we place all of the data resources alongside the shared lib
                           "-DCMAKE_INSTALL_DATADIR=lib/kodi")))
    (inputs
-    `(("kodi" ,kodi-20)))
+    `(("kodi" ,kodi)))
    (synopsis "Media center for home theater computers")
    (description "Kodi is a media center application for playing videos,
     music, games, etc.  Kodi is highly customizable and features a theme and
