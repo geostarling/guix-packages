@@ -18,7 +18,7 @@
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 pineapples <guixuser6392@protonmail.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
-;;; Copyright © 2021, 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2021, 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
 
 (define-module (nongnu packages mozilla)
@@ -233,19 +233,19 @@ according to Unicode Standard Annex #31")
 
 ;; Update this id with every firefox update to it's release date.
 ;; It's used for cache validation and therefor can lead to strange bugs.
-(define %firefox-esr-build-id "20221213000000")
+(define %firefox-esr-build-id "20230117000000")
 
 (define-public firefox-esr
   (package
     (name "firefox-esr")
-    (version "102.6.0esr")
+    (version "102.7.0esr")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://archive.mozilla.org/pub/firefox/releases/"
                            version "/source/firefox-" version ".source.tar.xz"))
        (sha256
-        (base32 "1zhggzrk7lgip8jm37idh22qks76kmjy4yqy2qi63mvnv2j58cfj"))))
+        (base32 "1ahl66x8chnsz80capqa5ivyrqhc50s91zrcgz1jxd7w2ws61957"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -650,20 +650,20 @@ MOZ_ENABLE_WAYLAND=1 exec ~a $@\n"
 
 ;; Update this id with every firefox update to it's release date.
 ;; It's used for cache validation and therefor can lead to strange bugs.
-(define %firefox-build-id "20221216000000")
+(define %firefox-build-id "20230117000000")
 
 (define-public firefox
   (package
     (inherit firefox-esr)
     (name "firefox")
-    (version "108.0.1")
+    (version "109.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://archive.mozilla.org/pub/firefox/releases/"
                            version "/source/firefox-" version ".source.tar.xz"))
        (sha256
-        (base32 "1shi0s4zhs414gxaf7ysa79jj4yljb6gcsr70cz3h0dd1l9sq8cq"))))
+        (base32 "0lcklrv619b3kda8xh52bqggib1nn8jkm4phhpxr4n9bawxs0y06"))))
     (arguments
      (substitute-keyword-arguments (package-arguments firefox-esr)
        ((#:phases phases)
