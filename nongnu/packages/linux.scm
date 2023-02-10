@@ -18,6 +18,7 @@
 ;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022 Simen Endsjø <simendsjo@gmail.com>
 ;;; Copyright © 2022 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2023 Morgan Smith <Morgan.J.Smith@outlook.com>
 
 (define-module (nongnu packages linux)
   #:use-module (gnu packages)
@@ -94,7 +95,7 @@ System on hardware which requires nonfree software to function.")))
 (define-public linux-firmware
   (package
     (name "linux-firmware")
-    (version "20221214")
+    (version "20230117")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://git.kernel.org/pub/scm/linux/kernel"
@@ -102,7 +103,7 @@ System on hardware which requires nonfree software to function.")))
                                   "linux-firmware-" version ".tar.gz"))
               (sha256
                (base32
-                "1f93aq0a35niv8qv8wyy033palpplbgr2cq0vihb97wxfkk5wmr2"))))
+                "1a222nxgxa2s7gkir934317nbv0ki2463x7x7qx0h1fvzv4n40xm"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
@@ -548,8 +549,8 @@ package contains nonfree firmware for the following chips:
   (deprecated-package "rtl-bt-firmware" realtek-firmware))
 
 (define-public rtl8192eu-linux-module
-  (let ((commit "1c42c4d780314add13dc7ad64f983e297f155499")
-        (revision "4"))
+  (let ((commit "865656c3a1d1aee8c4ba459ce7608756d17c712f")
+        (revision "5"))
     (package
       (name "rtl8192eu-linux-module")
       (version (git-version "0.0.0" revision commit))
@@ -562,7 +563,7 @@ package contains nonfree firmware for the following chips:
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "03kpm0vdjk1cnwn0y00fm56gd3pkcz1vvh9ybj4hrpsrklbbwi2p"))))
+           "08nq0wlrpzm8n2g14c4jlxs0crr6s5ls1n14bc17zmpy9vlarhfx"))))
       (build-system linux-module-build-system)
       (arguments
        `(#:make-flags
@@ -586,7 +587,7 @@ network adapters.")
 
 (define-public rtl8821ce-linux-module
   (let ((commit "538c34671b391340e0ae23ff11bde77b6588496c")
-        (revision "7"))
+        (revision "9"))
     (package
       (name "rtl8821ce-linux-module")
       (version (git-version "0.0.0" revision commit))
@@ -628,8 +629,8 @@ network adapters.")
       (license gpl2))))
 
 (define-public rtl8812au-aircrack-ng-linux-module
-  (let ((commit "450db78f7bd23f0c611553eb475fa5b5731d6497")
-        (revision "9"))
+  (let ((commit "08589e2f8c18d4de18a28d92c74d0a2191bb86b9")
+        (revision "10"))
     (package
       (inherit rtl8821ce-linux-module)
       (name "rtl8812au-aircrack-ng-linux-module")
@@ -642,7 +643,7 @@ network adapters.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1f11v315bfrm5a8v17vamh6m2x22ib1p7kwpnw7aj9qvfyznhdzl"))
+          (base32 "07yiya5ckm578pwxdm5nnyq45vnw4zjbd31a5365l9cwbpfji67s"))
          (modules '((guix build utils)))
          (snippet
           #~(begin
@@ -662,6 +663,39 @@ RTL8812AU, RTL8821AU, and RTL8814AU chips.")
       ;; Rejected by Guix beause it contains a binary blob in:
       ;; hal/rtl8812a/hal8812a_fw.c
       (license gpl2+))))
+
+(define-public r8168-linux-module
+  (package
+    (name "r8168-linux-module")
+    (version "8.051.02")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mtorromeo/r8168")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "16mpr0np6xbmzdnwg4p3q6yli2gh032k98g4vplya33hrn50vh52"))))
+    (arguments
+     (list #:tests? #f
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'enter-src-directory
+                          (lambda _
+                            (chdir "src")))
+                        ;; Needed to compile module for linux >= 6.1
+                        (add-before 'build 'fix-build
+                          (lambda _
+                            (substitute* "r8168.h"
+                              (("netif_napi_add\\(ndev, &priv->napi, function, weight\\)")
+                               "netif_napi_add(ndev, &priv->napi, function)")))))))
+    (build-system linux-module-build-system)
+    (home-page "https://github.com/mtorromeo/r8168")
+    (synopsis "Linux driver for Realtek PCIe network adapters")
+    (description
+     "Linux driver for Realtek PCIe network adapters.  If the r8169 kernel module is
+giving you trouble, you can try this module.")
+    (license gpl2)))
 
 (define broadcom-sta-version "6.30.223.271")
 
@@ -917,44 +951,3 @@ audio DSPs that can be found on the Intel Skylake architecture.  This
 firmware can be built from source but need to be signed by Intel in order to be
 loaded by Linux.")
     (license bsd-3)))
-
-(define-public rtl8821ce-linux-module
-  (let ((commit "50c1b120b06a3b0805e23ca9a4dbd274d74bb305")
-        (revision "8"))
-    (package
-      (name "rtl8821ce-linux-module")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/tomaspinho/rtl8821ce")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "09dsmbsrpnbpbq4kigq324s8xb567pdjyb5h07kg6xcbcb5npkpz"))))
-      (build-system linux-module-build-system)
-      (arguments
-       (list #:make-flags
-             #~(list (string-append "CC=" #$(cc-for-target))
-                     (string-append "KSRC="
-                                    (assoc-ref %build-inputs
-                                               "linux-module-builder")
-                                    "/lib/modules/build"))
-             #:phases
-             #~(modify-phases %standard-phases
-                 (replace 'build
-                   (lambda* (#:key (make-flags '()) (parallel-build? #t)
-                                   #:allow-other-keys)
-                     (apply invoke "make"
-                            `(,@(if parallel-build?
-                                    `("-j" ,(number->string (parallel-job-count)))
-                                    '())
-                              ,@make-flags)))))
-             #:tests? #f))                  ; no test suite
-      (home-page "https://github.com/tomaspinho/rtl8821ce")
-      (synopsis "Linux driver for Realtek RTL8821CE wireless network adapters")
-      (description "This is Realtek's RTL8821CE Linux driver for wireless
-network adapters.")
-      (license gpl2))))
