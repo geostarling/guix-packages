@@ -52,6 +52,7 @@
      #:source (origin (inherit (package-source freedo))
                       (method url-fetch)
                       (uri (linux-urls (package-version freedo)))
+		      (sha256 (base32 "17fifhfh2jrvlhry696n428ldl5ag3g2km5l9hx8gx8wm6dr3qhb"))
                       (patches '()))))
    (version (package-version freedo))
    (home-page "https://www.kernel.org/")
