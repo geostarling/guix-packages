@@ -47,7 +47,7 @@
                        "/linux/kernel/v" (version-major version) ".x"
                        "/linux-" version ".tar.xz"))
 
-(define* (corrupt-linux freedo #:key (name "linux"))
+(define* (corrupt-linux freedo #:key (name "linux") (configs '()))
 
   ;; TODO: This very directly depends on guix internals.
   ;; Throw it all out when we manage kernel hashes.
@@ -78,13 +78,17 @@
         #:source (origin
                    (method url-fetch)
                    (uri url)
-                   (hash hash))))
+                   (hash hash))
+        #:configs configs))
       (version version)
       (home-page "https://www.kernel.org/")
       (synopsis "Linux kernel with nonfree binary blobs included")
       (description
        "The unmodified Linux kernel, including nonfree blobs, for running Guix System
 on hardware which requires nonfree software to function."))))
+
+(define-public linux-6.2
+  (corrupt-linux linux-libre-6.2))
 
 (define-public linux-6.1
   (corrupt-linux linux-libre-6.1))
@@ -104,7 +108,7 @@ on hardware which requires nonfree software to function."))))
 (define-public linux-4.14
   (corrupt-linux linux-libre-4.14))
 
-(define-public linux linux-6.1)
+(define-public linux linux-6.2)
 ;; linux-lts points to the *newest* released long-term support version.
 (define-public linux-lts linux-5.15)
 
@@ -121,15 +125,14 @@ on hardware which requires nonfree software to function."))))
 (define-public linux-firmware
   (package
     (name "linux-firmware")
-    (version "20230117")
+    (version "20230310")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://git.kernel.org/pub/scm/linux/kernel"
-                                  "/git/firmware/linux-firmware.git/snapshot/"
-                                  "linux-firmware-" version ".tar.gz"))
+              (uri (string-append "mirror://kernel.org/linux/kernel/firmware/"
+                                  "linux-firmware-" version ".tar.xz"))
               (sha256
                (base32
-                "1a222nxgxa2s7gkir934317nbv0ki2463x7x7qx0h1fvzv4n40xm"))))
+                "1clrh5bkfd8ifjmfwj3sbkr8ihh28sx6phs17jnyr8cc2zjx8s2r"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
