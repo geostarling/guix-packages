@@ -23,12 +23,16 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages readline)
+  #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages file)
   #:use-module (gnu packages c)
   #:use-module (guix utils)
   #:use-module (guix git-download)
   #:use-module (gnu packages check)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages gcc)
@@ -330,3 +334,38 @@
     assemble, report on, and monitor arrays.  It can also move spares between raid
     arrays when needed.")
    (license license:gpl2+)))
+
+(define-public miraclecast
+  (let ((commit "850a1c6f7c69b727b24fa1858d86490b7698c482")
+        (revision "0"))
+    (package
+      (name "miraclecast")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/albfan/miraclecast")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1y5ld8kqgi6gh1p993h45ahdsb36y37pz3w7sc8ypg31h7khn3j9"))
+         (patches
+          (search-patches "miraclecast-systemd.patch"))))
+      (build-system meson-build-system)
+      (arguments
+       `(#:configure-flags '("-Denable-systemd=false"
+                             "-Dbuild-tests=true")))
+      (native-inputs `(("pkg-config" ,pkg-config)
+                       ("cmake" ,cmake)))
+      (inputs `(("readline" ,readline)
+                ("elogind" ,elogind)
+                ("glib" ,glib)
+                ("eudev" ,eudev)))
+      (synopsis "Miraclecast")
+      (description "MrG is is a C API for creating user interfaces.  It can be
+       used as an application writing environment or as an interactive canvas for part
+       of a larger interface.")
+      (home-page "https://github.com/hodefoting/mrg")
+      (license license:lgpl2.0+))))

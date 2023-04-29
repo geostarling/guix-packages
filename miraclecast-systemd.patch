@@ -1,0 +1,278 @@
+diff --git a/src/ctl/ctl-cli.c b/src/ctl/ctl-cli.c
+index 9240ee4..f8a2905 100644
+--- a/src/ctl/ctl-cli.c
++++ b/src/ctl/ctl-cli.c
+@@ -28,7 +28,7 @@
+ #include <strings.h>
+ #include <sys/signalfd.h>
+ #include <sys/wait.h>
+-#include <systemd/sd-bus.h>
++#include <elogind/sd-bus.h>
+ #include "ctl.h"
+ #include "shl_macro.h"
+ #include "shl_util.h"
+diff --git a/src/ctl/ctl-sink.h b/src/ctl/ctl-sink.h
+index 22c8401..8c2e4ee 100644
+--- a/src/ctl/ctl-sink.h
++++ b/src/ctl/ctl-sink.h
+@@ -29,7 +29,7 @@
+ #include <string.h>
+ #include <sys/socket.h>
+ #include <sys/types.h>
+-#include <systemd/sd-event.h>
++#include <elogind/sd-event.h>
+ #include <time.h>
+ #include <unistd.h>
+ #include <glib.h>
+diff --git a/src/ctl/ctl-wifi.c b/src/ctl/ctl-wifi.c
+index 2e06e72..987c02d 100644
+--- a/src/ctl/ctl-wifi.c
++++ b/src/ctl/ctl-wifi.c
+@@ -21,7 +21,7 @@
+ #include <stdbool.h>
+ #include <stdlib.h>
+ #include <string.h>
+-#include <systemd/sd-bus.h>
++#include <elogind/sd-bus.h>
+ #include "ctl.h"
+ #include "shl_dlist.h"
+ #include "shl_macro.h"
+diff --git a/src/ctl/ctl.h b/src/ctl/ctl.h
+index cb8855f..511b841 100644
+--- a/src/ctl/ctl.h
++++ b/src/ctl/ctl.h
+@@ -28,7 +28,7 @@
+ #include <stdio.h>
+ #include <sys/socket.h>
+ #include <sys/types.h>
+-#include <systemd/sd-bus.h>
++#include <elogind/sd-bus.h>
+ #include "shl_dlist.h"
+ #include "shl_log.h"
+ 
+diff --git a/src/ctl/sinkctl.c b/src/ctl/sinkctl.c
+index cecf667..8445c53 100644
+--- a/src/ctl/sinkctl.c
++++ b/src/ctl/sinkctl.c
+@@ -30,8 +30,8 @@
+ #include <strings.h>
+ #include <sys/signalfd.h>
+ #include <sys/time.h>
+-#include <systemd/sd-bus.h>
+-#include <systemd/sd-event.h>
++#include <elogind/sd-bus.h>
++#include <elogind/sd-event.h>
+ 
+ #ifdef ENABLE_SYSTEMD
+ #include <systemd/sd-journal.h>
+diff --git a/src/ctl/wifictl.c b/src/ctl/wifictl.c
+index 5279958..c3cbbc5 100644
+--- a/src/ctl/wifictl.c
++++ b/src/ctl/wifictl.c
+@@ -27,7 +27,7 @@
+ #include <string.h>
+ #include <strings.h>
+ #include <sys/signalfd.h>
+-#include <systemd/sd-bus.h>
++#include <elogind/sd-bus.h>
+ #include "ctl.h"
+ #include "shl_macro.h"
+ #include "shl_util.h"
+diff --git a/src/miracled.c b/src/miracled.c
+index c193e95..35c8f0c 100644
+--- a/src/miracled.c
++++ b/src/miracled.c
+@@ -25,9 +25,9 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <sys/signalfd.h>
+-#include <systemd/sd-bus.h>
+-#include <systemd/sd-daemon.h>
+-#include <systemd/sd-event.h>
++#include <elogind/sd-bus.h>
++#include <elogind/sd-daemon.h>
++#include <elogind/sd-event.h>
+ #include <time.h>
+ #include <unistd.h>
+ #include "miracled.h"
+diff --git a/src/miracled.h b/src/miracled.h
+index 310a171..0b10e2a 100644
+--- a/src/miracled.h
++++ b/src/miracled.h
+@@ -21,8 +21,8 @@
+ #include <stdio.h>
+ #include <stdbool.h>
+ #include <stdlib.h>
+-#include <systemd/sd-bus.h>
+-#include <systemd/sd-event.h>
++#include <elogind/sd-bus.h>
++#include <elogind/sd-event.h>
+ 
+ #ifndef MIRACLED_H
+ #define MIRACLED_H
+diff --git a/src/shared/rtsp.c b/src/shared/rtsp.c
+index 60895cd..d6948bb 100644
+--- a/src/shared/rtsp.c
++++ b/src/shared/rtsp.c
+@@ -28,7 +28,7 @@
+ #include <sys/socket.h>
+ #include <sys/time.h>
+ #include <sys/types.h>
+-#include <systemd/sd-event.h>
++#include <elogind/sd-event.h>
+ #include <time.h>
+ #include <unistd.h>
+ #include "rtsp.h"
+diff --git a/src/shared/rtsp.h b/src/shared/rtsp.h
+index a5e6f6a..988017d 100644
+--- a/src/shared/rtsp.h
++++ b/src/shared/rtsp.h
+@@ -24,7 +24,7 @@
+ #include <stdarg.h>
+ #include <stdbool.h>
+ #include <stdlib.h>
+-#include <systemd/sd-event.h>
++#include <elogind/sd-event.h>
+ 
+ /* types */
+ 
+diff --git a/src/shared/util.h b/src/shared/util.h
+index 0e0ba3c..0653910 100644
+--- a/src/shared/util.h
++++ b/src/shared/util.h
+@@ -28,7 +28,7 @@
+ #include <stdlib.h>
+ #include <stdarg.h>
+ #include <sys/time.h>
+-#include <systemd/sd-bus.h>
++#include <elogind/sd-bus.h>
+ #include <time.h>
+ #include "shl_macro.h"
+ #include <glib.h>
+diff --git a/src/shared/wpas.c b/src/shared/wpas.c
+index 171a472..40a353f 100644
+--- a/src/shared/wpas.c
++++ b/src/shared/wpas.c
+@@ -30,7 +30,7 @@
+ #include <sys/timerfd.h>
+ #include <sys/types.h>
+ #include <sys/un.h>
+-#include <systemd/sd-event.h>
++#include <elogind/sd-event.h>
+ #include <unistd.h>
+ #include "shl_dlist.h"
+ #include "shl_util.h"
+diff --git a/src/shared/wpas.h b/src/shared/wpas.h
+index 89200fc..f631983 100644
+--- a/src/shared/wpas.h
++++ b/src/shared/wpas.h
+@@ -24,7 +24,7 @@
+ #include <stdarg.h>
+ #include <stdbool.h>
+ #include <stdlib.h>
+-#include <systemd/sd-event.h>
++#include <elogind/sd-event.h>
+ 
+ /* types */
+ 
+diff --git a/src/wifi/wifid-dbus.c b/src/wifi/wifid-dbus.c
+index a856cd2..fa48300 100644
+--- a/src/wifi/wifid-dbus.c
++++ b/src/wifi/wifid-dbus.c
+@@ -22,8 +22,8 @@
+ #include <errno.h>
+ #include <stdlib.h>
+ #include <string.h>
+-#include <systemd/sd-bus.h>
+-#include <systemd/sd-event.h>
++#include <elogind/sd-bus.h>
++#include <elogind/sd-event.h>
+ #include "shl_log.h"
+ #include "shl_util.h"
+ #include "util.h"
+diff --git a/src/wifi/wifid-link.c b/src/wifi/wifid-link.c
+index 1093fc4..689ba52 100644
+--- a/src/wifi/wifid-link.c
++++ b/src/wifi/wifid-link.c
+@@ -22,7 +22,7 @@
+ #include <errno.h>
+ #include <stdbool.h>
+ #include <stdlib.h>
+-#include <systemd/sd-bus.h>
++#include <elogind/sd-bus.h>
+ #include "shl_dlist.h"
+ #include "shl_log.h"
+ #include "shl_util.h"
+diff --git a/src/wifi/wifid-peer.c b/src/wifi/wifid-peer.c
+index a361089..e8e8db7 100644
+--- a/src/wifi/wifid-peer.c
++++ b/src/wifi/wifid-peer.c
+@@ -22,7 +22,7 @@
+ #include <errno.h>
+ #include <stdbool.h>
+ #include <stdlib.h>
+-#include <systemd/sd-bus.h>
++#include <elogind/sd-bus.h>
+ #include "shl_dlist.h"
+ #include "shl_log.h"
+ #include "shl_util.h"
+diff --git a/src/wifi/wifid-supplicant.c b/src/wifi/wifid-supplicant.c
+index 9d8ef91..b5aff60 100644
+--- a/src/wifi/wifid-supplicant.c
++++ b/src/wifi/wifid-supplicant.c
+@@ -28,7 +28,7 @@
+ #include <sys/socket.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+-#include <systemd/sd-event.h>
++#include <elogind/sd-event.h>
+ 
+ #ifdef ENABLE_SYSTEMD
+ #include <systemd/sd-journal.h>
+diff --git a/src/wifi/wifid.c b/src/wifi/wifid.c
+index 86fb3ff..e35f3d0 100644
+--- a/src/wifi/wifid.c
++++ b/src/wifi/wifid.c
+@@ -27,9 +27,9 @@
+ #include <string.h>
+ #include <sys/signalfd.h>
+ #include <sys/wait.h>
+-#include <systemd/sd-bus.h>
+-#include <systemd/sd-daemon.h>
+-#include <systemd/sd-event.h>
++#include <elogind/sd-bus.h>
++#include <elogind/sd-daemon.h>
++#include <elogind/sd-event.h>
+ #include <time.h>
+ #include <unistd.h>
+ #include "shl_htable.h"
+diff --git a/src/wifi/wifid.h b/src/wifi/wifid.h
+index db78f18..b83fb65 100644
+--- a/src/wifi/wifid.h
++++ b/src/wifi/wifid.h
+@@ -21,8 +21,8 @@
+ #include <libudev.h>
+ #include <stdbool.h>
+ #include <stdlib.h>
+-#include <systemd/sd-bus.h>
+-#include <systemd/sd-event.h>
++#include <elogind/sd-bus.h>
++#include <elogind/sd-event.h>
+ #include "shl_dlist.h"
+ #include "shl_htable.h"
+ 
+diff --git a/test/test_common.h b/test/test_common.h
+index f755e0c..82f7d56 100644
+--- a/test/test_common.h
++++ b/test/test_common.h
+@@ -43,8 +43,8 @@
+ #include <sys/socket.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+-#include <systemd/sd-bus.h>
+-#include <systemd/sd-event.h>
++#include <elogind/sd-bus.h>
++#include <elogind/sd-event.h>
+ #include <unistd.h>
+ #include "shl_dlist.h"
+ #include "shl_htable.h"
