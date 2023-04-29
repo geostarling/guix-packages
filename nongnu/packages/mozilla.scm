@@ -14,7 +14,7 @@
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2019, 2020 Adrian Malacoda <malacoda@monarch-pass.net>
-;;; Copyright © 2020-2022 Jonathan Brielmaier <jonathan.brielmaier@web.de>
+;;; Copyright © 2020-2023 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 pineapples <guixuser6392@protonmail.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
@@ -75,177 +75,39 @@
 ;; https://searchfox.org under the particular firefox release, like
 ;; mozilla-esr102.
 (define-public rust-firefox-esr rust) ; 1.60 is the default in Guix
-(define-public rust-firefox (@@ (gnu packages rust) rust-1.63)) ; 1.63 is also listed, but 1.61 is the minimum needed
+(define-public rust-firefox (@@ (gnu packages rust) rust-1.65)) ; 1.63 is also listed, but 1.61 is the minimum needed
 
-;; rust-cbindgen-0.23/0.24 dependencies
-(define-public rust-unicode-ident-1
+(define icu4c-72
   (package
-    (name "rust-unicode-ident")
-    (version "1.0.3")
+    (inherit icu4c)
+    (version "72.1")
     (source (origin
               (method url-fetch)
-              (uri (crate-uri "unicode-ident" version))
-              (file-name (string-append name "-" version ".tar.gz"))
+              (uri (string-append
+                    "https://github.com/unicode-org/icu/releases/download/release-"
+                    (string-map (lambda (x) (if (char=? x #\.) #\- x)) version)
+                    "/icu4c-"
+                    (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
+                    "-src.tgz"))
               (sha256
                (base32
-                "1bqswc96ws8l6k7xx56dg521a3l5imi3mhlcz7rsi6a92mxb7xf4"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t))
-    (home-page "https://github.com/dtolnay/unicode-ident")
-    (synopsis
-     "Better optimized implementation of the older unicode-xid crate")
-    (description
-     "Determine whether characters have the XID_Start or XID_Continue properties
-according to Unicode Standard Annex #31")
-    (license (list license:unicode license:expat))))
-
-(define-public rust-textwrap-0.15
-  (package
-    (inherit rust-textwrap-0.12)
-    (name "rust-textwrap")
-    (version "0.15.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "textwrap" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1yw513k61lfiwgqrfvsjw1a5wpvm0azhpjr2kr0jhnq9c56is55i"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-hyphenation" ,rust-hyphenation-0.8)
-                       ("rust-smawk" ,rust-smawk-0.3)
-                       ("rust-terminal-size" ,rust-terminal-size-0.1)
-                       ("rust-unicode-linebreak" ,rust-unicode-linebreak-0.1)
-                       ("rust-unicode-width" ,rust-unicode-width-0.1))))))
-
-(define-public rust-clap-lex-0.2
-  (package
-    (name "rust-clap-lex")
-    (version "0.2.4")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "clap_lex" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1ib1a9v55ybnaws11l63az0jgz5xiy24jkdgsmyl7grcm3sz4l18"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-os-str-bytes" ,rust-os-str-bytes-6))))
-    (home-page "https://github.com/clap-rs/clap/tree/master/clap_lex")
-    (synopsis "Minimal, flexible command line parser")
-    (description "Minimal, flexible command line parser")
-    (license (list license:expat license:asl2.0))))
-
-(define-public rust-clap-derive-3.2.15
-  (package
-    (inherit rust-clap-derive-3)
-    (name "rust-clap-derive")
-    (version "3.2.15")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "clap_derive" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1d2c4vs345fwihkd8cc7m6acbiydcwramkd5mnp36p0a7g6jm9cv"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-heck" ,rust-heck-0.4)
-                       ("rust-proc-macro-error" ,rust-proc-macro-error-1)
-                       ("rust-proc-macro2" ,rust-proc-macro2-1)
-                       ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-1))))))
-
-(define-public rust-clap-3.2.16
-  (package
-    (inherit rust-clap-3)
-    (name "rust-clap")
-    (version "3.2.16")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "clap" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1af06z8z7m3327yz1xvzxfjanclgpvvy3lssb745rig7adkbpnx3"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-atty" ,rust-atty-0.2)
-                       ("rust-backtrace" ,rust-backtrace-0.3)
-                       ("rust-bitflags" ,rust-bitflags-1)
-                       ("rust-clap-derive" ,rust-clap-derive-3.2.15)
-                       ("rust-clap-lex" ,rust-clap-lex-0.2)
-                       ("rust-indexmap" ,rust-indexmap-1)
-                       ("rust-once-cell" ,rust-once-cell-1)
-                       ("rust-regex" ,rust-regex-1)
-                       ("rust-strsim" ,rust-strsim-0.10)
-                       ("rust-termcolor" ,rust-termcolor-1)
-                       ("rust-terminal-size" ,rust-terminal-size-0.1)
-                       ("rust-textwrap" ,rust-textwrap-0.15)
-                       ("rust-unicase" ,rust-unicase-2)
-                       ("rust-yaml-rust" ,rust-yaml-rust-0.4))))))
-
-(define-public rust-cbindgen-0.24
-  (package
-    (inherit rust-cbindgen-0.19)
-    (name "rust-cbindgen")
-    (version "0.24.3")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "cbindgen" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1yqxqsz2d0cppd8zwihk2139g5gy38wqgl9snj6rnk8gyvnqsdd6"))))
-    (arguments
-     `(#:cargo-inputs (("rust-clap" ,rust-clap-3.2.16)
-                       ("rust-heck" ,rust-heck-0.4)
-                       ("rust-indexmap" ,rust-indexmap-1)
-                       ("rust-log" ,rust-log-0.4)
-                       ("rust-proc-macro2" ,rust-proc-macro2-1)
-                       ("rust-quote" ,rust-quote-1)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-serde-json" ,rust-serde-json-1)
-                       ("rust-syn" ,rust-syn-1)
-                       ("rust-tempfile" ,rust-tempfile-3)
-                       ("rust-toml" ,rust-toml-0.5))
-       #:cargo-development-inputs (("rust-serial-test" ,rust-serial-test-0.5))))))
-
-;; Bug with firefox build (v101-102) with cbindgen-0.24, see
-;; https://bugzilla.mozilla.org/show_bug.cgi?id=1773259#c5 for possible patch
-;; (untested)
-(define-public rust-cbindgen-0.23
-  (package
-    (inherit rust-cbindgen-0.24)
-    (name "rust-cbindgen")
-    (version "0.23.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "cbindgen" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "006rn3fn4njayjxr2vd24g1awssr9i3894nbmfzkybx07j728vav"))))))
+                "0s0xly0ndspd4p9jl6101qvnp5rgz5kl9qrmcvapwah92y1d7lm2"))))))
 
 ;; Update this id with every firefox update to it's release date.
 ;; It's used for cache validation and therefor can lead to strange bugs.
-(define %firefox-esr-build-id "20230117000000")
+(define %firefox-esr-build-id "20230411000000")
 
 (define-public firefox-esr
   (package
     (name "firefox-esr")
-    (version "102.7.0esr")
+    (version "102.10.0esr")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://archive.mozilla.org/pub/firefox/releases/"
                            version "/source/firefox-" version ".source.tar.xz"))
        (sha256
-        (base32 "1ahl66x8chnsz80capqa5ivyrqhc50s91zrcgz1jxd7w2ws61957"))))
+        (base32 "1y7v19xxl6jchywd0zxy5vr4pj23pi6di4lhlivxpki2pkgm8scc"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -556,7 +418,7 @@ according to Unicode Standard Annex #31")
         gtk+
         gtk+-2
         hunspell
-        icu4c-71
+        icu4c
         jemalloc
         libcanberra
         libevent
@@ -650,20 +512,20 @@ MOZ_ENABLE_WAYLAND=1 exec ~a $@\n"
 
 ;; Update this id with every firefox update to it's release date.
 ;; It's used for cache validation and therefor can lead to strange bugs.
-(define %firefox-build-id "20230117000000")
+(define %firefox-build-id "20230425000000")
 
 (define-public firefox
   (package
     (inherit firefox-esr)
     (name "firefox")
-    (version "109.0")
+    (version "112.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://archive.mozilla.org/pub/firefox/releases/"
                            version "/source/firefox-" version ".source.tar.xz"))
        (sha256
-        (base32 "0lcklrv619b3kda8xh52bqggib1nn8jkm4phhpxr4n9bawxs0y06"))))
+        (base32 "0blrcnak6gk8m05yah5mxq336rdbr7k50vi98mncmcc27fd83976"))))
     (arguments
      (substitute-keyword-arguments (package-arguments firefox-esr)
        ((#:phases phases)
@@ -671,6 +533,9 @@ MOZ_ENABLE_WAYLAND=1 exec ~a $@\n"
             (replace 'set-build-id
               (lambda _
                 (setenv "MOZ_BUILD_DATE" #$%firefox-build-id)))))))
+    (inputs
+     (modify-inputs (package-inputs firefox-esr)
+       (replace "icu4c" icu4c-72)))
     (native-inputs
      (modify-inputs (package-native-inputs firefox-esr)
        (replace "rust" rust-firefox)
