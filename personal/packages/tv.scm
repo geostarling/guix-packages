@@ -49,11 +49,13 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages lirc)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages kodi)
   #:use-module (personal packages kodi)
   #:use-module (gnu packages xml)
+  #:use-module (guix gexp)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages tls)
@@ -355,13 +357,15 @@
           (search-patches "miraclecast-systemd.patch"))))
       (build-system meson-build-system)
       (arguments
-       `(#:configure-flags '("-Denable-systemd=false"
-                             "-Dbuild-tests=true")))
+       (list #:configure-flags #~(list "-Denable-systemd=false"
+                                       "-Dbuild-tests=true"
+                                       (string-append "-Dip-binary=" #$(this-package-input "iproute") "/sbin/ip"))))
       (native-inputs `(("pkg-config" ,pkg-config)
                        ("cmake" ,cmake)))
       (inputs `(("readline" ,readline)
                 ("elogind" ,elogind)
                 ("glib" ,glib)
+                ("iproute" ,iproute)
                 ("eudev" ,eudev)))
       (synopsis "Miraclecast")
       (description "MrG is is a C API for creating user interfaces.  It can be
