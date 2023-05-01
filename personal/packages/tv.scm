@@ -376,6 +376,9 @@
                 ("glib" ,glib)
                 ("iproute" ,iproute)
                 ("gstreamer" ,gstreamer)
+                ("gst-plugins-good" ,gst-plugins-good)
+                ("gst-plugins-bad" ,gst-plugins-bad)
+                ("gst-plugins-bad" ,gst-plugins-ugly)
                 ("eudev" ,eudev)))
       (synopsis "Miraclecast")
       (description "MrG is is a C API for creating user interfaces.  It can be
