@@ -32,7 +32,6 @@
   #:use-module (guix git-download)
   #:use-module (gnu packages check)
   #:use-module (guix build-system cmake)
-  #:use-module (guix build utils)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages version-control)
@@ -43,8 +42,6 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages gdb)
-  #:use-module (gnu packages dlang)
-  #:use-module (gnu packages gnome)      ;; for vte and libpeas
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages glib)
@@ -151,72 +148,74 @@
 
 
 (define-public tvheadend
-  (package
-    (name "tvheadend")
-    (version "20221221")
-    (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/tvheadend/tvheadend.git")
-                   (commit "c9a156a25a07f1f84c2f48a1b03b481430c8257d")))
-             (file-name (string-append name "-" version "-checkout"))
-             (sha256
-              (base32
-               "1y2mcn94pwcykbh6cr9v5a3dp12bw6sfz2r8hgl4d9f3srcl1j7a"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f    ; there is no test target
-       #:configure-flags `("--enable-libav"
-                           "--disable-ffmpeg_static"
-                           "--disable-libx264_static"
-                           "--disable-libx265_static"
-                           "--disable-libvpx_static"
-                           "--disable-libtheora_static"
-                           "--disable-libvorbis_static"
-                           "--disable-libfdkaac_static"
-                           "--disable-hdhomerun_static"
-                           "--disable-libmfx_static"
-                           "--disable-hdhomerun_client"
-                           "--disable-dvbscan"
-                           "--disable-pcloud_cache"
-                           "--python=python3")
-       #:phases (modify-phases %standard-phases
-                               (add-before 'configure 'set-build-environment
-                                           (lambda _
-                                             (setenv "CC" "gcc")
-                                             #t))
-                               (add-after 'install 'link-dtv-scan-tables
-                                          (lambda* (#:key inputs outputs #:allow-other-keys)
-                                            (let ((dvb-directory (string-append %output "/share/tvheadend/data/dvb")))
-                                              (display (string-append (assoc-ref %build-inputs "dtv-scan-tables") "/share"))
-                                              (display dvb-directory)
-                                              (symlink (string-append (assoc-ref %build-inputs "dtv-scan-tables") "/share")
-                                                       (string-append dvb-directory))
-                                              #t))))))
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ("intltool" ,intltool)
-                     ("python" ,python)
-                     ("which" ,which)
-                     ("wget" ,wget)
-                     ("libdvbcsa" ,libdvbcsa)
-                     ("git" ,git)))
-    (inputs `(("ffmpeg" ,ffmpeg)
-              ("openssl" ,openssl)
-              ("libx264" ,libx264)
-              ("x265" ,x265)
-              ("opus" ,opus)
-              ("libvpx" ,libvpx)
-              ("tar" ,tar) ;; required for migrations
-              ("dtv-scan-tables" ,dtv-scan-tables)))
+  (let ((commit "18effa8ad93e901f3cdaa534123d910f14453d1f")
+        (revision "0"))
+    (package
+      (name "tvheadend")
+      (version (git-version "4.3" revision commit))
+      (source (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/tvheadend/tvheadend.git")
+                     (commit "18effa8ad93e901f3cdaa534123d910f14453d1f")))
+               (file-name (git-file-name name version))
+               (sha256
+                (base32
+                 "0bvmn36pbqphw739vwymfsxhqs52q70r8rs2c4nyaj5s9dk9z2mz"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f    ; there is no test target
+         #:configure-flags `("--enable-libav"
+                             "--disable-ffmpeg_static"
+                             "--disable-libx264_static"
+                             "--disable-libx265_static"
+                             "--disable-libvpx_static"
+                             "--disable-libtheora_static"
+                             "--disable-libvorbis_static"
+                             "--disable-libfdkaac_static"
+                             "--disable-hdhomerun_static"
+                             "--disable-libmfx_static"
+                             "--disable-hdhomerun_client"
+                             "--disable-dvbscan"
+                             "--disable-pcloud_cache"
+                             "--python=python3")
+         #:phases (modify-phases %standard-phases
+                                 (add-before 'configure 'set-build-environment
+                                             (lambda _
+                                               (setenv "CC" "gcc")
+                                               #t))
+                                 (add-after 'install 'link-dtv-scan-tables
+                                            (lambda* (#:key inputs outputs #:allow-other-keys)
+                                              (let ((dvb-directory (string-append %output "/share/tvheadend/data/dvb")))
+                                                (display (string-append (assoc-ref %build-inputs "dtv-scan-tables") "/share"))
+                                                (display dvb-directory)
+                                                (symlink (string-append (assoc-ref %build-inputs "dtv-scan-tables") "/share")
+                                                         (string-append dvb-directory))
+                                                #t))))))
+      (native-inputs `(("pkg-config" ,pkg-config)
+                       ("intltool" ,intltool)
+                       ("python" ,python)
+                       ("which" ,which)
+                       ("wget" ,wget)
+                       ("libdvbcsa" ,libdvbcsa)
+                       ("git" ,git)))
+      (inputs `(("ffmpeg" ,ffmpeg)
+                ("openssl" ,openssl)
+                ("libx264" ,libx264)
+                ("x265" ,x265)
+                ("opus" ,opus)
+                ("libvpx" ,libvpx)
+                ("tar" ,tar) ;; required for migrations
+                ("dtv-scan-tables" ,dtv-scan-tables)))
 
-    (home-page
-     "https://goodies.xfce.org/projects/panel-plugins/xfce4-sensors-plugin")
-    (synopsis "Hardware sensors plugin for Xfce4")
-    (description
-     "A battery monitor panel plugin for Xfce4, compatible with APM and ACPI.")
-    ;; The main plugin code is covered by gpl2+, but the files containing code
-    ;; to read the battery state via ACPI or APM are covered by lgpl2.0+.
-    (license (list license:gpl2+ license:lgpl2.0+))))
+      (home-page
+       "https://goodies.xfce.org/projects/panel-plugins/xfce4-sensors-plugin")
+      (synopsis "Hardware sensors plugin for Xfce4")
+      (description
+       "A battery monitor panel plugin for Xfce4, compatible with APM and ACPI.")
+      ;; The main plugin code is covered by gpl2+, but the files containing code
+      ;; to read the battery state via ACPI or APM are covered by lgpl2.0+.
+      (license (list license:gpl2+ license:lgpl2.0+)))))
 
 
 ;; (define-public libp8-platform
