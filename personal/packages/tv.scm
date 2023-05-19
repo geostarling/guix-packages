@@ -370,15 +370,16 @@
 
       (native-inputs `(("pkg-config" ,pkg-config)
                        ("cmake" ,cmake)))
-      (inputs `(("readline" ,readline)
-                ("elogind" ,elogind)
-                ("glib" ,glib)
-                ("iproute" ,iproute)
-                ("gstreamer" ,gstreamer)
-                ("gst-plugins-good" ,gst-plugins-good)
-                ("gst-plugins-bad" ,gst-plugins-bad)
-                ("gst-plugins-bad" ,gst-plugins-ugly)
-                ("eudev" ,eudev)))
+      (inputs (list readline
+                    elogind
+                    glib
+                    iproute
+                    gstreamer
+                    gst-plugins-base
+                    gst-plugins-good
+                    gst-plugins-bad
+                    gst-plugins-ugly
+                    eudev))
       (synopsis "Miraclecast")
       (description "MrG is is a C API for creating user interfaces.  It can be
        used as an application writing environment or as an interactive canvas for part
