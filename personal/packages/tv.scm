@@ -361,12 +361,17 @@
                                        "-Dbuild-tests=true"
                                        (string-append "-Dip-binary=" #$(this-package-input "iproute2") "/sbin/ip"))
          #:phases #~(modify-phases %standard-phases
-                      (add-after 'unpack 'parinfer-rust-path-patch
+                      (add-after 'unpack 'miraclecast-gst-launch-patch
                            (lambda* (#:key inputs #:allow-other-keys)
                              (substitute* "res/miracle-gst"
                                           (("/usr/bin/gst-launch-1.0")
-                                           (string-append #$(this-package-input "gstreamer") "/bin/gst-launch-1.0"))))))))
+                                           (string-append #$(this-package-input "gstreamer") "/bin/gst-launch-1.0")))))
 
+                      (add-after 'install 'wrap-miracle-sinkctl
+                        (lambda* (#:key inputs #:allow-other-keys)
+                          (let ((gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+                            (wrap-program (string-append #$output "/bin/miracle-sinkctl")
+                              `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path)))))))))
 
       (native-inputs `(("pkg-config" ,pkg-config)
                        ("cmake" ,cmake)))
