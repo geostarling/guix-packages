@@ -380,6 +380,7 @@
                     glib
                     iproute
                     gstreamer
+                    gst-libav
                     gst-plugins-base
                     gst-plugins-good
                     gst-plugins-bad
