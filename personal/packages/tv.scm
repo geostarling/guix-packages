@@ -359,7 +359,7 @@
       (arguments
        (list #:configure-flags #~(list "-Denable-systemd=false"
                                        "-Dbuild-tests=true"
-                                       (string-append "-Dip-binary=" #$(this-package-input "iproute") "/sbin/ip"))
+                                       (string-append "-Dip-binary=" #$(this-package-input "iproute2") "/sbin/ip"))
          #:phases #~(modify-phases %standard-phases
                       (add-after 'unpack 'parinfer-rust-path-patch
                            (lambda* (#:key inputs #:allow-other-keys)
