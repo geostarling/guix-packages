@@ -28,7 +28,7 @@
 (define-module (personal home services pipewire)
  #:use-module (guix gexp)
 
- #:use-module (gnu packages linux)
+ #:use-module (personal packages pipewire)
  #:use-module (gnu packages pulseaudio)
 
  #:use-module (gnu home services)
@@ -51,13 +51,13 @@
           "
           pcm_type.pipewire {
                              lib " #$(file-append
-                                      pipewire
+                                      pipewire-0.3.71
                                       "/lib/alsa-lib/libasound_module_pcm_pipewire.so") "}
 
 
           ctl_type.pipewire {
                              lib " #$(file-append
-                                      pipewire
+                                      pipewire-0.3.71
                                       "/lib/alsa-lib/libasound_module_ctl_pipewire.so") "}
 
           ")))))
@@ -69,13 +69,13 @@
     (provision '(pipewire))
     (stop  #~(make-kill-destructor))
     (start #~(make-forkexec-constructor
-              (list #$(file-append pipewire "/bin/pipewire")))))
+              (list #$(file-append pipewire-0.3.71 "/bin/pipewire")))))
    (shepherd-service
     (requirement '(pipewire))
     (provision '(wireplumber))
     (stop  #~(make-kill-destructor))
     (start #~(make-forkexec-constructor
-              (list #$(file-append wireplumber "/bin/wireplumber")))))
+              (list #$(file-append wireplumber-0.4.14 "/bin/wireplumber")))))
    #;
    (shepherd-service
     (requirement '(pipewire))
@@ -95,7 +95,7 @@
     (provision '(pipewire-pulse))
     (stop  #~(make-kill-destructor))
     (start #~(make-forkexec-constructor
-              (list #$(file-append pipewire "/bin/pipewire-pulse")))))))
+              (list #$(file-append pipewire-0.3.71 "/bin/pipewire-pulse")))))))
 
 (define-public home-pipewire-service-type
   (service-type
@@ -109,6 +109,6 @@
            home-pipewire-shepherd-service)
           (service-extension
            home-profile-service-type
-           (const (list pipewire pulseaudio)))))
+           (const (list pipewire-0.3.71 pulseaudio)))))
    (default-value #f)
    (description "run pipewire and stuff")))
