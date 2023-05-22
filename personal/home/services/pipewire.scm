@@ -41,11 +41,11 @@
        #~(string-append
           "<"
           #$(file-append
-             pipewire
+             pipewire-0.3.71
              "/share/alsa/alsa.conf.d/50-pipewire.conf")
           ">\n<"
           #$(file-append
-             pipewire
+             pipewire-0.3.71
              "/share/alsa/alsa.conf.d/99-pipewire-default.conf")
           ">\n"
           "
