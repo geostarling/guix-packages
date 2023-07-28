@@ -30,13 +30,22 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
+  #:use-module (gnu packages lirc)
   #:use-module (gnu packages kodi)
   #:use-module (personal packages tv))
 
-(define-public kodi-with-addons/wayland
+(define-public my-kodi/wayland
+   (package
+     (inherit kodi/wayland)
+     (name "my-kodi-wayland")
+     (inputs
+      (modify-inputs (package-inputs kodi/wayland)
+        (append lirc)))))
+
+(define-public my-kodi-with-addons/wayland
   (package
-    (inherit kodi/wayland)
-    (name "kodi-with-addons-wayland")
+    (inherit my-kodi/wayland)
+    (name "my-kodi-with-addons-wayland")
     (source #f)
     (build-system trivial-build-system)
     (arguments
@@ -59,6 +68,6 @@
              ((kodi-input) kodi-output))
            #t))))
     (inputs
-     `(("kodi" ,kodi/wayland)
+     `(("kodi" ,my-kodi/wayland)
        ,@(map (lambda (addon) (list "addon" addon))
               `(,kodi-pvr-hts))))))
