@@ -42,6 +42,7 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages gdb)
+  #:use-module (gnu packages libusb)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages glib)
@@ -392,3 +393,13 @@
        of a larger interface.")
       (home-page "https://github.com/hodefoting/mrg")
       (license license:lgpl2.0+))))
+
+
+(define-public my-lirc
+  (package
+    (inherit lirc)
+    (name "my-lirc")
+    (inputs
+     (modify-inputs (package-inputs lirc)
+       (delete "libusb-compat")
+       (append libusb)))))
