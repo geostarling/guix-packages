@@ -54,31 +54,6 @@
 ;;;
 ;;;; Code:
 
-
-(define (uglify-field-name field-name)
-  (apply string-append
-         (map (lambda (str)
-                (if (member (string->symbol str) '(ca db ssl))
-                    (string-upcase str)
-                    (string-capitalize str)))
-              (string-split (string-delete #\?
-                                           (symbol->string field-name))
-                            #\-))))
-
-(define (serialize-field field-name val)
-  (format #t "~a=~a~%" (uglify-field-name field-name) val))
-
-(define (serialize-number field-name val)
-  (serialize-field field-name (number->string val)))
-
-(define (serialize-string field-name val)
-  (if (and (string? val) (string=? val ""))
-      ""
-      (serialize-field field-name val)))
-
-(define (serialize-boolean field-name val)
-  (serialize-field field-name (if val "1" "0")))
-
 (define-configuration tvheadend-configuration
   (package
    (package tvheadend)
@@ -281,6 +256,7 @@
   (let* ((irexec   (irexec-configuration-package config)))
     (list (shepherd-service
            (provision '(irexec))
+           (requirement '(lircd))
            (documentation "Run irexec daemon.")
            (start #~(make-forkexec-constructor
                      (list (string-append #$irexec "/bin/irexec")
