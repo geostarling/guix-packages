@@ -48,6 +48,33 @@
             irexec-configuation?
             irexec-service-type))
 
+
+
+
+(define (uglify-field-name field-name)
+  (apply string-append
+         (map (lambda (str)
+                (if (member (string->symbol str) '(ca db ssl))
+                    (string-upcase str)
+                    (string-capitalize str)))
+              (string-split (string-delete #\?
+                                           (symbol->string field-name))
+                            #\-))))
+
+(define (serialize-field field-name val)
+  (format #t "~a=~a~%" (uglify-field-name field-name) val))
+
+(define (serialize-number field-name val)
+  (serialize-field field-name (number->string val)))
+
+(define (serialize-string field-name val)
+  (if (and (string? val) (string=? val ""))
+      ""
+      (serialize-field field-name val)))
+
+(define (serialize-boolean field-name val)
+  (serialize-field field-name (if val "1" "0")))
+
 ;;;; Commentary:
 ;;;
 ;;; This module implements a service that to run instance of tvheadend.
