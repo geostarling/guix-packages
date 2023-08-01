@@ -167,8 +167,7 @@
       (arguments
        `(#:tests? #f    ; there is no test target
          #:configure-flags `("--enable-libav"
-                             "--enable-debug"
-                             "--enable-trace"
+                             "--enable-debug=trace"
                              "--disable-dvbscan"
                              "--disable-ffmpeg_static"
                              "--disable-libx264_static"
