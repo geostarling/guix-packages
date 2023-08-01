@@ -149,7 +149,7 @@
 
 
 (define-public tvheadend
-  (let ((commit "18effa8ad93e901f3cdaa534123d910f14453d1f")
+  (let ((commit "fe47ecb5504a521fed9c1ca9705fb0dd2bb8443a")
         (revision "0"))
     (package
       (name "tvheadend")
@@ -158,15 +158,18 @@
                (method git-fetch)
                (uri (git-reference
                      (url "https://github.com/tvheadend/tvheadend.git")
-                     (commit "18effa8ad93e901f3cdaa534123d910f14453d1f")))
+                     (commit commit)))
                (file-name (git-file-name name version))
                (sha256
                 (base32
-                 "0bvmn36pbqphw739vwymfsxhqs52q70r8rs2c4nyaj5s9dk9z2mz"))))
+                 "0a2h4bi14a3v1jzkp30ra5z1l7fyicx8djjxmlznwiwg7zgn54vf"))))
       (build-system gnu-build-system)
       (arguments
        `(#:tests? #f    ; there is no test target
          #:configure-flags `("--enable-libav"
+                             "--enable-debug"
+                             "--enable-trace"
+                             "--disable-dvbscan"
                              "--disable-ffmpeg_static"
                              "--disable-libx264_static"
                              "--disable-libx265_static"
@@ -177,7 +180,6 @@
                              "--disable-hdhomerun_static"
                              "--disable-libmfx_static"
                              "--disable-hdhomerun_client"
-                             "--disable-dvbscan"
                              "--disable-pcloud_cache"
                              "--python=python3")
          #:phases (modify-phases %standard-phases
