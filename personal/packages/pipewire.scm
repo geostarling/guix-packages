@@ -121,7 +121,7 @@
        ("dbus" ,dbus)
        ("geoclue" ,geoclue)
        ("pipewire" ,pipewire-0.3.71)
-       ("fuse" ,fuse-3)))))
+       ("fuse" ,fuse)))))
 
 ;; (define-public gbm
 ;;   (package
