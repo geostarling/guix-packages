@@ -67,16 +67,16 @@
   #:use-module (gnu packages wget))
 
 
-(define-public wscan
+(define-public t2scan
   (package
-    (name "wscan")
-    (version "20170107")
+    (name "t2scan")
+    (version "0.7")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://www.gen2vdr.de/wirbel/w_scan/w_scan-" version ".tar.bz2"))
+              (uri (string-append "https://github.com/mighty-p/t2scan/archive/refs/tags/v" version ".tar.gz"))
               (sha256
                (base32
-                "1zkgnj2sfvckix360wwk1v5s43g69snm45m0drnzyv7hgf5g7q1q"))))
+                "1jrz8g67pa5xigdxh7yqfb3d3hj8vav90gdycjwqxvdyl8wbgr24"))))
     (build-system gnu-build-system)
     (home-page
      "https://goodies.xfce.org/projects/panel-plugins/xfce4-sensors-plugin")
