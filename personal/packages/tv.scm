@@ -340,7 +340,7 @@
    (license license:gpl2+)))
 
 (define-public miraclecast
-  (let ((commit "850a1c6f7c69b727b24fa1858d86490b7698c482")
+  (let ((commit "fdb8671c4087826541c4ffc14df5716c28acd62a")
         (revision "0"))
     (package
       (name "miraclecast")
@@ -354,7 +354,7 @@
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1y5ld8kqgi6gh1p993h45ahdsb36y37pz3w7sc8ypg31h7khn3j9"))
+           "1gswg06knxhg2044vdrhj8x0lkd7n8qgrrp80h7f3n0ny16c9z77"))
          (patches
           (search-patches "miraclecast-systemd.patch"))))
       (build-system meson-build-system)
@@ -404,3 +404,65 @@
      (modify-inputs (package-inputs lirc)
        (delete "libusb-compat")
        (append libusb)))))
+
+(define-configuration miraclecast-wifid-configuration
+  (package
+   (package miraclecast)
+   "The miraclecast package.")
+  (interface
+   (string "")
+   "Wifi interface to use."))
+
+(define (miraclecast-wifid-shepherd-service config)
+  "Return a <shepherd-service> for miraclecast-wifid with CONFIG."
+  (let* ((miraclecast (miraclecast-wifid-configuration-package config))
+         (interface (miraclecast-wifid-configuration-interface config)))
+    (list (shepherd-service
+           (provision '(miraclecast-wifid))
+           (documentation "Run miracle-wifid daemon.")
+           (requirement '(networking))
+           (start #~(make-forkexec-constructor
+                     (list (string-append #$miraclecast "/bin/miracle-wifid")
+                           #$@(if interface
+                               #~("--interface" #$interface)
+                               #~()))))
+           (stop #~(make-kill-destructor))))))
+
+(define miraclecast-wifid-service-type
+  (service-type
+   (name 'miraclecast-wifid)
+   (description "TODO")
+   (extensions
+    (list (service-extension shepherd-root-service-type miraclecast-wifid-shepherd-service)))
+   (default-value (miraclecast-wifid-configuration))))
+
+
+(define-configuration miraclecast-sinkctl-configuration
+  (package
+   (package miraclecast)
+   "The miraclecast package.")
+  (link
+   (string "")
+   "link to run"))
+
+
+(define (miraclecast-sinkctl-shepherd-service config)
+  "Return a <shepherd-service> for miraclecast-sinkctl with CONFIG."
+  (let* ((miraclecast (miraclecast-sinkctl-configuration-package config))
+         (link (miraclecast-sinkctl-configuration-link config)))
+    (list (shepherd-service
+           (provision '(miraclecast-sinkctl))
+           (documentation "Run miracle-wifid daemon.")
+           (requirement '(miraclecast-wifid))
+           (start #~(make-forkexec-constructor
+                     (list (string-append #$miraclecast "/bin/miracle-sinkctl")
+                           "run" link)))
+           (stop #~(make-kill-destructor))))))
+
+(define miraclecast-sinkctl-service-type
+  (service-type
+   (name 'miraclecast-sinkctl)
+   (description "TODO")
+   (extensions
+    (list (service-extension shepherd-root-service-type miraclecast-sinkctl-shepherd-service)))
+   (default-value (miraclecast-sinkctl-configuration))))
