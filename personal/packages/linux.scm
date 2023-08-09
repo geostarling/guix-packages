@@ -35,19 +35,18 @@
   #:use-module (ice-9 match))
 
 
-(define-public linux-firmware-demod-si2168
+(define-public dvb-demod-si2168-firmware
   (package
-   (name "linux-firmware-demod-si2168")
-   (version "20191116")
-   (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/OpenELEC/dvb-firmware.git")
-             (commit "3fef04a4a4bfeba88ae3b20aff9d3a1fabf1c159")))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "04lv3hv22r65ficrlq637jfyp8rbz9cjazvrsnv7z2q4cgz7gvbd"))))
+   (name "dvb-demod-si2168-firmware")
+   (version "1.4.0")
+   (source (origin
+            (method url-fetch)
+            (uri (string-append
+                  "https://github.com/CoreELEC/dvb-firmware/archive/refs/tags/"
+                  version ".tar.gz"))
+            (sha256
+             (base32
+              "1hz2kxlgd4n2s4777zmr3g9cpf2nmllbsqiz1113fd4fr3lyacc8"))))
    (build-system trivial-build-system)
    (arguments
     `(#:modules ((guix build utils))
