@@ -47,20 +47,10 @@
             (sha256
              (base32
               "1hz2kxlgd4n2s4777zmr3g9cpf2nmllbsqiz1113fd4fr3lyacc8"))))
-   (build-system trivial-build-system)
+   (build-system copy-build-system)
    (arguments
-    `(#:modules ((guix build utils))
-      #:builder (begin
-                  (use-modules (guix build utils))
-                  (let ((source (assoc-ref %build-inputs "source"))
-                        (fw-dir (string-append %output "/lib/firmware/")))
-                    (mkdir-p fw-dir)
-                    (for-each (lambda (file)
-                                (copy-file file
-                                           (string-append fw-dir (basename file))))
-                              (find-files source
-                                          "dvb-demod-si2168.+\\.fw$")))
-                  #t)))
+    `(#:install-plan
+      '(("firmware" "lib/firmware" #:include-regexp ("dvb-demod-si2168.+\\.fw$")))))
    (home-page "https://wireless.wiki.kernel.org/en/users/drivers/iwlwifi")
    (synopsis "Non-free firmware for Intel wifi chips")
    (description "Non-free iwlwifi firmware")
