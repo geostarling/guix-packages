@@ -28,7 +28,7 @@
 (define-module (personal home services pipewire)
  #:use-module (guix gexp)
 
- #:use-module (personal packages pipewire)
+ #:use-module (gnu packages linux)
  #:use-module (gnu packages pulseaudio)
 
  #:use-module (gnu home services)
