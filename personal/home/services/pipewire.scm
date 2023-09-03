@@ -41,23 +41,23 @@
        #~(string-append
           "<"
           #$(file-append
-             pipewire-0.3.71
+             pipewire
              "/share/alsa/alsa.conf.d/50-pipewire.conf")
           ">\n<"
           #$(file-append
-             pipewire-0.3.71
+             pipewire
              "/share/alsa/alsa.conf.d/99-pipewire-default.conf")
           ">\n"
           "
           pcm_type.pipewire {
                              lib " #$(file-append
-                                      pipewire-0.3.71
+                                      pipewire
                                       "/lib/alsa-lib/libasound_module_pcm_pipewire.so") "}
 
 
           ctl_type.pipewire {
                              lib " #$(file-append
-                                      pipewire-0.3.71
+                                      pipewire
                                       "/lib/alsa-lib/libasound_module_ctl_pipewire.so") "}
 
           ")))))
@@ -69,13 +69,13 @@
     (provision '(pipewire))
     (stop  #~(make-kill-destructor))
     (start #~(make-forkexec-constructor
-              (list #$(file-append pipewire-0.3.71 "/bin/pipewire")))))
+              (list #$(file-append pipewire "/bin/pipewire")))))
    (shepherd-service
     (requirement '(pipewire))
     (provision '(wireplumber))
     (stop  #~(make-kill-destructor))
     (start #~(make-forkexec-constructor
-              (list #$(file-append wireplumber-0.4.14 "/bin/wireplumber")))))
+              (list #$(file-append wireplumber "/bin/wireplumber")))))
    #;
    (shepherd-service
     (requirement '(pipewire))
@@ -95,7 +95,7 @@
     (provision '(pipewire-pulse))
     (stop  #~(make-kill-destructor))
     (start #~(make-forkexec-constructor
-              (list #$(file-append pipewire-0.3.71 "/bin/pipewire-pulse")))))))
+              (list #$(file-append pipewire "/bin/pipewire-pulse")))))))
 
 (define-public home-pipewire-service-type
   (service-type
@@ -109,6 +109,6 @@
            home-pipewire-shepherd-service)
           (service-extension
            home-profile-service-type
-           (const (list pipewire-0.3.71 pulseaudio)))))
+           (const (list pipewire pulseaudio)))))
    (default-value #f)
    (description "run pipewire and stuff")))
