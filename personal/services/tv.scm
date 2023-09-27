@@ -46,7 +46,11 @@
             lirc-service-type
             irexec-configuration
             irexec-configuation?
-            irexec-service-type))
+            irexec-service-type
+            miraclecast-wifid-service-type
+            miraclecast-wifid-configuration
+            miraclecast-sinkctl-service-type
+            miraclecast-sinkctl-configuration))
 
 
 
