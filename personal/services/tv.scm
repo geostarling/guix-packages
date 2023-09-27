@@ -364,7 +364,7 @@
                                   #~("--external-player" #$external-player)
                                   #~())
                            "run"
-                           link)))
+                           #$link)))
            (stop #~(make-kill-destructor))))))
 
 (define miraclecast-sinkctl-service-type
