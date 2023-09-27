@@ -327,7 +327,7 @@
                                #~("--interface" #$interface)
                                #~()))
                      #:environment-variables
-                     (list "PATH=/run/current-system/profile/sbin"))) ;; miracle-wifid looks for wpa_supplicant binary in PATH
+                     (list "PATH=/run/current-system/profile/sbin:/run/current-system/profile/bin"))) ;; miracle-wifid looks for wpa_supplicant binary in PATH
            (stop #~(make-kill-destructor))))))
 
 (define miraclecast-wifid-service-type
