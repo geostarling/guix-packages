@@ -325,7 +325,9 @@
                      (list (string-append #$miraclecast "/bin/miracle-wifid")
                            #$@(if interface
                                #~("--interface" #$interface)
-                               #~()))))
+                               #~()))
+                     #:environment-variables
+                     (list "PATH=/run/current-system/profile/bin")))
            (stop #~(make-kill-destructor))))))
 
 (define miraclecast-wifid-service-type
