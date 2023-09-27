@@ -352,7 +352,8 @@
 (define (miraclecast-sinkctl-shepherd-service config)
   "Return a <shepherd-service> for miraclecast-sinkctl with CONFIG."
   (let* ((miraclecast (miraclecast-sinkctl-configuration-package config))
-         (link (miraclecast-sinkctl-configuration-link config)))
+         (link (miraclecast-sinkctl-configuration-link config))
+         (external-player (miraclecast-sinkctl-configuration-external-player config)))
     (list (shepherd-service
            (provision '(miraclecast-sinkctl))
            (documentation "Run miracle-sinkctl daemon.")
