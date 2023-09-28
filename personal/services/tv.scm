@@ -366,7 +366,10 @@
                                   #~("--external-player" #$external-player)
                                   #~())
                            "run"
-                           #$link)))
+                           #$link)
+                     #:environment-variables
+                     (list "PATH=/run/current-system/profile/sbin:/run/current-system/profile/bin"))) ;; miracle-sinkctl needs working PATH for external-player script
+
            (stop #~(make-kill-destructor))))))
 
 (define miraclecast-sinkctl-service-type
