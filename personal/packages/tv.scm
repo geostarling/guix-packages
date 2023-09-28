@@ -388,7 +388,8 @@
                     gst-plugins-bad
                     gst-plugins-ugly
                     eudev))
-      (propagated-inputs (list wpa-supplicant))
+      (propagated-inputs (list wpa-supplicant
+                               dbus))
       (synopsis "Miraclecast")
       (description "MrG is is a C API for creating user interfaces.  It can be
        used as an application writing environment or as an interactive canvas for part
