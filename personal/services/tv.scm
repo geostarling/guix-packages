@@ -359,18 +359,61 @@
     (list (shepherd-service
            (provision '(miraclecast-sinkctl))
            (documentation "Run miracle-sinkctl daemon.")
-           (requirement '(miraclecast-wifid))
-           (start #~(make-forkexec-constructor
-                     (list (string-append #$miraclecast "/bin/miracle-sinkctl")
-                           #$@(if external-player
-                                  #~("--external-player" #$external-player)
-                                  #~())
-                           "run"
-                           #$link)
+           (requirement '(miraclecast-wifid dbus-system))
+           (start #~(lambda _
+                      (display "ajmsleeping")
+                      (sleep 5)
+                      (fork+exec-command
+                          (list (string-append #$miraclecast "/bin/miracle-sinkctl")
+                                #$@(if external-player
+                                       #~("--external-player" #$external-player)
+                                       #~())
+                                "run"
+                                #$link)
                      #:environment-variables
-                     (list "PATH=/run/current-system/profile/sbin:/run/current-system/profile/bin"))) ;; miracle-sinkctl needs working PATH for external-player script
+                     (list "PATH=/run/current-system/profile/sbin:/run/current-system/profile/bin")))) ;; miracle-sinkctl needs working PATH for external-player script
 
            (stop #~(make-kill-destructor))))))
+
+
+      ;; (start #~(lambda args
+      ;;          ;; spice-vdagentd supports being activated upon the client
+      ;;          ;; connecting to its socket; when not using such feature, the
+      ;;          ;; socket should not exist before vdagentd creates it itself.
+      ;;          (mkdir-p "/run/spice-vdagentd")
+      ;;          (false-if-exception
+      ;;           (delete-file "/run/spice-vdagentd/spice-vdagent-sock"))
+      ;;          (fork+exec-command '#$spice-vdagentd-command)))
+
+      ;;        (start
+      ;;         #~(lambda _
+      ;;             (let ((pid
+      ;;                    (fork+exec-command
+      ;;                     (list #$(file-append network-manager
+      ;;                                          "/sbin/NetworkManager")
+      ;;                           (string-append "--config=" #$conf)
+      ;;                           "--no-daemon")
+      ;;                     #:environment-variables
+      ;;                     (list (string-append "NM_VPN_PLUGIN_DIR=" #$vpn
+      ;;                                          "/lib/NetworkManager/VPN")
+      ;;                           ;; Override non-existent default users
+      ;;                           "NM_OPENVPN_USER="
+      ;;                           "NM_OPENVPN_GROUP="
+      ;;                           ;; Allow NetworkManager to find the modules.
+      ;;                           (string-append
+      ;;                            "LINUX_MODULE_DIRECTORY="
+      ;;                            "/run/booted-system/kernel/lib/modules")))))
+      ;;               ;; XXX: Despite the "online" name, this doesn't guarantee
+      ;;               ;; WAN connectivity, it merely waits for NetworkManager
+      ;;               ;; to finish starting-up. This is required otherwise
+      ;;               ;; services will fail since the network interfaces be
+      ;;               ;; absent until NetworkManager finishes setting them up.
+      ;;               (system* #$(file-append network-manager "/bin/nm-online")
+      ;;                        "--wait-for-startup" "--quiet")
+      ;;               ;; XXX: Finally, return the pid from running
+      ;;               ;; fork+exec-command to shepherd.
+      ;;               pid)))
+
 
 (define miraclecast-sinkctl-service-type
   (service-type
