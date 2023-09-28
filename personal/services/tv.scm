@@ -320,7 +320,7 @@
     (list (shepherd-service
            (provision '(miraclecast-wifid))
            (documentation "Run miracle-wifid daemon.")
-           (requirement '(networking))
+           (requirement '(networking dbus-system))
            (start #~(make-forkexec-constructor
                      (list (string-append #$miraclecast "/bin/miracle-wifid")
                            #$@(if interface
