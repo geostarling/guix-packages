@@ -20,7 +20,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (gnu packages)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages image)
@@ -47,10 +47,10 @@
 
 
 (define-public pmbootstrap
-  (let ((commit "6bf1768c676123361034f45364e0a88e25a43475"))
+  (let ((commit "7f271dd1cc5f77968b62cecb64b364884a12861d"))
     (package
      (name "pmbootstrap")
-     (version  (git-version "2.1.0" "0" commit))
+     (version  (git-version "2.2.1" "0" commit))
      (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -59,8 +59,8 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lm0jmw3f5v5w2ri3fpss35adprf0vqzs8iaj3953ll0nvh2fpkk"))))
-     (build-system python-build-system)
+                "10w3f9rvj6crn6md3rdl8mwczr958941shjmra41z19ia34azpp9"))))
+     (build-system pyproject-build-system)
      (arguments
       `(#:tests? #f))
      (native-inputs
