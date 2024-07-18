@@ -194,7 +194,7 @@
   #:use-module (ice-9 match))
 
 
-(define-public timescaledb
+(define-public timescaledb-2.15
   (package
     (name "timescaledb")
     (version "2.15.2")
