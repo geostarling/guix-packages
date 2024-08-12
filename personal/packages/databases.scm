@@ -213,12 +213,8 @@
               (snippet
                ;; Remove files carrying the proprietary TIMESCALE license.
                '(begin
-                  (delete-file-recursively "tsl")
                   (for-each delete-file
-                            '("scripts/c_license_header-timescale.h"
-                              "scripts/license_tsl.spec"
-                              "scripts/sql_license_tsl.sql"
-                              "test/perl/AccessNode.pm"
+                            '("test/perl/AccessNode.pm"
                               "test/perl/DataNode.pm"
                               "test/perl/TimescaleNode.pm"))))))
     (build-system cmake-build-system)
@@ -298,4 +294,4 @@
 time-series data.  It is engineered up from PostgreSQL and packaged as a
 PostgreSQL extension, providing automatic partitioning across time and space
 (partitioning key), as well as full SQL support.")
-    (license license:asl2.0)))
+    (license (license:x11-style "file://LICENSE"))))
