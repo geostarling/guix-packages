@@ -228,8 +228,7 @@
            #:modules `(,@%cmake-build-system-modules
                        (guix build union)
                        (ice-9 match))
-           #:configure-flags #~(list "-DAPACHE_ONLY=ON"
-                                     "-DSEND_TELEMETRY_DEFAULT=OFF")
+           #:configure-flags #~(list "-DSEND_TELEMETRY_DEFAULT=OFF")
            #:test-target "regresschecklocal"
            #:phases
            #~(modify-phases (@ (guix build cmake-build-system) %standard-phases)
