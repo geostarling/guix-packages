@@ -44,7 +44,7 @@
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
+;;; Copyright © 2020 Vincent Legoll <vixncent.legoll@gmail.com>
 ;;; Copyright © 2021, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2024 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 David Larsson <david.larsson@selfhosted.xyz>
@@ -79,7 +79,7 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (personal packages db)
+(define-module (personal packages databases)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages algebra)
@@ -194,6 +194,8 @@
   #:use-module (ice-9 match))
 
 
+
+
 (define-public timescaledb-2.15
   (package
     (name "timescaledb")
@@ -289,7 +291,7 @@
                              "start"))))
                (add-after 'prepare-tests 'check
                  (assoc-ref %standard-phases 'check)))))
-    (inputs (list openssl postgresql))
+    (inputs (list openssl postgresql-15))
     (home-page "https://www.timescale.com/")
     (synopsis "Time-series extension for PostgreSQL")
     (description
