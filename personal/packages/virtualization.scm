@@ -165,7 +165,7 @@
 (define-public incus
   (package
     (name "incus")
-    (version "6.3.0")
+    (version "6.4.0")
     (source (origin
               (method url-fetch)
               ;;https://github.com/lxc/incus/releases/download/v6.3.0/incus-6.3.tar.xz
@@ -173,7 +173,7 @@
                     "https://github.com/lxc/incus/releases/download/v" version "/incus-" (version-major+minor version) ".tar.xz"))
               (sha256
                (base32
-                "0cy8d4pcpsk8wraa4d8424lpxg52m9k7bv1x7pn6af8rqc1clspi"))))
+                "1rzfxlh45smwnpqjaj5lv41ikpky7xli7jiqgj0cssq698gscj37"))))
     (build-system go-build-system)
     (arguments
      `(#:go ,go-1.21
@@ -211,6 +211,20 @@
                (with-directory-excursion (string-append "src/" import-path)
                  ;; Wrap lxd with run-time dependencies.
                  (wrap-program (string-append bin-dir "incus")
+                   `("PATH" ":" prefix
+                     ,(fold (lambda (input paths)
+                              ;; TODO: Use 'search-input-directory' rather
+                              ;; than look up inputs by name.
+                              (let* ((in (assoc-ref inputs input))
+                                     (bin (string-append in "/bin"))
+                                     (sbin (string-append in "/sbin")))
+                                (append (filter file-exists?
+                                                (list bin sbin)) paths)))
+                            '()
+                            '("bash-minimal" "acl" "rsync" "tar" "xz" "btrfs-progs"
+                              "gzip" "dnsmasq" "squashfs-tools" "iproute2"
+                              "criu" "iptables" "attr"))))
+                 (wrap-program (string-append bin-dir "incusd")
                    `("PATH" ":" prefix
                      ,(fold (lambda (input paths)
                               ;; TODO: Use 'search-input-directory' rather
