@@ -223,7 +223,7 @@
                             '()
                             '("bash-minimal" "acl" "rsync" "tar" "xz" "btrfs-progs"
                               "gzip" "dnsmasq" "squashfs-tools" "iproute2"
-                              "criu" "iptables" "attr"))))
+                              "iptables" "attr"))))
                  (wrap-program (string-append bin-dir "incusd")
                    `("PATH" ":" prefix
                      ,(fold (lambda (input paths)
@@ -237,7 +237,7 @@
                             '()
                             '("bash-minimal" "acl" "rsync" "tar" "xz" "btrfs-progs"
                               "gzip" "dnsmasq" "squashfs-tools" "iproute2"
-                              "criu" "iptables" "attr"))))
+                               "iptables" "attr"))))
                  ;; Remove unwanted binaries.
                  ;; (for-each (lambda (prog)
                  ;;             (delete-file (string-append bin-dir prog)))
@@ -274,7 +274,6 @@
            dnsmasq
            squashfs-tools
            iproute
-           criu
            iptables))
     (synopsis "Daemon based on liblxc offering a REST API to manage containers")
     (home-page "https://linuxcontainers.org/lxd/")
