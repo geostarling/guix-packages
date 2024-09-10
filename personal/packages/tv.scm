@@ -149,7 +149,7 @@
 
 
 (define-public tvheadend
-  (let ((commit "d2e41b553e7cc6eb06fd21b42bbed4b3a1f28bc0")
+  (let ((commit "9ac57a0c1a4551012260008cfca6bfc2386f6dcf")
         (revision "0"))
     (package
       (name "tvheadend")
@@ -162,7 +162,7 @@
                (file-name (git-file-name name version))
                (sha256
                 (base32
-                 "0az10p3ym01ah9bsywnxh6hvnga2067rqjx4m16y5nhhkas55kaa"))))
+                 "1j2f2wbhg7lm92rz6j88mb3299d7vn96sr4ba4nshdnljpjpq01b"))))
       (build-system gnu-build-system)
       (arguments
        `(#:tests? #f    ; there is no test target
@@ -276,16 +276,16 @@
 (define-public kodi-pvr-hts
   (package
    (name "kodi-pvr-hts")
-   (version "19.0.6")
+   (version "21.2.5")
    (source (origin
             (method git-fetch)
             (uri (git-reference
                   (url "https://github.com/kodi-pvr/pvr.hts.git")
-                  (commit (string-append version "-Matrix"))))
+                  (commit (string-append version "-Omega"))))
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "1qkvc50s5dspb2w6p2vrf4i2k5zvxq4bk2lc20489qjh6zaw3k9d"))))
+              "1acb9nhvvvn051l450kpgqcghpyw43p7cwi7a7ihpqmv7qc6cvh4"))))
    (build-system cmake-build-system)
    (arguments
     `(#:tests? #f
@@ -296,7 +296,7 @@
                           ;; of share/kodi, so we place all of the data resources alongside the shared lib
                           "-DCMAKE_INSTALL_DATADIR=lib/kodi")))
    (inputs
-    `(("kodi" ,kodi)))
+    `(("kodi" ,kodi-21)))
    (synopsis "Media center for home theater computers")
    (description "Kodi is a media center application for playing videos,
     music, games, etc.  Kodi is highly customizable and features a theme and
