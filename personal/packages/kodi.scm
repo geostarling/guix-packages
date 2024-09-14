@@ -75,7 +75,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages swig)
-  #:use-module (personal packages tv)
+  #:use-module (personal packages kodi-xyz)
   #:use-module (gnu packages lirc)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
@@ -522,4 +522,5 @@ plug-in system.")
     (inputs
      `(("kodi" ,my-kodi/wayland)
        ,@(map (lambda (addon) (list "addon" addon))
-              `(,kodi-pvr-hts))))))
+              `(,kodi-pvr-hts
+                ,kodi-inputstream-adaptive))))))
