@@ -155,8 +155,6 @@
        #:configure-flags `("-DOVERRIDE_PATHS=1"
                            ;; override cmake-build-system libdir
                            "-DCMAKE_INSTALL_LIBDIR=lib/kodi"
-                           "-DCMAKE_CXX_FLAGS=-O3 -fPIC"
-                           "-DCMAKE_C_FLAGS=-O3 -fPIC"
                            "-DBUILD_TESTING=OFF"
                            ;; ugly hack: kodi from kodi pkg for some reason looks for addons.xml in lib/kodi instead
                            ;; of share/kodi, so we place all of the data resources alongside the shared lib
