@@ -154,9 +154,11 @@
 
 (define (tvheadend-activation config)
   "Return the activation GEXP for CONFIG."
-  (with-imported-modules '((guix build utils))
+  (with-imported-modules '((guix build utils)
+                           (ice-9 rdelim))
     #~(begin
-        (use-modules (guix build utils))
+        (use-modules (guix build utils)
+                     (ice-9 rdelim))
         (let ((user (getpw #$(tvheadend-configuration-user config))))
           (for-each (lambda (directory)
                         (mkdir-p directory)
