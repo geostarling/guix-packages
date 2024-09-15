@@ -217,6 +217,41 @@
       ;; to read the battery state via ACPI or APM are covered by lgpl2.0+.
       (license (list license:gpl2+ license:lgpl2.0+)))))
 
+
+
+(define-public arduino-lirc-plugin
+  (package
+   (name "arduino-lirc-plugin")
+   (version "20191114")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/geostarling/arduino-lirc-plugin.git")
+                  (commit "0c3f83aa54225c35db58e5830da29cbbd7a4aba9")))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "18pd3srhwqpvppasj27imydc369fa5d4ssik16zvlf67qgfxmw10"))))
+   (build-system gnu-build-system)
+   (native-inputs `(("pkg-config" ,pkg-config)))
+   (inputs `(("lirc" ,lirc)))
+   (arguments
+    `(#:make-flags (let ((out (assoc-ref %outputs "out")))
+                     (list (string-append "PLUGINDIR=" out "/lib/lirc/plugins")
+                           (string-append "CONFIGDIR=" out "/share/lirc/configs")
+                           (string-append "PLUGINDOCS=" out "/share/doc/lirc/plugindocs")))
+      #:phases
+      (modify-phases %standard-phases
+                     (delete 'configure))
+      #:tests? #f))
+   (home-page "http://neil.brown.name/blog/mdadm")
+   (synopsis "Tool for managing Linux Software RAID arrays")
+   (description
+    "mdadm is a tool for managing Linux Software RAID arrays.  It can create,
+    assemble, report on, and monitor arrays.  It can also move spares between raid
+    arrays when needed.")
+   (license license:gpl2+)))
+
 (define-public miraclecast
   (let ((commit "fdb8671c4087826541c4ffc14df5716c28acd62a")
         (revision "0"))
