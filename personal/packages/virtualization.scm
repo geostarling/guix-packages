@@ -33,6 +33,7 @@
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023, 2024 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -60,6 +61,17 @@
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages elf)
+  #:use-module (gnu packages ocaml)
+  #:use-module (gnu packages apparmor)
+  #:use-module (gnu packages dbm)
+  #:use-module (gnu packages augeas)
+  #:use-module (gnu packages cdrom)
+  #:use-module (gnu packages cpio)
+  #:use-module (gnu packages file)
+  #:use-module (gnu packages gperf)
+  #:use-module (gnu packages lua)
+  #:use-module (gnu packages java)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages build-tools)
@@ -160,126 +172,460 @@
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match))
 
+(define-public lxc-6
+  (package
+   (name "lxc")
+   (version "6.0.1")
+   (source (origin
+            (method url-fetch)
+            (uri (string-append
+                  "https://linuxcontainers.org/downloads/lxc/lxc-"
+                  version ".tar.gz"))
+            (sha256
+             (base32
+              "1q3p3zzm338pmc97z6ly8cjginkyljxqbk1c37l2xa46vfy8zcyc"))))
+   (build-system meson-build-system)
+   (native-inputs
+    (list pkg-config docbook2x))
+   (inputs
+    (list gnutls libcap libseccomp libselinux))
+   ;;    LXC_DISTRO_SYSCONF
+   (arguments
+    (list #:configure-flags
+          #~(list "-Ddistrosysconfdir=/tmp/etc"
+                  "-Dinit-script=[]"
+                  "-Ddbus=false"
+                  "-Dinstall-state-dirs=false"
+                  ;;"-Dinstall-init-files=false"
+                  )))
+   (synopsis "Linux container tools")
+   (home-page "https://linuxcontainers.org/")
+   (description
+    "LXC is a userspace interface for the Linux kernel containment features.
+Through a powerful API and simple tools, it lets Linux users easily create and
+manage system or application containers.")
+   (license license:lgpl2.1+)))
 
 
 (define-public incus
   (package
-    (name "incus")
-    (version "6.4.0")
-    (source (origin
-              (method url-fetch)
-              ;;https://github.com/lxc/incus/releases/download/v6.3.0/incus-6.3.tar.xz
-              (uri (string-append
-                    "https://github.com/lxc/incus/releases/download/v" version "/incus-" (version-major+minor version) ".tar.xz"))
-              (sha256
-               (base32
-                "1rzfxlh45smwnpqjaj5lv41ikpky7xli7jiqgj0cssq698gscj37"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:go ,go-1.21
-       #:import-path "github.com/lxc/incus"
-       #:tests? #f ;; tests fail due to missing /var, cgroups, etc.
-       #:modules ((guix build go-build-system)
-                  (guix build union)
-                  (guix build utils)
-                  (srfi srfi-1))
-       #:phases
-       (modify-phases %standard-phases
-         ;; (add-after 'unpack 'unpack-dist
-         ;;   (lambda* (#:key import-path #:allow-other-keys)
-         ;;     (with-directory-excursion (string-append "src/" import-path)
-         ;;       ;; Move all the dependencies into the src directory.
-         ;;       (copy-recursively "_dist/src" "../../.."))))
-         (replace 'build
-           (lambda* (#:key import-path #:allow-other-keys)
-             (with-directory-excursion (string-append "src/" import-path)
-               (invoke "make" "build" "CC=gcc" "TAG_SQLITE3=libsqlite3"))))
-         (replace 'check
-           (lambda* (#:key tests? import-path #:allow-other-keys)
-             (when tests?
-               (with-directory-excursion (string-append "src/" import-path)
-                 (invoke "make" "check" "CC=gcc" "TAG_SQLITE3=libsqlite3")))))
-         (replace 'install
-           (lambda* (#:key inputs outputs import-path #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin-dir
-                     (string-append out "/bin/"))
-                    (doc-dir
-                     (string-append out "/share/doc/incus-" ,version))
-                    (completions-dir
-                     (string-append out "/share/bash-completion/completions")))
-               (with-directory-excursion (string-append "src/" import-path)
-                 ;; Wrap lxd with run-time dependencies.
-                 (wrap-program (string-append bin-dir "incus")
-                   `("PATH" ":" prefix
-                     ,(fold (lambda (input paths)
-                              ;; TODO: Use 'search-input-directory' rather
-                              ;; than look up inputs by name.
-                              (let* ((in (assoc-ref inputs input))
-                                     (bin (string-append in "/bin"))
-                                     (sbin (string-append in "/sbin")))
-                                (append (filter file-exists?
-                                                (list bin sbin)) paths)))
-                            '()
-                            '("bash-minimal" "acl" "rsync" "tar" "xz" "btrfs-progs"
-                              "gzip" "dnsmasq" "squashfs-tools" "iproute2"
-                              "iptables" "attr"))))
-                 (wrap-program (string-append bin-dir "incusd")
-                   `("PATH" ":" prefix
-                     ,(fold (lambda (input paths)
-                              ;; TODO: Use 'search-input-directory' rather
-                              ;; than look up inputs by name.
-                              (let* ((in (assoc-ref inputs input))
-                                     (bin (string-append in "/bin"))
-                                     (sbin (string-append in "/sbin")))
-                                (append (filter file-exists?
-                                                (list bin sbin)) paths)))
-                            '()
-                            '("bash-minimal" "acl" "rsync" "tar" "xz" "btrfs-progs"
-                              "gzip" "dnsmasq" "squashfs-tools" "iproute2"
-                               "iptables" "attr"))))
-                 ;; Remove unwanted binaries.
-                 ;; (for-each (lambda (prog)
-                 ;;             (delete-file (string-append bin-dir prog)))
-                 ;;           '("deps" "macaroon-identity" "generate"))
-                 ;; Install documentation.
-                 (for-each (lambda (file)
-                             (install-file file doc-dir))
-                           (find-files "doc"))
-                 ;; Install bash completion.
-                 ;; (rename-file "scripts/bash/incus-client" "scripts/bash/incus")
-                 ;; (install-file "scripts/bash/incus" completions-dir)
-                 )))))))
-    (native-inputs
-     (list ;; Test dependencies:
-           ;; ("go-github-com-rogpeppe-godeps" ,go-github-com-rogpeppe-godeps)
-           ;; ("go-github-com-tsenart-deadcode" ,go-github-com-tsenart-deadcode)
-           ;; ("go-golang-org-x-lint" ,go-golang-org-x-lint)
-           pkg-config))
-    (inputs
-     (list acl
-           eudev
-           libcowsql
-           cowsql-libraft
-           libcap
-           lxc
-           ;; Run-time dependencies.
-           attr
-           bash-minimal
-           rsync
-           tar
-           xz
-           btrfs-progs
-           gzip
-           dnsmasq
-           squashfs-tools
-           iproute
-           iptables))
-    (synopsis "Daemon based on liblxc offering a REST API to manage containers")
-    (home-page "https://linuxcontainers.org/lxd/")
-    (description "LXD is a next generation system container manager.  It
+   (name "incus")
+   (version "6.4.0")
+   (source (origin
+            (method url-fetch)
+            ;;https://github.com/lxc/incus/releases/download/v6.3.0/incus-6.3.tar.xz
+            (uri (string-append
+                  "https://github.com/lxc/incus/releases/download/v" version "/incus-" (version-major+minor version) ".tar.xz"))
+            (sha256
+             (base32
+              "1rzfxlh45smwnpqjaj5lv41ikpky7xli7jiqgj0cssq698gscj37"))))
+   (build-system go-build-system)
+   (arguments
+    `(#:go ,go-1.21
+      #:import-path "github.com/lxc/incus"
+      #:tests? #f ;; tests fail due to missing /var, cgroups, etc.
+      #:modules ((guix build go-build-system)
+                 (guix build union)
+                 (guix build utils)
+                 (srfi srfi-1))
+      #:phases
+      (modify-phases %standard-phases
+                     ;; (add-after 'unpack 'unpack-dist
+                     ;;   (lambda* (#:key import-path #:allow-other-keys)
+                     ;;     (with-directory-excursion (string-append "src/" import-path)
+                     ;;       ;; Move all the dependencies into the src directory.
+                     ;;       (copy-recursively "_dist/src" "../../.."))))
+                     (replace 'build
+                              (lambda* (#:key import-path #:allow-other-keys)
+                                       (with-directory-excursion (string-append "src/" import-path)
+                                                                 (invoke "make" "build" "CC=gcc" "TAG_SQLITE3=libsqlite3"))))
+                     (replace 'check
+                              (lambda* (#:key tests? import-path #:allow-other-keys)
+                                       (when tests?
+                                         (with-directory-excursion (string-append "src/" import-path)
+                                                                   (invoke "make" "check" "CC=gcc" "TAG_SQLITE3=libsqlite3")))))
+                     (replace 'install
+                              (lambda* (#:key inputs outputs import-path #:allow-other-keys)
+                                       (let* ((out (assoc-ref outputs "out"))
+                                              (bin-dir
+                                               (string-append out "/bin/"))
+                                              (doc-dir
+                                               (string-append out "/share/doc/incus-" ,version))
+                                              (completions-dir
+                                               (string-append out "/share/bash-completion/completions")))
+                                         (with-directory-excursion (string-append "src/" import-path)
+                                                                   ;; Wrap lxd with run-time dependencies.
+                                                                   (wrap-program (string-append bin-dir "incus")
+                                                                                 `("PATH" ":" prefix
+                                                                                   ,(fold (lambda (input paths)
+                                                                                            ;; TODO: Use 'search-input-directory' rather
+                                                                                            ;; than look up inputs by name.
+                                                                                            (let* ((in (assoc-ref inputs input))
+                                                                                                   (bin (string-append in "/bin"))
+                                                                                                   (sbin (string-append in "/sbin")))
+                                                                                              (append (filter file-exists?
+                                                                                                              (list bin sbin)) paths)))
+                                                                                          '()
+                                                                                          '("bash-minimal" "acl" "rsync" "tar" "xz" "btrfs-progs"
+                                                                                            "gzip" "dnsmasq" "squashfs-tools" "iproute2"
+                                                                                            "iptables" "attr"))))
+                                                                   (wrap-program (string-append bin-dir "incusd")
+                                                                                 `("PATH" ":" prefix
+                                                                                   ,(fold (lambda (input paths)
+                                                                                            ;; TODO: Use 'search-input-directory' rather
+                                                                                            ;; than look up inputs by name.
+                                                                                            (let* ((in (assoc-ref inputs input))
+                                                                                                   (bin (string-append in "/bin"))
+                                                                                                   (sbin (string-append in "/sbin")))
+                                                                                              (append (filter file-exists?
+                                                                                                              (list bin sbin)) paths)))
+                                                                                          '()
+                                                                                          '("bash-minimal" "acl" "rsync" "tar" "xz" "btrfs-progs"
+                                                                                            "gzip" "dnsmasq" "squashfs-tools" "iproute2"
+                                                                                            "iptables" "attr"))))
+                                                                   ;; Remove unwanted binaries.
+                                                                   ;; (for-each (lambda (prog)
+                                                                   ;;             (delete-file (string-append bin-dir prog)))
+                                                                   ;;           '("deps" "macaroon-identity" "generate"))
+                                                                   ;; Install documentation.
+                                                                   (for-each (lambda (file)
+                                                                               (install-file file doc-dir))
+                                                                             (find-files "doc"))
+                                                                   ;; Install bash completion.
+                                                                   ;; (rename-file "scripts/bash/incus-client" "scripts/bash/incus")
+                                                                   ;; (install-file "scripts/bash/incus" completions-dir)
+                                                                   )))))))
+   (native-inputs
+    (list ;; Test dependencies:
+     ;; ("go-github-com-rogpeppe-godeps" ,go-github-com-rogpeppe-godeps)
+     ;; ("go-github-com-tsenart-deadcode" ,go-github-com-tsenart-deadcode)
+     ;; ("go-golang-org-x-lint" ,go-golang-org-x-lint)
+     pkg-config))
+   (inputs
+    (list acl
+          eudev
+          libcowsql
+          cowsql-libraft
+          libcap
+          lxc-6
+          ;; Run-time dependencies.
+          attr
+          bash-minimal
+          rsync
+          tar
+          xz
+          btrfs-progs
+          gzip
+          dnsmasq
+          squashfs-tools
+          iproute
+          iptables))
+   (synopsis "Daemon based on liblxc offering a REST API to manage containers")
+   (home-page "https://linuxcontainers.org/lxd/")
+   (description "LXD is a next generation system container manager.  It
 offers a user experience similar to virtual machines but using Linux
 containers instead.  It's image based with pre-made images available for a
 wide number of Linux distributions and is built around a very powerful, yet
 pretty simple, REST API.")
-    (license license:asl2.0)))
+   (license license:asl2.0)))
+
+(define-public libguestfs
+  (package
+   (name "libguestfs")
+   (version "1.52.2")
+   (source (origin
+            (method url-fetch)
+            (uri (string-append
+                  "https://download.libguestfs.org/1.52-stable/libguestfs-"
+                  version ".tar.gz"))
+            (sha256
+             (base32
+              "1m5cg654yp0n36zhcbrnhm0k3jrl2gxd52a8700jbivnsl2jswhz"))))
+   (build-system gnu-build-system)
+   (native-inputs
+    (list pkg-config docbook2x))
+   (inputs
+    (list gnutls libcap libseccomp libselinux))
+   (synopsis "Linux container tools")
+   (home-page "https://linuxcontainers.org/")
+   (description
+    "LXC is a userspace interface for the Linux kernel containment features.
+Through a powerful API and simple tools, it lets Linux users easily create and
+manage system or application containers.")
+   (license license:lgpl2.1+)))
+
+
+(define-public libguestfs-minimal
+  (package
+   (name "libguestfs-minimal")
+   (version "1.53.6")
+   (source (origin
+            (method url-fetch)
+            (uri (string-append "https://libguestfs.org/download/"
+                                (version-major+minor version)
+                                "-stable/libguestfs-" version ".tar.gz"))
+            (sha256
+             (base32
+              "0vssarc3n4kv26fyjmkrrcvh55v41fhycba43pij3rc2izl72s2y"))
+            (patches
+             (search-patches "libguestfs-syms.patch"))))
+   (build-system gnu-build-system)
+   (arguments
+    (list #:configure-flags
+          #~(list "--disable-appliance"
+                  "--disable-daemon"
+                  "--disable-static"
+                  "--with-distro=\"Guix System\"")
+          #:make-flags #~'("REALLY_INSTALL=yes")
+          #:phases
+          #~(let* ((lib/ocaml (string-append #$output "/lib/ocaml")))
+              (modify-phases %standard-phases
+                             (add-after 'unpack 'patch-makefiles
+                                        (lambda _
+                                          (for-each patch-shebang
+                                                    (find-files "."))
+                                          (for-each (lambda (makefile)
+                                                      (substitute* "ocaml/Makefile.am"
+                                                                   (("\\$\\(DESTDIR\\)\\$\\(OCAMLLIB\\)")
+                                                                    lib/ocaml)))
+                                                    '("ocaml/Makefile.am"
+                                                      "ocaml/Makefile.in"))))
+                             (replace 'bootstrap
+                                      (lambda _
+                                        (invoke "autoreconf" "-vif")))
+                             (replace 'check
+                                      (lambda* (#:key tests? make-flags #:allow-other-keys)
+                                               (when tests?
+                                                 (apply invoke `("make" ,@make-flags "check-direct")))))
+                             (add-before 'install 'set-rpath
+                                         (lambda _
+                                           (for-each
+                                            (lambda (sofile)
+                                              (invoke "ls" "-la" "ocaml/")
+                                              ;; The ‘validate-runpath’ phase fails to find libguestfs.so.0.
+                                              (invoke (string-append #$(this-package-native-input "patchelf")
+                                                                     "/bin/patchelf")
+                                                      "--add-rpath" (string-append #$output "/lib") sofile))
+                                            '("perl/blib/arch/auto/Sys/Guestfs/Guestfs.so"
+                                              "ocaml/dllmlguestfs.so"))))
+                             (replace 'install
+                                      (lambda* (#:key make-flags #:allow-other-keys)
+                                               (mkdir-p "temp-build-dir")
+                                               (apply invoke `("make" ,@make-flags "INSTALLDIRS=vendor"
+                                                               "install"))))
+                             (add-after 'install 'wrap-binaries
+                                        (lambda _
+                                          (let ((bin (string-append #$output "/bin")))
+                                            (for-each
+                                             (lambda (binary)
+                                               (use-modules (srfi srfi-1))
+                                               (wrap-program binary
+                                                             `("PERL5LIB" ":" prefix
+                                                               (,(string-append #$output
+                                                                                "/lib/perl5/site_perl")))
+                                                             `("PATH" ":" prefix
+                                                               ,(search-path-as-list
+                                                                 '("bin")
+                                                                 (map second
+                                                                      '#$(package-inputs this-package))))))
+                                             (find-files bin)))))
+                             (replace 'validate-documentation-location
+                                      (lambda _
+                                        (let ((man-dir
+                                               (string-append #$output "/man"))
+                                              (info-dir
+                                               (string-append #$output "/info")))
+                                          (for-each (lambda (d)
+                                                      (invoke "rm" "-rf" d))
+                                                    (list man-dir info-dir)))))))))
+   (native-inputs (list autoconf
+                        automake
+                        augeas
+                        bison
+                        cpio
+                        flex
+                        gettext-minimal
+                        gperf
+                        libtool
+                        ocaml
+                        ocaml-findlib
+                        ncurses
+                        patchelf
+                        perl
+                        perl-getopt-long
+                        perl-module-build
+                        pkg-config
+                        po4a
+                        xorriso
+                        xz
+                        zstd))
+   (inputs
+    (list file
+          fuse
+          jansson
+          hivex
+          libtirpc
+          pcre2
+          readline
+          qemu))
+   (home-page "https://libguestfs.org/")
+   (synopsis "Access and modify virtual machine disk images")
+   (description
+    "@code{libguestfs} is a set of tools for accessing and modifying virtual
+machine (VM) disk images.  You can use this for viewing and editing files inside
+guests, scripting changes to VMs, monitoring disk used/free statistics, creating
+guests, P2V, V2V, performing backups, cloning VMs, building VMs, formatting
+disks, resizing disks, and much more.")
+   (license (list license:gpl2+ license:lgpl2.1+))))
+
+
+
+(define-public hivex
+  (package
+   (name "hivex")
+   (version "1.3.24")
+   (source (origin
+            (method url-fetch)
+            (uri (string-append "https://libguestfs.org/download/"
+                                name "/" name "-" version ".tar.gz"))
+            (sha256
+             (base32
+              "0g0rib62qg81fda8lxsaa7a1ykqy4rl5sq185pdqm9y9xifa8bx5"))))
+   (build-system gnu-build-system)
+   (native-inputs (list automake
+                        autoconf
+                        gettext-minimal
+                        libtool
+                        ocaml
+                        patchelf
+                        pkg-config
+                        perl-io-stringy
+                        python-wrapper
+                        ruby
+                        ruby-rake
+                        ruby-rdoc))
+   (inputs
+    (list bash-minimal
+          libxml2
+          perl
+          readline))
+   (arguments
+    (list
+     #:configure-flags
+     #~(list
+        "--disable-static"
+        "--with-readline"
+        "--disable-rpath")
+     #:phases
+     #~(modify-phases %standard-phases
+                      (replace 'bootstrap
+                               (lambda _
+                                 (invoke "autoreconf" "-vif")))
+                      (add-after 'unpack 'patch-makefiles
+                                 (lambda _
+                                   (let* ((current-system (or #$(%current-target-system)
+                                                              #$(%current-system)))
+                                          (ocamllib
+                                           (string-append #$output "/lib/ocaml/"
+                                                          #$(package-version
+                                                             (this-package-native-input "ocaml")) "/site-lib"))
+                                          (python-installdir
+                                           (string-append #$output "/lib/python"
+                                                          #$(version-major+minor
+                                                             (package-version
+                                                              (this-package-native-input
+                                                               "python-wrapper")))
+                                                          "/site-packages"))
+                                          (ruby-version
+                                           #$(package-version
+                                              (this-package-native-input "ruby")))
+                                          (ruby-libdir
+                                           (string-append #$output
+                                                          "/lib/ruby/site_ruby/"
+                                                          ruby-version))
+                                          (ruby-archdir
+                                           (string-append ruby-libdir "/" current-system)))
+                                     (substitute* "lib/Makefile.am"
+                                                  (((string-append "\\$\\(VERSION_SCRIPT_FLAGS\\)"
+                                                                   "\\$\\(srcdir\\)/hivex\\.syms"))
+                                                   ""))
+                                     (substitute* "python/Makefile.am"
+                                                  (("\\$\\(PYTHON_INSTALLDIR\\)")
+                                                   python-installdir))
+                                     (substitute* "ocaml/Makefile.am"
+                                                  (("\\$\\(DESTDIR\\)\\$\\(OCAMLLIB\\)")
+                                                   ocamllib))
+                                     (substitute* "ruby/Makefile.am"
+                                                  (("\\$\\(DESTDIR\\)\\$\\(RUBY_ARCHDIR\\)")
+                                                   ruby-archdir)
+                                                  (("\\$\\(DESTDIR\\)\\$\\(RUBY_LIBDIR\\)")
+                                                   ruby-libdir)))))
+                      (add-before 'install 'set-rpath
+                                  (lambda _
+                                    (for-each
+                                     (lambda (sofile)
+                                       ;; The ‘validate-runpath’ phase fails to find libhivex.so.0.
+                                       (invoke (string-append #$(this-package-native-input "patchelf")
+                                                              "/bin/patchelf")
+                                               "--add-rpath" (string-append #$output "/lib") sofile))
+                                     '("perl/blib/arch/auto/Win/Hivex/Hivex.so"
+                                       "ruby/ext/hivex/_hivex.so"))))
+                      (add-after 'install 'wrap-binaries
+                                 (lambda _
+                                   (let ((hivexregedit
+                                          (string-append #$output "/bin/hivexregedit"))
+                                         (hivexml
+                                          (string-append #$output "/bin/hivexml")))
+                                     (wrap-program hivexregedit
+                                                   `("PERL5LIB" ":" prefix
+                                                     (,(string-append #$output "/lib/perl5/site_perl")))
+                                                   `("PATH" ":" prefix
+                                                     (,(string-append #$output "/bin"))))
+                                     (wrap-program hivexml
+                                                   `("PATH" ":" prefix
+                                                     (,(string-append #$output "/bin"))))))))))
+   (home-page "https://github.com/libguestfs/hivex")
+   (synopsis "Windows registry hive extraction library")
+   (description
+    "This package provides a self-contained library for reading and writing
+Windows Registry \"hive\" binary files.  Unlike many other tools in this area,
+it doesn't use the textual @code{.REG} format for output, because parsing that
+is as much trouble as parsing the original binary format.  Instead it makes the
+file available through a C API, or through a separate program to export the
+hive as XML.")
+   (license license:lgpl2.1)))
+
+(define-public libguestfs
+  (package
+   (inherit libguestfs-minimal)
+   (name "libguestfs")
+   (arguments
+    (substitute-keyword-arguments (package-arguments libguestfs-minimal)
+                                  ((#:configure-flags flags)
+                                   #~(cons (string-append "--with-python-installdir="
+                                                          #$output "/lib/python"
+                                                          #$(version-major+minor
+                                                             (package-version python))
+                                                          "/site-packages")
+                                           #$flags))))
+   (native-inputs
+    (modify-inputs (package-native-inputs libguestfs-minimal)
+                   (prepend cdrtools
+                            gobject-introspection
+                            lua
+                            `(,openjdk "jdk")
+                            python
+                            util-linux)))
+   (inputs
+    (modify-inputs (package-inputs libguestfs-minimal)
+                   (prepend acl
+                            bdb
+                            gmp
+                            libapparmor
+                            libcap
+                            libcap-ng
+                            libconfig
+                            libvirt
+                            libxcrypt
+                            numactl
+                            yajl)))))
