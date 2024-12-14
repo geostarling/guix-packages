@@ -29,7 +29,10 @@
   #:use-module (gnu packages file)
   #:use-module (gnu packages c)
   #:use-module (guix utils)
+  #:use-module (gnu packages python-crypto)
   #:use-module (guix git-download)
+  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (gnu packages check)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system meson)
@@ -43,8 +46,13 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages gdb)
   #:use-module (gnu packages libusb)
+  #:use-module (gnu packages time)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages xiph)
+  #:use-module (gnu packages python-web)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages lirc)
@@ -319,3 +327,81 @@
      (modify-inputs (package-inputs lirc)
        (delete "libusb-compat")
        (append libusb)))))
+
+
+(define-public my-python-trio-websocket
+  (package
+    (name "my-python-trio-websocket")
+    (version "0.9.2")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in pypi archive
+       (uri (git-reference
+             (url "https://github.com/HyperionGray/trio-websocket")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yk2ak991kbl30xg8ldpggack1lwkizd7s5cpr28ir34z8iyjnpi"))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:tests? #f))
+    (native-inputs (list python-pytest python-pytest-trio python-trustme python-setuptools python-wheel))
+    (propagated-inputs (list python-async-generator python-trio python-wsproto))
+    (home-page "https://github.com/HyperionGray/trio-websocket")
+    (synopsis "WebSocket library for Trio")
+    (description "This library implements both server and client aspects of
+the @url{https://tools.ietf.org/html/rfc6455, the WebSocket protocol},
+striving for safety, correctness, and ergonomics.  It is based on the
+@url{https://wsproto.readthedocs.io/en/latest/, wsproto project}, which is a
+@url{https://sans-io.readthedocs.io/, Sans-IO} state machine that implements
+the majority of the WebSocket protocol, including framing, codecs, and events.
+This library handles I/O using @url{https://trio.readthedocs.io/en/latest/,
+the Trio framework}.")
+    (license license:expat)))
+
+
+(define-public my-streamlink
+  (package
+    (name "my-streamlink")
+    (version "7.0.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "streamlink" version))
+        (sha256
+         (base32
+          "1wpg7zhb0138jq2ia3b47ic16vcxaiq6xjj681lmsyg6c8l0d92i"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+          (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                  (invoke "python" "-m" "pytest")))))))
+    (native-inputs
+     (list python-freezegun
+           python-requests-mock
+           python-pytest
+           python-setuptools
+           python-pytest-asyncio
+           python-pytest-trio))
+    (propagated-inputs
+     (list python-certifi
+           python-isodate
+           python-lxml
+           python-pycountry
+           python-pycryptodome
+           python-pysocks
+           python-requests
+           python-trio
+           my-python-trio-websocket
+           python-typing-extensions
+           python-urllib3
+           python-websocket-client))
+    (home-page "https://github.com/streamlink/streamlink")
+    (synopsis "Extract streams from various services")
+    (description "Streamlink is command-line utility that extracts streams
+from sites like Twitch.tv and pipes them into a video player of choice.")
+    (license license:bsd-2)))
