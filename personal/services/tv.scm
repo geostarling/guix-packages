@@ -443,7 +443,7 @@
            (requirement '(tvheadend))
            (documentation "Run script-o2tv-server daemon.")
            (start #~(make-forkexec-constructor
-                     (list #$python
+                     (list (string-append #$python "/bin/python3")
                            (string-append #$script-o2tv-server "/server.py"))
                      #:user "tvheadend"
                      #:group "video"))
