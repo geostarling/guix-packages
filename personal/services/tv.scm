@@ -422,3 +422,33 @@
    (extensions
     (list (service-extension shepherd-root-service-type miraclecast-sinkctl-shepherd-service)))
    (default-value (miraclecast-sinkctl-configuration))))
+
+
+
+(define-configuration script-o2tv-server-configuration
+  (package
+   (package script-o2tv-server)
+   "The package."))
+
+
+(define (script-o2tv-server-shepherd-service config)
+  "Return a <shepherd-service> for script-o2tv-server with CONFIG."
+  (let* ((script-o2tv-server   (script-o2tv-server-configuration-package config)))
+    (list (shepherd-service
+           (provision '(script-o2tv-server))
+           (requirement '(tvheadend))
+           (documentation "Run script-o2tv-server daemon.")
+           (start #~(make-forkexec-constructor
+                     (list #$python
+                           (string-append #$script-o2tv-server "/server.py"))
+                     #:user "tvheadend"
+                     #:group "video"))
+           (stop #~(make-kill-destructor))))))
+
+(define script-o2tv-server-service-type
+  (service-type
+   (name 'script-o2tv-server)
+   (description "TODO")
+   (extensions
+    (list (service-extension shepherd-root-service-type script-o2tv-server-shepherd-service)))
+   (default-value (script-o2tv-server-configuration))))

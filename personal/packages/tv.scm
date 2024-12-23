@@ -33,6 +33,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system copy)
   #:use-module (gnu packages check)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system meson)
@@ -405,3 +406,50 @@ the Trio framework}.")
     (description "Streamlink is command-line utility that extracts streams
 from sites like Twitch.tv and pipes them into a video player of choice.")
     (license license:bsd-2)))
+
+(define-public script-o2tv-server
+  (let ((commit "e2fcc5444e28f5cb6f6975dc815db2965d0527a7")
+        (revision "0"))
+    (package
+      (name "script-o2tv-server")
+      (version (git-version "1.2.6" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/waladir/script.o2tv.server")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1zal2f4am246kdz900fj97080fwvmhf3cmqdamx1y3kwl3kqh234"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:phases #~(modify-phases %standard-phases
+                     (add-after 'install 'addsymlink
+                       (lambda* (#:key inputs outputs #:allow-other-keys)
+                         (let ((out (assoc-ref outputs "out")))
+                           (symlink "/etc/script-o2tv-server/config.txt"
+                                    (string-append out "/config.txt"))
+                           (delete-file "data/.placeholder")
+                           (rmdir "data")
+                           (symlink "/etc/script-o2tv-server/data"
+                                    (string-append out "/data"))))))
+        #:install-plan
+        #~'(("server.py" "server.py")
+            ("libs" "libs")
+            ("icon.png" "icon.png")
+            ("resources" "resources")
+            ("scripts" "scripts"))))
+      (inputs
+       (list python
+             ffmpeg))
+      (propagated-inputs
+       (list my-streamlink
+             python-bottle))
+      (home-page "https://github.com/streamlink/streamlink")
+      (synopsis "Extract streams from various services")
+      (description "Streamlink is command-line utility that extracts streams
+from sites like Twitch.tv and pipes them into a video player of choice.")
+      (license license:bsd-2))))
