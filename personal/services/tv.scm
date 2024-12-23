@@ -27,6 +27,7 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages kodi)
   #:use-module (gnu packages lirc)
+  #:use-module (gnu packages python)
   #:use-module (guix build-system trivial)
   #:use-module (guix build union)
   #:use-module (guix records)
