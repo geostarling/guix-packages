@@ -53,7 +53,7 @@
             miraclecast-sinkctl-configuration
             script-o2tv-server-configuration
             script-o2tv-server-configuation?
-            script-o2tv-server--service-type))
+            script-o2tv-server-service-type))
 
 
 
