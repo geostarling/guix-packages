@@ -452,9 +452,7 @@
                                                            "/run/current-system/profile/bin")
                                                          ":"))
                              "GUIX_PYTHONPATH=/run/current-system/profile/lib/python3.10/site-packages"
-                             "PYTHONPATH=/run/current-system/profile/lib/python3.10/site-packages")
-                     #:user "tvheadend"
-                     #:group "video"))
+                             "PYTHONPATH=/run/current-system/profile/lib/python3.10/site-packages")))
            (stop #~(make-kill-destructor))))))
 
 (define script-o2tv-server-service-type
