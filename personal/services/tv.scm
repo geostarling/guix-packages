@@ -445,13 +445,16 @@
            (start #~(make-forkexec-constructor
                      (list (string-append #$python "/bin/python3")
                            (string-append #$script-o2tv-server "/server.py"))
-                     #:log-file "/tmp/script-o2tv-server.log"
+                     #:user "tvheadend"
+                     #:group "video"
                      #:environment-variables
                      (list (string-append "PATH="
                                           (string-join '("/run/privileged/bin"
                                                          "/run/current-system/profile/sbin"
                                                          "/run/current-system/profile/bin")
                                                        ":"))
+                           "SSL_CERT_DIR=/run/current-system/profile/etc/ssl/certs"
+                           "SSL_CERT_FILE=/run/current-system/profile/etc/ssl/certs/ca-certificates.crt"
                            "GUIX_PYTHONPATH=/run/current-system/profile/lib/python3.10/site-packages"
                            "PYTHONPATH=/run/current-system/profile/lib/python3.10/site-packages")))
            (stop #~(make-kill-destructor))))))
