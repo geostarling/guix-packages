@@ -445,6 +445,14 @@
            (start #~(make-forkexec-constructor
                      (list (string-append #$python "/bin/python3")
                            (string-append #$script-o2tv-server "/server.py"))
+                       #:environment-variables
+                       (list (string-append "PATH="
+                                            (string-join '("/run/privileged/bin"
+                                                           "/run/current-system/profile/sbin"
+                                                           "/run/current-system/profile/bin")
+                                                         ":"))
+                             "GUIX_PYTHONPATH=/run/current-system/profile/lib/python3.10/site-packages"
+                             "PYTHONPATH=/run/current-system/profile/lib/python3.10/site-packages")
                      #:user "tvheadend"
                      #:group "video"))
            (stop #~(make-kill-destructor))))))
