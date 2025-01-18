@@ -175,9 +175,9 @@
                 ;; (make-file-writable "parinfer-rust-mode.el")
                 (emacs-substitute-variables "parinfer-rust-mode.el"
                   ("parinfer-rust--lib-name" "libparinfer_rust.so")
-                  ("parinfer-rust-library-dir" (string-append parinfer-lib "/test1")))
+                  ("parinfer-rust-library-dir" (string-append parinfer-lib "/")))
                 (emacs-substitute-sexps "parinfer-rust-mode.el"
-                  ("defcustom parinfer-rust-library-directory" (string-append parinfer-lib "/test2"))
+                  ("defcustom parinfer-rust-library-directory" (string-append parinfer-lib "/"))
                   ("defconst parinfer-rust--lib-name"
                    "libparinfer_rust.so"))))))))
     (inputs (list parinfer-rust-emacs))
