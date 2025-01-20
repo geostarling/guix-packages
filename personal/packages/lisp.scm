@@ -68,7 +68,7 @@
 
 
 (define-public sbcl-vivace-graph
-  (let ((commit "cf2caaf26baccec9afd4d6a79375cd9ff5fe0613")
+  (let ((commit "0859c364caf27007a0afc10a8f35a5eaa46b682d")
         (revision "1"))
     (package
       (name "sbcl-vivace-graph")
@@ -82,7 +82,7 @@
            (commit commit)))
          (file-name (git-file-name "cl-vivace-graph" version))
          (sha256
-          (base32 "1j78g5cs29wxc27px9p8m3kbj36wh06f9yj7wc1z3jva99q0v8bm"))))
+          (base32 "0jkvklh70x12ia7zbrr2pv29lf0hx2r32wrd0ndj1fpfmvy0s28d"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:asd-systems '("graph-db")))
