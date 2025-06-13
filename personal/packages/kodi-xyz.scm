@@ -125,7 +125,7 @@
                            ;; of share/kodi, so we place all of the data resources alongside the shared lib
                            "-DCMAKE_INSTALL_DATADIR=lib/kodi")))
     (inputs
-     `(("kodi" ,kodi-21)))
+     `(("kodi" ,kodi)))
     (synopsis "Media center for home theater computers")
     (description "Kodi is a media center application for playing videos,
     music, games, etc.  Kodi is highly customizable and features a theme and
@@ -160,7 +160,7 @@
                            ;; of share/kodi, so we place all of the data resources alongside the shared lib
                            "-DCMAKE_INSTALL_DATADIR=lib/kodi")))
     (inputs
-     `(("kodi" ,kodi-21)
+     `(("kodi" ,kodi)
        ("pugixml" ,pugixml)
        ("rapidjson" ,rapidjson)
        ("bento4" ,bento4)))

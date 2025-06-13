@@ -39,9 +39,6 @@
   #:export (tvheadend-configuration
             tvheadend-configuration?
             tvheadend-service-type
-            kodi-configuration
-            kodi-configuration?
-            kodi-service-type
             lirc-configuration
             lirc-configuation?
             lirc-service-type
@@ -433,36 +430,3 @@
   (package
    (package script-o2tv-server)
    "The package."))
-
-
-(define (script-o2tv-server-shepherd-service config)
-  "Return a <shepherd-service> for script-o2tv-server with CONFIG."
-  (let* ((script-o2tv-server   (script-o2tv-server-configuration-package config)))
-    (list (shepherd-service
-           (provision '(script-o2tv-server))
-           (requirement '(tvheadend))
-           (documentation "Run script-o2tv-server daemon.")
-           (start #~(make-forkexec-constructor
-                     (list (string-append #$python "/bin/python3")
-                           (string-append #$script-o2tv-server "/server.py"))
-                     #:user "tvheadend"
-                     #:group "video"
-                     #:environment-variables
-                     (list (string-append "PATH="
-                                          (string-join '("/run/privileged/bin"
-                                                         "/run/current-system/profile/sbin"
-                                                         "/run/current-system/profile/bin")
-                                                       ":"))
-                           "SSL_CERT_DIR=/run/current-system/profile/etc/ssl/certs"
-                           "SSL_CERT_FILE=/run/current-system/profile/etc/ssl/certs/ca-certificates.crt"
-                           "GUIX_PYTHONPATH=/run/current-system/profile/lib/python3.10/site-packages"
-                           "PYTHONPATH=/run/current-system/profile/lib/python3.10/site-packages")))
-           (stop #~(make-kill-destructor))))))
-
-(define script-o2tv-server-service-type
-  (service-type
-   (name 'script-o2tv-server)
-   (description "TODO")
-   (extensions
-    (list (service-extension shepherd-root-service-type script-o2tv-server-shepherd-service)))
-   (default-value (script-o2tv-server-configuration))))
