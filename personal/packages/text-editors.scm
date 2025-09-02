@@ -50,7 +50,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages rust-crates)
   #:use-module (gnu packages llvm))
 
 (define-public parinfer-rust
