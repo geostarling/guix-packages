@@ -53,52 +53,52 @@
   #:use-module (gnu packages rust-crates)
   #:use-module (gnu packages llvm))
 
-(define-public parinfer-rust
-  (let ((commit "7e99d3afa830dd5ef1566ce9ba78c79835251bb4")
-        (revision "2"))
-    (package
-     (name "parinfer-rust")
-     (version "0.4.3")
-     (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/geostarling/parinfer-rust.git")
-                    (commit commit)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0zjv4glm7l2q008cbd41y724x39ywngsm5kvql3w03aylzyi3v04"))))
+;; (define-public parinfer-rust
+;;   (let ((commit "7e99d3afa830dd5ef1566ce9ba78c79835251bb4")
+;;         (revision "2"))
+;;     (package
+;;      (name "parinfer-rust")
+;;      (version "0.4.3")
+;;      (source (origin
+;;               (method git-fetch)
+;;               (uri (git-reference
+;;                     (url "https://github.com/geostarling/parinfer-rust.git")
+;;                     (commit commit)))
+;;               (file-name (git-file-name name version))
+;;               (sha256
+;;                (base32
+;;                 "0zjv4glm7l2q008cbd41y724x39ywngsm5kvql3w03aylzyi3v04"))))
 
-     (build-system cargo-build-system)
-     (arguments
-      `(#:cargo-inputs
-        (("rust-getopts" ,rust-getopts-0.2)
-         ("rust-libc" ,rust-libc-0.2)
-         ("rust-emacs" ,rust-emacs-0.18)
-         ("rust-serde" ,rust-serde-1)
-         ("rust-serde-json" ,rust-serde-json-1)
-         ("rust-serde-derive" ,rust-serde-derive-1)
-         ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
-         ("rust-unicode-width" ,rust-unicode-width-0.1))
-        #:features '("emacs")
-        #:phases
-        ;; clang is required by rust-emacs-module
-        (modify-phases %standard-phases
-                       (add-after 'install 'install-so
-                                  (lambda* (#:key inputs outputs #:allow-other-keys)
-                                           (let ((lib-target (string-append (assoc-ref outputs "out")
-                                                                            "/lib/")))
-                                             (mkdir-p lib-target)
-                                             (copy-file
-                                              "target/release/libparinfer_rust.so"
-                                              (string-append lib-target "parinfer-rust-linux.so"))
-                                             #t))))))
-     (inputs
-      (list clang))
-     (home-page "https://github.com/justinbarclay/parinfer-rust")
-     (synopsis "Infer parentheses for Clojure, Lisp and Scheme")
-     (description
-      "Parinfer is a plugin for Kakoune, Vim, Neovim and Emacs that infers
-parentheses and indentation.  This library can be called from other editors that
-can load dynamic libraries.")
-     (license license:expat))))
+;;      (build-system cargo-build-system)
+;;      (arguments
+;;       `(#:cargo-inputs
+;;         (("rust-getopts" ,rust-getopts-0.2)
+;;          ("rust-libc" ,rust-libc-0.2)
+;;          ("rust-emacs" ,rust-emacs-0.18)
+;;          ("rust-serde" ,rust-serde-1)
+;;          ("rust-serde-json" ,rust-serde-json-1)
+;;          ("rust-serde-derive" ,rust-serde-derive-1)
+;;          ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+;;          ("rust-unicode-width" ,rust-unicode-width-0.1))
+;;         #:features '("emacs")
+;;         #:phases
+;;         ;; clang is required by rust-emacs-module
+;;         (modify-phases %standard-phases
+;;                        (add-after 'install 'install-so
+;;                                   (lambda* (#:key inputs outputs #:allow-other-keys)
+;;                                            (let ((lib-target (string-append (assoc-ref outputs "out")
+;;                                                                             "/lib/")))
+;;                                              (mkdir-p lib-target)
+;;                                              (copy-file
+;;                                               "target/release/libparinfer_rust.so"
+;;                                               (string-append lib-target "parinfer-rust-linux.so"))
+;;                                              #t))))))
+;;      (inputs
+;;       (list clang))
+;;      (home-page "https://github.com/justinbarclay/parinfer-rust")
+;;      (synopsis "Infer parentheses for Clojure, Lisp and Scheme")
+;;      (description
+;;       "Parinfer is a plugin for Kakoune, Vim, Neovim and Emacs that infers
+;; parentheses and indentation.  This library can be called from other editors that
+;; can load dynamic libraries.")
+;;      (license license:expat))))
