@@ -156,8 +156,8 @@
 
 
 (define-public tvheadend
-  (let ((commit "9ac57a0c1a4551012260008cfca6bfc2386f6dcf")
-        (revision "0"))
+  (let ((commit "6253057de32b7c98d81f7ae7b29af8962173b97e")
+        (revision "1"))
     (package
       (name "tvheadend")
       (version (git-version "4.3" revision commit))
@@ -169,7 +169,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1j2f2wbhg7lm92rz6j88mb3299d7vn96sr4ba4nshdnljpjpq01b"))))
+                  "0vmdkxrp07asza67w2fbxyyp00l2pnga26g1gjsfn680y13z37sv"))))
       (build-system gnu-build-system)
       (arguments
        `(#:tests? #f    ; there is no test target
